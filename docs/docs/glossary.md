@@ -8,6 +8,8 @@
 
 - **Roster:** Defines who is a part of the team. Essentially a collection of players, coaches, and parents.
 
+- **Lineup:** For a particular game, defines the set of players from the roster who participate in the game.
+
 - **Coach:** An instructor who may provide organization and advice to the team. Often directs team strategy and makes decisions during the game.
 
 - **Player:** An individual who is a member of the team that is eligible to play. They are a member of the team.
@@ -15,6 +17,10 @@
 - **Number:** In many sports players will have an associated number for identification purposes. Player x has number y.
 
 - **Parent:** The guardian who is responsible for a player on the team roster. Often watch games as a passive observer outside of the field of play.
+
+- **Recorder:** The individual keeping track of event occurrences during gameplay.
+
+- **User:** An individual who uses or is interested in statistical reports. As related to our developed application.
 
 - **Point:** A unit of measurement for the score in a game. Depending on the game, a number of points may be given at once for achieving one objective.
 
@@ -36,7 +42,9 @@
 
 - **Interception:** Act of an object in the game moving from one teams possession to another's.
 
-- **Statistics:** - Consists of an important events during the game. Can include various key actions or contexts.
+- **Event:** Something important that happens during gameplay. Events may be actions or moments that can be recorded to be used in generating statistics. For instance, a point being scored is an event and all point events may be used to generate a points per minute statistic. 
+
+- **Statistics:** Consists of an important events during the game. Can include various key actions or contexts. Often shortened to stats.
 
 
 Definitions adapted from [dictionary.com](https://www.dictionary.com/).
