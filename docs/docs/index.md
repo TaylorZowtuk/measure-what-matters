@@ -33,9 +33,20 @@ This is a storyboard describing user flow, the numbers correspond with something
 
 
 ## Similar Open-source Projects
-* [eLabFTW](https://github.com/elabftw/elabftw)
-    - Experiment notebook software
-    - &lt;functionalities, with comments on how they may be used for code or inspiration&gt; 
+* [Tracking-Data](https://github.com/KubaMichalczyk/Tracking-Data)
+    - A visualization that would be very useful to include in our reports for defensive zone coverage and offensive zone pressure.
+    - Can be repurposed for other sports.
+    - Also, in general, a great source of inspiration when thinking about useful reports that we could generate.
+
+* [Balaban](https://github.com/anenglishgoat/balaban)
+    - A small Python package for estimating & plotting Bayesian hierarchical models for player-level soccer data.
+    - We can utilize many of these calculations and models for the reports that we produce.
+    - For a general list of open-source statistics tools for various sports we can refer to: https://opensource.pysport.org/
+
+* [Various Resources](https://awesomeopensource.com/project/matiasmascioto/awesome-soccer-analytics#open-source-libraries)
+    - This website offers a compilation of open-source software specific to the game of soccer.
+    - It includes various visualizations that may be useful to use as recording screens or outputs in our application.
+    - It also includes many stats libraries specific to soccer statistics that we can reuse (and possibly repurpose) rather than needing to reimplement.
 
 ## Project Glossary
 [Go to glossary](glossary)
