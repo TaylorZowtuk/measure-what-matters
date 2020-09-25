@@ -1,9 +1,9 @@
 # Overview
-The experiments database system is intended to replace an existing desktop application for storing experiments. This system will be a web application that has all the functionality of the existing desktop application with online capabilities and the ability for different users. This system is intended for all participants in a research group. This system will be used to actively store experimental data for a research lab.
+In the world of sports, data is a critical tool in informed decision making. Coaches of minor league teams have been recording game statistics with paper and pencil - equipped with only their best recall. In this manner, there is limited data collection ability. 
 
-## Storyboarding
-This is a storyboard describing user flow, the numbers correspond with something.
-![Storyboard](../images/storyboard.png)
+There is the opportunity to use modern technologies to assist in this statistics gathering process - and that is precisely what this product will provide. The goal of this product is to use technology to improve upon current means by making the process easier, more reliable, and to allow the recording of statistics that would previously have been too difficult. In addition, this information will be used to output detailed reports to assist in decision making. The scope of this release will be limited to the game of soccer but we will strive for the product to be easily extended to other sports in the future.
+
+If you want to take your game to the next level, you need data to inform decision making.
 
 ## Use Cases or User Stories
 [User stories can be found under the requirements section here.](requirements)
@@ -57,3 +57,7 @@ Our goal is to build a progressive web app to offer ease of use and enable devic
 
 ## Project Glossary
 [Go to glossary](glossary)
+
+## Storyboarding
+This is a storyboard describing user flow, the numbers correspond with something.
+![Storyboard](../images/storyboard.png)
