@@ -9,9 +9,16 @@ This is a storyboard describing user flow, the numbers correspond with something
 [User stories can be found under the requirements section here.](requirements)
 
 ## Technical Resources
-* Backend: Flask + PostgreSQL
-* Deployment: Docker + k8s + TravisCI
-* Frontend: Vue.js + Buefy
+Our goal is to build a progressive web app to offer ease of use and enable device flexibility.
+* Front-end: React, Redux, & TypeScript
+* Back-end: Nest & PostgreSQL
+* Deployment: Cybera & GitHub Actions
+
+* TeamSnap
+    - TeamSnap is the product we will likely integrate into for populating our app with a teams various information as need (such as games, rosters, and lineups)
+    - General site - https://www.teamsnap.com/
+    - Developer portal - https://developer.teamsnap.com/ 
+    - Statistics - https://www.teamsnap.com/teams/features/statistics
 
 ## Similar Products
 * [TeamStuff](https://teamstuff.com/)
