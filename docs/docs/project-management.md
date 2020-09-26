@@ -49,19 +49,23 @@ This page provides a general overview of the assigned tasks and roles for the du
 
 Here are the general rules for assigning tasks on the team:
 
-### Back End Development
+### Front-end Programmer
 
-* Traci Townsend 
-* Johnathan Owens 
+* Chloe Shang 
+* Taylor Zowtuk 
 
-### Front End Development
+### Back-end Programmer
 
-* Evan Barnes 
-* Maurice Obrien
+* Joseph Potentier
 
-### "Floaters" who can focus on major issues in both Front End Development and Back End Development
+### DevOps / Floater*
 
-* Dallas Taylor 
-* Kelly King 
+* Ayub Ahmed
 
-(Subject to change throughout the semester as needed - will update if this changes.)
+### Product Manager / Floater*
+
+* Bardia Samimi
+
+*Floater will be allocated to the various roles as required by the demands of a sprint.
+
+**These roles are subject to change throughout the semester as needed - will update if this changes.
