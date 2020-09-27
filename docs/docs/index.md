@@ -56,8 +56,4 @@ Our goal is to build a progressive web app to offer ease of use and enable devic
     - It also includes many stats libraries specific to soccer statistics that we can reuse (and possibly repurpose) rather than needing to reimplement.
 
 ## Project Glossary
-[Go to glossary](glossary)
-
-## Storyboarding
-This is a storyboard describing user flow, the numbers correspond with something.
-![Storyboard](../images/storyboard.png)
+[Go to glossary page](glossary)
