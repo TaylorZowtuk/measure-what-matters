@@ -16,7 +16,7 @@ View | Satisfies User Stories | Description
 10 | / | Teams list. Allows selecting one of the users registered teams.
 11 | / | Players list. Allows selecting a player from the previously specified teams roster.
 12 | 3.2.12 | Player dashboard. Can click the group of users icon to return to the team dashboard. Same reporting functionality as described in view 4 but specific to the selected user rather than to a team.
-13 | 1.2.1 | Teams page. Can add teams by click the add icon. Can link teams from other team management apps by click the link icon.
+13 | 1.2.1 & 1.2.2 | Teams page. Can add teams by click the add icon. Can link teams from other team management apps by click the link icon. Can click on a team to navigate to that teams dashboard.
 14 | / | Adding team info page. Includes a image upload for the team logo. Includes input field for team name. Could have fields for other inputs. Includes a button to navigate to the next step of team creation. 
 15 | / | Team roster page. Can add players by clicking the add icon. Can remove previously added players from the roster by clicking an associated minus icon. Button to submit and finalize the team.
 16 | / | Invite page. Can enter fields containing information for the player to be invited. One field to enter the email where the invite should be sent. A submit button to send the invite.
