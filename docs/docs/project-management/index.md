@@ -2,7 +2,7 @@
 This page provides a general overview of the assigned tasks and roles for the duration of four sprints (subject to change).
 
 ## Story Map
-[![StoryMap](https://raw.githubusercontent.com/UAlberta-CMPUT401/example-documentation/master/docs/images/UserStoryMapDefinitions.png)](https://raw.githubusercontent.com/UAlberta-CMPUT401/example-documentation/master/docs/images/UserStoryMapDefinitions.png)
+![StoryMap](../images/project-management/story-map.png)
 
 ## Project Plan
 ### Sprint 1  
