@@ -1,6 +1,6 @@
 # Wireframes
 ## Sprint 1
-![Wireframe](../../images/design/wireframe/wireframe_1.png)
+![Wireframe](../images/design/wireframe/wireframe_1.png)
 
 View | Satisfies User Stories | Description
 ---- | -----------------------|------------
