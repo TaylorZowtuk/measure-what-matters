@@ -17,5 +17,6 @@ This is a short description of logical entities of the domain in a UML diagram.
 
 ### Sequence Diagram
 The sequence diagram describes the flow of recording sports events. They are devided into three stages: pre game, during game, and post game.
-![Sequence](../images/design/sequenceDiagram/sequence.png)
 
+
+![Sequence](../images/design/sequenceDiagram/sequence.png)
