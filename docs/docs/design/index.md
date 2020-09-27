@@ -8,7 +8,8 @@ This page includes a short description of the overall architecture style of the 
 
 ### Architecture/Component Diagram
 This is a short description of the architecture.
-[![Architecture](https://raw.githubusercontent.com/UAlberta-CMPUT401/example-documentation/master/docs/images/architecture.png)](https://raw.githubusercontent.com/UAlberta-CMPUT401/example-documentation/master/docs/images/architecture.png)
+
+![ComponentDiagrams](./images/componentDiagram/component-diagram.png)
 
 ### UML Class Diagram
 This is a short description of logical entities of the domain in a UML diagram.
