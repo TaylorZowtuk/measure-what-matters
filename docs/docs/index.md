@@ -11,7 +11,7 @@ If you want to take your game to the next level, you need data to inform decisio
 ## Technical Resources
 Our goal is to build a progressive web app to offer ease of use and enable device flexibility.
 * Front-end: React, Redux, & TypeScript
-* Back-end: Nest & PostgreSQL
+* Back-end: Nest, TypeORM, & PostgreSQL
 * Deployment: Cybera & GitHub Actions
 
 * TeamSnap
