@@ -12,8 +12,8 @@ In our component diagram we have three important views which are the viewer who 
 ![ComponentDiagrams](../images/design/componentDiagram/component-diagram.png)
 
 ### UML Class Diagram
-This is a short description of logical entities of the domain in a UML diagram.
-[![UML](https://raw.githubusercontent.com/UAlberta-CMPUT401/example-documentation/master/docs/images/UML.png)](https://raw.githubusercontent.com/UAlberta-CMPUT401/example-documentation/master/docs/images/UML.png)
+A UML for the recording application Measure What Matters. This UML displays how the team managers will add recorders and set up a roster for matches. The recorders will record various event types that will be saved in both the players' profile and the team stats profile. These can later be retrieved by the Team Manager to better understand the analytics of how the team is performing.
+![UML](../images/design/UML/UML.png)
 
 ### Sequence Diagram
 The sequence diagram describes the flow of recording sports events. They are devided into three stages: pre game, during game, and post game.
