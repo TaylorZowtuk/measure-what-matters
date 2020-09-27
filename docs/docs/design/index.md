@@ -16,5 +16,7 @@ This is a short description of logical entities of the domain in a UML diagram.
 [![UML](https://raw.githubusercontent.com/UAlberta-CMPUT401/example-documentation/master/docs/images/UML.png)](https://raw.githubusercontent.com/UAlberta-CMPUT401/example-documentation/master/docs/images/UML.png)
 
 ### Sequence Diagram
-The sequence diagram describes the the core dynamic behaviors of the system.
-[![Sequence](https://raw.githubusercontent.com/UAlberta-CMPUT401/example-documentation/master/docs/images/sequence.png)](https://raw.githubusercontent.com/UAlberta-CMPUT401/example-documentation/master/docs/files/sequence.pdf)
+The sequence diagram describes the flow of recording sports events. They are devided into three stages: pre game, during game, and post game.
+
+
+![Sequence](../images/design/sequenceDiagram/sequence.png)
