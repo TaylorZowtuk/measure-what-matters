@@ -6,16 +6,16 @@ name: Mwm Backend CI
 on:
   push:
     paths:
-      - 'backend/mwm/**'
+      - 'backend/**'
     branches: [ master, devel ]
   pull_request:
     paths:
-      - 'backend/mwm/**'
+      - 'backend/**'
     branches: [ master, devel ]
 
 defaults:
   run:
-    working-directory: backend/mwm
+    working-directory: backend
 
 jobs:
   build:
@@ -33,5 +33,5 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - run: npm ci
-    - run: npm run build --if-present
+    - run: npm run build
     - run: npm test
