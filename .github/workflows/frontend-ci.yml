@@ -6,16 +6,16 @@ name: Mwm Frontend CI
 on:
   push:
     paths:
-      - 'frontend/mwm/**'
+      - 'frontend/**'
     branches: [ master, devel ]
   pull_request:
     paths:
-      - 'frontend/mwm/**'
+      - 'frontend/**'
     branches: [ master, devel ]
 
 defaults:
   run:
-    working-directory: frontend/mwm
+    working-directory: frontend
 
 jobs:
   build:
