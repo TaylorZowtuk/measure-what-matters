@@ -6,11 +6,11 @@ name: Mwm Backend CI
 on:
   push:
     paths:
-      - 'backend/mwm'
+      - 'backend/mwm/**'
     branches: [ master, devel ]
   pull_request:
     paths:
-      - 'backend/mwm'
+      - 'backend/mwm/**'
     branches: [ master, devel ]
 
 defaults:
