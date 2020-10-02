@@ -60,9 +60,15 @@ Here are the general rules for assigning tasks on the team:
 | **Task To-Do** | **Assigned To** | **Date To Complete By** |
 | --- | --- | --- | 
 | Bootstrap back and front-end | Ayub | October 1 |
-| Back-end for create a team, back-end for events, front-end for dashboard | Ayub | October 18 |  
-| Back-end for start recording, back-end for reports | Bard | October 18 |
-| Front-end for login and create a team, front-end for line up during goal report | Chloe | October 18 |  
-| Back-end for create a team, back-end stat dashboard | Joe | October 18 |
-| Front-end for start recording and goal and substitution events, front end for time on field report | Taylor | October 18 |
+| Back-end for create a login | Joe | October 4 |
+| Back-end stat dashboard | Joe | October 8 |
+| Back-end for start recording, back-end for reports | Bard | October 12 |
+| Back-end for create a team, back-end for events | Ayub | October 14 |  
+| Front-end for login | Chloe | October 14 |  
+| Front-end for start recording & goal and substitution events | Taylor | October 14 |
+| Front-end for dashboard | Ayub | October 16 | 
+| Create a team & front-end for line up during goal report | Chloe | October 16 | 
+| Back-end for reports | Bard | October 17 |
+| Front end for time on field report | Taylor | October 17 |
+
 
