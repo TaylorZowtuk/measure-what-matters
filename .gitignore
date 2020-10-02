@@ -180,3 +180,6 @@ $RECYCLE.BIN/
 
 # Npm packages
 node_modules/
+
+# Build files
+build/
