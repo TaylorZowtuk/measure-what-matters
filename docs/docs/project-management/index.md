@@ -42,17 +42,24 @@ Here are the general rules for assigning tasks on the team:
 
 | **Task To-Do** | **Assigned To** | **Date To Complete By** |
 | --- | --- | --- | 
-| During game user stories, component diagram | Ayub | September 27 |  
-| Pregame user stories, class diagram | Bard | September 27 |
-| Sequence diagram, class diagram | Chloe | September 27 |  
-| Postgame user stories, project plan | Joe | September 27 |
-| Set up docs, project overview, similar/open-source projects, technical resources, glossary, wireframe, team roles | Taylor | September 27 |
+| Set up docs | Taylor | September 22 |
+| Sequence diagram | Chloe | September 22 |
+| During game user stories | Ayub | September 23 |
+| Postgame user stories | Joe | September 23 |
+| Pregame user stories | Bard | September 23 |
+| Project overview, similar/open-source projects, technical resources, glossary, team roles | Taylor | September 24 |
+| Component diagram | Ayub | September 25 |    
+| Class diagram | Bard | September 26 |
+| Class diagram | Chloe | September 26 | 
+| Project plan | Joe | September 26 |
+| Wireframe | Taylor | September 27 |
 
 ### Sprint 2  
 **Due: October 18**
 
 | **Task To-Do** | **Assigned To** | **Date To Complete By** |
 | --- | --- | --- | 
+| Bootstrap back and front-end | Ayub | October 1 |
 | Back-end for create a team, back-end for events, front-end for dashboard | Ayub | October 18 |  
 | Back-end for start recording, back-end for reports | Bard | October 18 |
 | Front-end for login and create a team, front-end for line up during goal report | Chloe | October 18 |  
