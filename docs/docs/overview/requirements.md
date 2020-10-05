@@ -328,52 +328,53 @@ Acceptance: The coach receives at least novel advice, like a reminder to make su
 
 #### Must Have
 
-- 1.1.1 - Create An Account
 - 1.1.2 - User Login
-- 1.1.4 - View Account Profile and Info
-- 1.1.5 - Edit Account Info
 - 1.2.1 - Create A Team
-- 1.2.2 - Edit Team Roster
-- 1.2.3 - Create a Match Lineup
+- 1.4.2 - Start A Match Recording Session
 - 2.1.1 - Game Event - Substitutions
-- 2.1.2 - Goal Location Details
 - 2.1.5 - Game Event - Goal
 - 2.1.6 - Game Event - Assists
-- 2.1.9 - Cache Event Recordings if Network is Down
-- 2.1.13 - Undo Game Event
-- 2.1.14 - List Game Events while Recording
 - 3.1.1 - Stat Dashboard
 - 3.2.1 - Time on Field
 - 3.2.2 - Plus Minus
 - 3.2.3 - Lineup During Goals
-- 3.2.10 - Stat - Date Range Selection
 - 3.2.11- List and Edit Game Events Post Game
-- 3.2.12 - Stat - Player Summary
 
 #### Should Have
 
-- 1.3.1 - Add Recorders To A Match
-- 1.4.1 - Select Game Recording Responsibilities
-- 1.4.2 - Start A Match Recording Session
+- 1.1.1 - Create An Account
+- 1.1.3 - User Logout
+- 1.2.2 - Edit Team Roster
+- 2.1.9 - Cache Event Recordings if Network is Down
+- 2.1.11 - Game Event - Ball Possession
 - 2.1.12 - Flag An Event for Later Accuracy Check
 - 2.3.1 - On Field Timer
 - 3.2.6 - Stat - Ball Possession Time / Percentage
 - 3.2.7 - Visualization - Event Timeline
+- 3.2.9 - Export as CSV
+- 3.2.10 - Stat - Date Range Selection
+- 3.2.12 - Stat - Player Summary
+
 
 #### Could Have
 
+- 1.1.4 - View Account Profile and Info
+- 1.1.5 - Edit Account Info
+- 1.2.3 - Create a Match Lineup
+- 2.1.2 - Goal Location Details
 - 2.1.3 - Game Event - Shots on Net
 - 2.1.4 - Game Event - Throw Ins
 - 2.1.7 - Game Event - Corner Kick
 - 2.1.8 - Game Event - Penalty Shot
 - 2.1.10 - Game Event - Touches
-- 2.1.11 - Game Event - Ball Possession
-- 2.2.1 - Game Event Stream
 - 3.2.4 - Visualization - Shots on Net Location On Field
 - 3.2.5 - Visualization - Shot On Net Accuracy
-- 3.2.8 - Strategy Suggestions
-- 3.2.9 - Export as CSV
 
 #### Won't Have
 
-- 1.1.3 - User Logout
+- 1.3.1 - Add Recorders To A Match
+- 1.4.1 - Select Game Recording Responsibilities
+- 2.1.13 - Undo Game Event
+- 2.1.14 - List Game Events while Recording
+- 2.2.1 - Game Event Stream
+- 3.2.8 - Strategy Suggestions
