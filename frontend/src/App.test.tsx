@@ -1,9 +1,11 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import App from './App';
+import Recording from './components/Recording.page';
+import { BrowserRouter } from 'react-router-dom';
 
-test('renders learn react link', () => {
-  const { getByText } = render(<App />);
-  const linkElement = getByText(/learn react/i);
+
+test('renders recording', () => {
+  const { getByText } = render(<Recording />, {wrapper:BrowserRouter});
+  const linkElement = getByText(/Here you will record/i);
   expect(linkElement).toBeInTheDocument();
 });
