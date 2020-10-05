@@ -14,4 +14,4 @@ const Recording = () => (
     
   );
 
-  export default Recording;
+export default Recording;

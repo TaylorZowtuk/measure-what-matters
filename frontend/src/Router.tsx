@@ -1,8 +1,8 @@
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 
-import Dashboard from './pages/Dashboard';
-import Recording from './pages/Recording';
+import Dashboard from './components/Dashboard.page';
+import Recording from './components/Recording.page';
 
 const Router = () => {
   return (
