@@ -19,21 +19,24 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "db:init": "docker create --name teamsnap-psql -e POSTGRES_DB=teamsnap -e POSTGRES_USER=teamsnap -e POSTGRES_PASSWORD=teamsnap -v $INIT_CWD/postgresData:/var/lib/postgresql/data -p 5432:5432 postgres:12; echo 'Container created, use `npm run db:start` to start the database.'",
-    "db:start": "docker start teamsnap-psql; echo 'Database started! (Use `npm run db:stop` to stop it.)'",
-    "db:stop": "docker stop teamsnap-psql",
-    "db:logs": "docker logs -f teamsnap-psql",
-    "db:cmd": "docker exec -it teamsnap-psql psql -U teamsnap",
-    "db:clean": "npm run db:stop; docker rm teamsnap-psql; echo 'Removing database files...'; rm -rf $INIT_CWD/postgresData"
+    "db:init": "docker create --name mwm-psql -e POSTGRES_DB=mwm -e POSTGRES_USER=mwm -e POSTGRES_PASSWORD=mwm -v $INIT_CWD/postgresData:/var/lib/postgresql/data -p 5432:5432 postgres:12; echo 'Container created, use `npm run db:start` to start the database.'",
+    "db:start": "docker start mwm-psql; echo 'Database started! (Use `npm run db:stop` to stop it.)'",
+    "db:stop": "docker stop mwm-psql",
+    "db:logs": "docker logs -f mwm-psql",
+    "db:cmd": "docker exec -it mwm-psql psql -U mwm",
+    "db:clean": "npm run db:stop; docker rm mwm-psql; echo 'Removing database files...'; rm -rf $INIT_CWD/postgresData"
   },
   "dependencies": {
     "@nestjs/common": "^7.0.0",
     "@nestjs/config": "^0.5.0",
     "@nestjs/core": "^7.0.0",
     "@nestjs/platform-express": "^7.0.0",
+    "@nestjs/typeorm": "^7.1.4",
+    "pg": "^8.4.0",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
-    "rxjs": "^6.5.4"
+    "rxjs": "^6.5.4",
+    "typeorm": "^0.2.28"
   },
   "devDependencies": {
     "@nestjs/cli": "^7.0.0",
