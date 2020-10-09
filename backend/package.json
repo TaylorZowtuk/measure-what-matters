@@ -19,12 +19,12 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "db:init": "docker create --name mwm-psql -e POSTGRES_DB=mwm -e POSTGRES_USER=mwm -e POSTGRES_PASSWORD=mwm -v $INIT_CWD/postgresData:/var/lib/postgresql/data -p 5432:5432 postgres:12; echo 'Container created, use `npm run db:start` to start the database.'",
-    "db:start": "docker start mwm-psql; echo 'Database started! (Use `npm run db:stop` to stop it.)'",
+    "db:init": "docker create --name mwm-psql -e POSTGRES_DB=mwm -e POSTGRES_USER=mwm -e POSTGRES_PASSWORD=mwm -v /$INIT_CWD/postgresData:/var/lib/postgresql/data -p 5432:5432 postgres:12 && node echo \"Container created, use 'npm run db:start' to start the database.\"",
+    "db:start": "docker start mwm-psql; node echo \"Database started! (Use 'npm run db:stop' to stop it.)\"",
     "db:stop": "docker stop mwm-psql",
     "db:logs": "docker logs -f mwm-psql",
     "db:cmd": "docker exec -it mwm-psql psql -U mwm",
-    "db:clean": "npm run db:stop; docker rm mwm-psql; echo 'Removing database files...'; rm -rf $INIT_CWD/postgresData"
+    "db:clean": "npm run db:stop; docker rm mwm-psql; node echo \"Removing database files...\"; rm -rf /$INIT_CWD/postgresData"
   },
   "dependencies": {
     "@nestjs/common": "^7.0.0",
