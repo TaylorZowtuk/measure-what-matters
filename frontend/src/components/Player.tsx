@@ -9,7 +9,8 @@ type PlayerProps = {
 class Player extends React.Component<PlayerProps> {
     // TODO: fix clicking a button resulting in a score increment
     onStop = () => {
-        this.props.increment_score(false) ;
+        this.props.increment_score(false);
+        // TODO: make call to backend to add goal
     }
     render () {
         return(
