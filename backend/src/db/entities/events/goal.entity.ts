@@ -5,10 +5,10 @@ import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 export class Goal extends BaseEntity {
 
     @PrimaryGeneratedColumn()
-    eventId : number;
+    matchId : number;
 
     @Column()
-    matchId: number;
+    teamId: number;
 
     @Column()
     time: string;
@@ -16,6 +16,8 @@ export class Goal extends BaseEntity {
     @Column()
     isHomeTeam: boolean;
 
-    
+    @Column()
+    playerId: number;
 
 }
+
