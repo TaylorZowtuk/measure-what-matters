@@ -1,5 +1,4 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
-
+import { BaseEntity, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity()
 
@@ -14,4 +13,9 @@ export class Team extends BaseEntity {
     @Column()
     coachId: number;
     
+    @CreateDateColumn()
+    createdDate: Date;
+  
+    @UpdateDateColumn()
+    updatedDate: Date;
 }

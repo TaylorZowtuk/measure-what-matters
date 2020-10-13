@@ -1,17 +1,18 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { IEvent } from "./IEvent.interface";
 
 @Entity()
 
-export class Goal extends BaseEntity {
+export class Goal extends BaseEntity implements IEvent{
 
     @PrimaryGeneratedColumn()
-    goalId : number;
+    id : number;
 
     @Column()
     matchId: number;
 
     @Column()
-    time: string;
+    time: number;
 
     @Column()
     isHomeTeam: boolean;
@@ -19,5 +20,10 @@ export class Goal extends BaseEntity {
     @Column()
     playerId: number;
 
+    @CreateDateColumn()
+    createdDate: Date;
+  
+    @UpdateDateColumn()
+    updatedDate: Date;
 }
 
