@@ -5,7 +5,7 @@ import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 export class Goal extends BaseEntity {
 
     @PrimaryGeneratedColumn()
-    eventId : number;
+    assistId : number;
 
     @Column()
     matchId: number;
