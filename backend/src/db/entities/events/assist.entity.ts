@@ -1,11 +1,12 @@
 import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { IEvent } from "./IEvent.interface";
 
 @Entity()
 
-export class Goal extends BaseEntity {
+export class Goal extends BaseEntity implements IEvent{
 
     @PrimaryGeneratedColumn()
-    assistId : number;
+    id : number;
 
     @Column()
     matchId: number;

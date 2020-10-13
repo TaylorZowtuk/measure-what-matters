@@ -1,4 +1,5 @@
 import { BaseEntity, Column, Entity } from "typeorm";
+import { IEvent } from './IEvent.interface';
 
 @Entity()
 
