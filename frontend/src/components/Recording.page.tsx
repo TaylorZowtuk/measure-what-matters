@@ -1,8 +1,10 @@
 import React from 'react';
 import { Link } from "react-router-dom";
+
 import Button from '@material-ui/core/Button';
 import Team from './Team';
 import Player from './Player';
+import Bench from './Bench';
 
 
 class Recording extends React.Component 
@@ -45,6 +47,7 @@ class Recording extends React.Component
     return (
       <div className='recording'>
         <h1>Recoding Interface</h1>
+        <Bench></Bench>
         <Team name={this.team_name} score={this.state.goals_for} />
         <Team name={this.opp_name} score={this.state.goals_against} />
         {this.players}
