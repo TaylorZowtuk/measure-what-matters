@@ -2,11 +2,18 @@ import React from 'react';
 import Draggable from "react-draggable";
 import Button from '@material-ui/core/Button';
 
-class Player extends React.Component {
+type PlayerProps = {
+    increment_score:Function
+  };
+
+class Player extends React.Component<PlayerProps> {
+    onStop = () => {
+        this.props.increment_score(false) ;
+    }
     render () {
         return(
         <div className='player'>
-            <Draggable position={{x: 0, y: 0}}>
+            <Draggable position={{x: 0, y: 0}} onStop={this.onStop}>
                 <Button variant="contained">Player 1</Button>
             </Draggable>
         </div>
