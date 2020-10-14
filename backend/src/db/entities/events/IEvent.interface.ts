@@ -4,7 +4,5 @@ export interface IEvent {
     matchId : number;
     time : number;
     isHomeTeam: boolean;
-    createdDate: Date;
-    updatedDate : Date;
 
 }
