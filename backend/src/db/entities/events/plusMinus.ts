@@ -1,4 +1,4 @@
-import { BaseEntity, Column, Entity } from "typeorm";
+import { BaseEntity, Column, CreateDateColumn, Entity, UpdateDateColumn } from "typeorm";
 
 @Entity()
 
@@ -11,10 +11,15 @@ export class PlusMinus extends BaseEntity {
     isGoalFor : boolean;
 
     @Column()
-    time: string;
+    time: number;
 
     @Column()
     playerId: number;
 
+    @CreateDateColumn()
+    createdDate: Date;
+  
+    @UpdateDateColumn()
+    updatedDate: Date;
 }
 

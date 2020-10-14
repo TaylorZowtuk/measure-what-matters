@@ -1,4 +1,4 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity()
 
@@ -11,9 +11,15 @@ export class Match extends BaseEntity {
     teamId: number;
 
     @Column()
-    time: string;
+    time: number;
 
     @Column()
     isHomeTeam: boolean;
+
+    @CreateDateColumn()
+    createdDate: Date;
+  
+    @UpdateDateColumn()
+    updatedDate: Date;
 
 }
