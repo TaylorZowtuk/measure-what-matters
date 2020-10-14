@@ -15,7 +15,6 @@ function Bench(props: BenchProps) {
           })
     })
 
-
     return (
         <div ref={drop} id="bench">Bench Area</div>
     );

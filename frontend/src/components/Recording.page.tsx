@@ -25,24 +25,27 @@ class Recording extends React.Component
   constructor() {
     super({});
     this.state = {
-      goals_against: 0,
-      goals_for: 0
+      goals_for: 0,
+      goals_against: 0
+      
     }
     this.create_players();
   }
 
-  increment_score = (goal_against: boolean): void => {
-    if (goal_against) {
-      this.setState({goals_against: this.state.goals_against + 1});
+  increment_score = (goal_for: boolean): void => {
+    if (goal_for) {
+      this.setState({goals_for: this.state.goals_for + 1});
+      // TODO: add backend call to add for goal
     }
     else {
-      this.setState({goals_for: this.state.goals_for + 1});
+      this.setState({goals_against: this.state.goals_against + 1});
+      // TODO: add backend call to add against goal
     }
   }
   
   create_players() {
     for (var i = 0; i < 6; i++) { // 5 players + 1 goalie on field
-      this.players.push(<Player increment_score={this.increment_score}/>);
+      this.players.push(<Player/>);
     }
   }  
 
@@ -54,7 +57,7 @@ class Recording extends React.Component
         <Bench></Bench>
         <Team name={this.team_name} score={this.state.goals_for} />
         <Team name={this.opp_name} score={this.state.goals_against} />
-        <Field players={this.players}></Field>
+        <Field players={this.players} increment_score={this.increment_score}></Field>
         <Link to="/">
           <Button variant="contained">Dashboard</Button>
         </Link>

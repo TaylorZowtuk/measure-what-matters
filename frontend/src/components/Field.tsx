@@ -3,14 +3,15 @@ import { DraggableTypes } from '../constants';
 import { useDrop } from 'react-dnd'
 
 type FieldProps = {
-    players:any[]
+    players:any[],
+    increment_score:Function
 };
 
 
 function Field(props: FieldProps) {
     const [{isOver}, drop] = useDrop({
         accept: DraggableTypes.PLAYER,
-        drop: () => console.log("dropped in field"),
+        drop: () => props.increment_score(true),
         collect: monitor => ({
             isOver: !!monitor.isOver(),
           })

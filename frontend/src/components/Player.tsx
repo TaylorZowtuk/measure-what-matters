@@ -5,7 +5,6 @@ import Button from '@material-ui/core/Button';
 
 
 type PlayerProps = {
-    increment_score:Function
   };
 
 function Player(props: PlayerProps) {
@@ -15,12 +14,6 @@ function Player(props: PlayerProps) {
           isDragging: !!monitor.isDragging()
         })
     })
-
-    // TODO: fix clicking a button resulting in a score increment
-    // onStop = () => {
-    //     props.increment_score(false);
-    //     // TODO: make call to backend to add goal
-    // }
 
     return( // TODO: fix the artifacts in the drag preview
         <div ref={drag}>
