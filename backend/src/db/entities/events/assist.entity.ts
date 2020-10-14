@@ -1,23 +1,25 @@
-import { BaseEntity, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Match } from "../match.entity";
+import { Player } from "../player.entity";
 import { IEvent } from "./IEvent.interface";
 
 @Entity()
 
-export class Goal extends BaseEntity implements IEvent{
+export class Assist extends BaseEntity implements IEvent{
+
 
     @PrimaryGeneratedColumn()
     id : number;
 
-    @Column()
+    @ManyToOne(type => Match, match => match.matchId)
+    @JoinColumn()
     matchId: number;
 
     @Column()
     time: number;
 
-    @Column()
-    isHomeTeam: boolean;
-
-    @Column()
+    @ManyToOne(type => Player, player => player.playerId)
+    @JoinColumn()
     playerId: number;
 
     @CreateDateColumn()
@@ -25,6 +27,5 @@ export class Goal extends BaseEntity implements IEvent{
   
     @UpdateDateColumn()
     updatedDate: Date;
-
 
 }

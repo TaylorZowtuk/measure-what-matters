@@ -1,25 +1,27 @@
 import { BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
-import { IEvent } from "./IEvent.interface";
 import { Match } from "../match.entity";
 import { Player } from "../player.entity";
 
 @Entity()
 
-export class Goal extends BaseEntity implements IEvent{
+export class Substitution extends BaseEntity {
 
     @PrimaryGeneratedColumn()
-    id : number;
+    Id : number;
+
+    @ManyToOne(type => Player, player => player.playerId)
+    @JoinColumn()
+    playerId: number;
 
     @ManyToOne(type => Match, match => match.matchId)
     @JoinColumn()
     matchId: number;
 
     @Column()
-    time: number;
+    timeOn: number;
 
-    @ManyToOne(type => Player, player => player.playerId)
-    @JoinColumn()
-    playerId: number;
+    @Column({nullable : true})
+    timeOff: number; 
 
     @CreateDateColumn()
     createdDate: Date;

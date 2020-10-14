@@ -1,4 +1,5 @@
-import { BaseEntity, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Team } from "./team.entity";
 
 @Entity()
 
@@ -7,7 +8,8 @@ export class Match extends BaseEntity {
     @PrimaryGeneratedColumn()
     matchId : number;
 
-    @Column()
+    @ManyToOne(type => Team, team => team.teamId)
+    @JoinColumn()
     teamId: number;
 
     @Column()
