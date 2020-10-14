@@ -1,5 +1,7 @@
 import React from 'react';
 import { Link } from "react-router-dom";
+import { DndProvider } from 'react-dnd'
+import { HTML5Backend } from 'react-dnd-html5-backend'
 
 import Button from '@material-ui/core/Button';
 import Team from './Team';
@@ -45,6 +47,7 @@ class Recording extends React.Component
 
   render () {
     return (
+      <DndProvider backend={HTML5Backend}>
       <div className='recording'>
         <h1>Recoding Interface</h1>
         <Bench></Bench>
@@ -55,6 +58,7 @@ class Recording extends React.Component
           <Button variant="contained">Dashboard</Button>
         </Link>
       </div>
+      </DndProvider>
     )
   }
 }
