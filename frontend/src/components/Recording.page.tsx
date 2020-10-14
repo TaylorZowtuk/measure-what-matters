@@ -7,6 +7,7 @@ import Button from '@material-ui/core/Button';
 import Team from './Team';
 import Player from './Player';
 import Bench from './Bench';
+import Field from './Field';
 
 
 class Recording extends React.Component 
@@ -53,7 +54,7 @@ class Recording extends React.Component
         <Bench></Bench>
         <Team name={this.team_name} score={this.state.goals_for} />
         <Team name={this.opp_name} score={this.state.goals_against} />
-        {this.players}
+        <Field players={this.players}></Field>
         <Link to="/">
           <Button variant="contained">Dashboard</Button>
         </Link>
