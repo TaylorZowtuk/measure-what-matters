@@ -3,7 +3,7 @@ import { IEvent } from "./IEvent.interface";
 
 @Entity()
 
-export class Goal extends BaseEntity implements IEvent{
+export class Assist extends BaseEntity implements IEvent{
 
     @PrimaryGeneratedColumn()
     id : number;
