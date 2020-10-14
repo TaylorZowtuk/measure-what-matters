@@ -1,21 +1,23 @@
 import { BaseEntity, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
-import { IEvent } from "./IEvent.interface";
 
 @Entity()
 
-export class Goal extends BaseEntity implements IEvent{
+export class Substitution extends BaseEntity {
 
     @PrimaryGeneratedColumn()
-    id : number;
-
-    @Column()
-    matchId: number;
-
-    @Column()
-    time: number;
+    Id : number;
 
     @Column()
     playerId: number;
+
+    @Column()
+    matchId : number;
+
+    @Column()
+    timeOn: number;
+
+    @Column()
+    timeOff: number; 
 
     @CreateDateColumn()
     createdDate: Date;

@@ -15,9 +15,6 @@ export class Assist extends BaseEntity implements IEvent{
     time: number;
 
     @Column()
-    isHomeTeam: boolean;
-
-    @Column()
     playerId: number;
 
     @CreateDateColumn()
