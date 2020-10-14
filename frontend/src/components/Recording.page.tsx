@@ -45,7 +45,7 @@ class Recording extends React.Component
   
   create_players() {
     for (var i = 0; i < 6; i++) { // 5 players + 1 goalie on field
-      this.players.push(<Player/>);
+      this.players.push(<Player identifier="Good guy" number={i} team="ours"/>);
     }
   }  
 
