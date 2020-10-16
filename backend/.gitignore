@@ -35,3 +35,6 @@ lerna-debug.log*
 
 # Postgres developent db
 postgresData/
+
+# npm is slower
+package-lock/.js

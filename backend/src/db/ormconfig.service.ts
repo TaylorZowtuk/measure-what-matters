@@ -25,22 +25,7 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
       username: this.configService.get<string>('DATABASE_USER'),
       password: this.configService.get<string>('DATABASE_PASSWORD'),
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
-
-      // We are using migrations, synchronize should be set to false.
       synchronize: true,
-
-      // Run migrations automatically,
-      // you can disable this if you prefer running migration manually.
-      migrationsRun: true,
-      logging: true,
-      logger: 'simple-console',
-
-      migrations: [__dirname + '/migrations/*{.ts,.js}'],
-      cli: {
-        // Location of migration should be inside src folder
-        // to be compiled into dist/ folder.
-        migrationsDir: 'src/db/migrations',
-      },
     };
   }
 }
