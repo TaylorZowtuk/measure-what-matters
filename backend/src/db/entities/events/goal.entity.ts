@@ -10,14 +10,14 @@ export class Goal extends BaseEntity implements IEvent{
     @PrimaryGeneratedColumn()
     id : number;
 
-    @ManyToOne(type => Match, match => match.matchId)
+    @ManyToOne(type => Match, match => match.matchId, {eager: true})
     @JoinColumn()
     matchId: number;
 
     @Column()
     time: number;
 
-    @ManyToOne(type => Player, player => player.playerId)
+    @ManyToOne(type => Player, player => player.playerId, {eager: true})
     @JoinColumn()
     playerId: number;
 
