@@ -1,25 +1,37 @@
-
-import { BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
-import { Team } from "./team.entity";
+import {
+  BaseEntity,
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
+import { Team } from './team.entity';
 
 @Entity()
-
 export class User extends BaseEntity {
+  @PrimaryGeneratedColumn()
+  userId: number;
 
-    @PrimaryGeneratedColumn()
-    userId : number;
+  @Column({ unique: true })
+  name: string;
 
-    @Column()
-    name : string;
+  @Column()
+  password: string;
 
-    @ManyToOne(type => Team, team => team.teamId, {nullable : true})
-    @JoinColumn()
-    teamId: number;
+  @ManyToOne(
+    () => Team,
+    team => team.teamId,
+    { nullable: true },
+  )
+  @JoinColumn()
+  teamId: number;
 
-    @CreateDateColumn()
-    createdDate: Date;
-  
-    @UpdateDateColumn()
-    updatedDate: Date;
+  @CreateDateColumn()
+  createdDate: Date;
 
+  @UpdateDateColumn()
+  updatedDate: Date;
 }
