@@ -17,8 +17,8 @@ class Recording extends React.Component
   }> {
 
   players:any[] = []; // Draggable <Player />
-  team_name:string = "Good guys";
-  opp_name:string = "Bad guys";
+  team_name:string = "Blue Blazers";
+  opp_name:string = "Red Rockets";
   goals_for:number = 0;
   goals_against:number = 0;
 
