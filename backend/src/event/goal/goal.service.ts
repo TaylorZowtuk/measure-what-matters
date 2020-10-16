@@ -67,6 +67,7 @@ export class GoalService {
         lineup.push(playerId);
       });
       const goalDto: GoalDTO = {
+        id: element.id,
         matchId: element.matchId.matchId,
         playerId: element.playerId.playerId,
         time: element.time,
