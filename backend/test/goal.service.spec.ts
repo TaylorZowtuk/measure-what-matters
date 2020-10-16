@@ -9,6 +9,7 @@ const goalDto: GoalDTO = {
   matchId: 1,
   playerId: 1,
   time: 200,
+  lineup: [1, 2, 3, 4, 5, 6]
 };
 
 const goalDtos: GoalDTO[] = [goalDto];
