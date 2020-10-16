@@ -13,9 +13,23 @@ export class PlayerService {
         this.playerRepo = playerRepo
     }
 
+    /**
+    * Saves a newly created player to the DB.
+    *
+    * @param player - The new team player to be saved to database
+    */
+
     async savePlayer(player: PlayerDTO) {
         await this.playerRepo.save(player);
     }
+
+    /**
+    * Retrieves a list of players on a team.
+    *
+    * @param teamId the id of the team we want to return matches for
+    *
+    * @returns A promise of a list of players
+    */
 
     async getPlayers(teamId : number) : Promise<Player[]> {
 
@@ -27,6 +41,10 @@ export class PlayerService {
         }
 
         const players = await query.getMany(); 
+
+        for(let i=0; i<players.length;i++){
+            players[i].teamId = teamId;
+        } 
 
         return players;
 

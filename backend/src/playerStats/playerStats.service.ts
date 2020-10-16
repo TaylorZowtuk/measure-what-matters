@@ -1,6 +1,5 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { query } from "express";
 import { Substitution } from "src/db/entities/events/substitution.entity";
 import { Repository } from "typeorm";
 
@@ -14,8 +13,17 @@ export class PlayerStatsService{
         this.subRepo = subRepo
     }
 
+    /**
+    * Retrieves seconds played by a player for a given match.
+    *
+    * @param playerId - The player we want to see time played
+    * @param matchId - The match for which we want to see time played
+    * 
+    * @returns the time played in that match in seconds
+    */
+
     async getSecondsPlayed(playerId:number, matchId:number) : Promise<number> {
-        var timeOnField = 0;
+        let timeOnField = 0;
 
         const query1 = this.subRepo.createQueryBuilder('substitution');
 
@@ -23,9 +31,7 @@ export class PlayerStatsService{
         query1.andWhere("substitution.matchId = :id2", {id2 : matchId});
         const substitutions = await query1.getMany();
 
-        console.log(substitutions);
-
-        for(var i=0; i<substitutions.length; i++){
+        for(let i=0; i<substitutions.length; i++){
             const time_on = (substitutions[i].timeOn);
             const time_off = (substitutions[i].timeOff);
             timeOnField+=(time_off-time_on);
