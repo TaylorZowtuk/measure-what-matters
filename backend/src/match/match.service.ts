@@ -21,7 +21,6 @@ export class MatchService {
         new_match.teamId = teamId;
         new_match.time = time;
         new_match.isHomeTeam = isHomeTeam;
-        console.log(new_match.matchId); 
         
         await this.matchRepo.save(new_match);
 
