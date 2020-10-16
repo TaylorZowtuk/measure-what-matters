@@ -2,6 +2,9 @@ import { ApiProperty } from "@nestjs/swagger";
 
 export class GoalDTO {
     
+    @ApiProperty({required: false, description: "Not required for creation"})
+    id?: number;
+
     @ApiProperty()
     matchId: number;
 
