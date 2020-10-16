@@ -32,7 +32,7 @@ export class GoalService {
    * @returns A list of goal dtos in a resolved promise
    */
   async getGoalsByPlayerId(playerId: number): Promise<GoalDTO[]> {
-    var goals: any[] = await this.goalRepo.find({
+    const goals: any[] = await this.goalRepo.find({
       where: { playerId: playerId },
     });
     return this.convertToDto(goals);
@@ -46,7 +46,7 @@ export class GoalService {
    * @returns A list of goal dtos in a resolved promise
    */
   async getGoalsByMatchId(matchId: number): Promise<GoalDTO[]> {
-    var goals: any[] = await this.goalRepo.find({
+    const goals: any[] = await this.goalRepo.find({
       where: { matchId: matchId },
     });
     return this.convertToDto(goals);
@@ -60,7 +60,7 @@ export class GoalService {
    * @returns A list of goal dtos converted from an entity
    */
   private convertToDto(goals: any[]) {
-    var goalDtos: GoalDTO[] = [];
+    const goalDtos: GoalDTO[] = [];
     goals.forEach(element => {
       const goalDto: GoalDTO = {
         matchId: element.matchId.matchId,
