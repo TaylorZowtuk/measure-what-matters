@@ -27,7 +27,7 @@ export class GoalService {
      * 
      * @param playerId - The players id which we want to list goals for
      * 
-     * @returns A list of goals in a resolved promise
+     * @returns A list of goal dtos in a resolved promise
      */
     async getGoalsByPlayerId(playerId: number): Promise<GoalDTO[]> {
         var goals:any[] = await this.goalRepo.find({where: {playerId: playerId}})
@@ -38,6 +38,8 @@ export class GoalService {
      * Retrieves a list of goals scored in a match.
      * 
      * @param matchId - The match id which we want to list goals for
+     * 
+     * @returns A list of goal dtos in a resolved promise
      */
     async getGoalsByMatchId(matchId: number): Promise<GoalDTO[]> {
         var goals:any[] = await this.goalRepo.find({where: {matchId: matchId}})
