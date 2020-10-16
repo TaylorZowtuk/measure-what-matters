@@ -49,7 +49,7 @@ class Recording extends React.Component
         playerId: 1 // TODO: get playerid
       }
       console.log(goal)
-      axios.post(`localhost:3000/events/goals`)
+      axios.post(`/events/goals`)
       .then(res => {
         console.log(res);
         console.log(res.data);
