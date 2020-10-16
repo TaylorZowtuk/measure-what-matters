@@ -1,5 +1,5 @@
 import React from 'react';
-import { useDrag } from 'react-dnd'
+import { DragSourceHookSpec, useDrag } from 'react-dnd'
 import { DraggableTypes } from '../constants'
 import Button from '@material-ui/core/Button';
 
@@ -12,10 +12,9 @@ type PlayerProps = {
 
 function Player(props: PlayerProps) {
     const [{ isDragging }, drag] = useDrag({
-        item: { type: DraggableTypes.PLAYER, team: props.team },
+        item: { type: DraggableTypes.PLAYER },
         collect: (monitor) => ({
-            isDragging: !!monitor.isDragging(),
-            // doneDragging : !!monitor.getDropResult()
+            isDragging: !!monitor.isDragging()
         })
     })
 
