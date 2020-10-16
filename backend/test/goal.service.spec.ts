@@ -1,9 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Goal } from 'src/db/entities/events/goal.entity';
-import { GoalDTO } from 'src/dto/events/goal.dto';
+import { Goal } from '../src/db/entities/events/goal.entity';
+import { GoalDTO } from '../src/dto/events/goal.dto';
 import { Repository } from 'typeorm';
-import { GoalService } from './goal.service';
+import { GoalService } from '../src/event/goal/goal.service';
 
 const goalDto: GoalDTO = {
   matchId: 1,
@@ -48,13 +48,13 @@ describe('GoalService', () => {
 
   it('should get goals with specified player id', () => {
     jest.spyOn(goalRepository, 'find').mockResolvedValue(goalEntities);
-    var goals = service.getGoalsByPlayerId(goal.playerId);
+    const goals = service.getGoalsByPlayerId(goal.playerId);
     expect(goals).resolves.toBe(goalDtos);
   });
 
   it('should get goals with specified matchId', () => {
     jest.spyOn(goalRepository, 'find').mockResolvedValue(goalEntities);
-    var goals = service.getGoalsByPlayerId(goal.matchId);
+    const goals = service.getGoalsByPlayerId(goal.matchId);
     expect(goals).resolves.toBe(goalDtos);
   });
 });

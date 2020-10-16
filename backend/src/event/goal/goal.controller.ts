@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
-import { GoalDTO } from 'src/dto/events/goal.dto';
-import { GoalService } from 'src/event/goal/goal.service';
+import { GoalDTO } from '../../dto/events/goal.dto';
+import { GoalService } from '../../event/goal/goal.service';
 
 @ApiTags('Goals')
 @Controller('event/goals')

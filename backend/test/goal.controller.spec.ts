@@ -1,8 +1,8 @@
 import { TestingModule, Test } from '@nestjs/testing';
-import { GoalDTO } from 'src/dto/events/goal.dto';
-import { GoalService } from 'src/event/goal/goal.service';
+import { GoalDTO } from '../src/dto/events/goal.dto';
+import { GoalService } from '../src/event/goal/goal.service';
 import { Repository } from 'typeorm';
-import { GoalController } from './goal.controller';
+import { GoalController } from '../src/event/goal/goal.controller';
 // import { getRepositoryToken } from '@nestjs/typeorm';
 // import { Goal } from 'src/db/entities/events/goal.entity';
 
