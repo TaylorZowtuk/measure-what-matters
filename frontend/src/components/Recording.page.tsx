@@ -42,7 +42,6 @@ class Recording extends React.Component
   increment_score = (goal_for: boolean): void => {
     if (goal_for) {
       this.setState({goals_for: this.state.goals_for + 1});
-      // TODO: add backend call to add for goal
       let goal:Goal = {
         matchId: 1, // TODO: get matchid
         time: Date.now(), // Epoch time in ms
@@ -51,8 +50,7 @@ class Recording extends React.Component
       console.log(goal)
       axios.post(`/events/goals`)
       .then(res => {
-        console.log(res);
-        console.log(res.data);
+        console.log(res); // TODO: catch error and handle if needed
       })
     }
     else {
