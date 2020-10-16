@@ -2,12 +2,19 @@ import React from 'react';
 import { Link } from "react-router-dom";
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
+import axios from 'axios';
 
 import Button from '@material-ui/core/Button';
 import Team from './Team';
 import Player from './Player';
 import Bench from './Bench';
 import Field from './Field';
+
+type Goal = {
+  matchId: number,
+  time: number,
+  playerId: number,
+}
 
 
 class Recording extends React.Component 
@@ -36,6 +43,17 @@ class Recording extends React.Component
     if (goal_for) {
       this.setState({goals_for: this.state.goals_for + 1});
       // TODO: add backend call to add for goal
+      let goal:Goal = {
+        matchId: 1, // TODO: get matchid
+        time: Date.now(), // Epoch time in ms
+        playerId: 1 // TODO: get playerid
+      }
+      console.log(goal)
+      axios.post(`localhost:3000/events/goals`)
+      .then(res => {
+        console.log(res);
+        console.log(res.data);
+      })
     }
     else {
       this.setState({goals_against: this.state.goals_against + 1});
