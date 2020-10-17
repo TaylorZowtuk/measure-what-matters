@@ -4,10 +4,14 @@
 }
 
 .teamList {
-    display: flex;
-    margin: 50 auto;
+    display: block;
+    margin-bottom: 10px;
     width: 200px;
     /* background-color: violet; */
+}
+
+.teamList p {
+    margin: 10px auto;
 }
 
 .button {

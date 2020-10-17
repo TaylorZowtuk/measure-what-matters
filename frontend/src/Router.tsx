@@ -5,6 +5,7 @@ import Dashboard from './components/Dashboard.page';
 import Recording from './components/Recording.page';
 import Login from './components/Login/Login.page';
 import Teams from './components/Teams/Teams.page';
+import AddTeam from './components/AddTeam/AddTeam.page'
 
 const team = {
   teamList:[{
@@ -30,6 +31,7 @@ const Router = () => {
       <Route exact path='/recording' component={Recording}></Route>
       <Route exact path='/login' component={Login}></Route>
       <Route exact path='/teams' component={Teams}></Route>
+      <Route exact path='/create-team' component={AddTeam}></Route>
     </Switch>
   );
 }

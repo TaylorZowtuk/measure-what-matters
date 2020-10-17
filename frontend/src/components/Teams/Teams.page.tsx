@@ -2,6 +2,7 @@ import React from 'react';
 import TeamComponent from '../TeamComponent/TeamComponent';
 import Button from '@material-ui/core/Button';
 import './teams.css'
+import { Link } from 'react-router-dom';
 
 interface teamProps {
     teamList: Team[]
@@ -12,6 +13,7 @@ interface teamState {
 }
 
 interface Team {
+    teamName: string;
     playerList: Player[]
 }
 
@@ -42,9 +44,12 @@ class Teams extends React.Component<{}, teamState>{
     constructor(props: {}){
         super(props);
 
+        // TODO: make request to retrieve team list
+
         this.state = {
             teamList: [
                 {
+                    teamName: 'Boys Team',
                     playerList: [
                         {
                             name: 'John',
@@ -61,6 +66,7 @@ class Teams extends React.Component<{}, teamState>{
                     ]
                 },
                 {
+                    teamName: 'Girls Team',
                     playerList: [
                         {
                             name: 'Cat',
@@ -79,10 +85,6 @@ class Teams extends React.Component<{}, teamState>{
             ]
         }
     };
-
-    addTeam = (): void => {
-
-    }
     
     public render(){
         return (
@@ -90,12 +92,19 @@ class Teams extends React.Component<{}, teamState>{
                 {this.state.teamList.map((team) => {
                     return (
                         <div className="teamList">
+                            <p>{team.teamName}</p>
                             <TeamComponent playerList={team.playerList}></TeamComponent>
-                            <Button variant="contained">Edit Team</Button>
+                            {/* <Button variant="contained">Edit Team</Button> */}
                         </div>
                     )
                 })}
-                <Button variant="contained">Add Team</Button>
+                <Link to="/create-team">
+                    <Button variant="contained" style={{marginBottom: 10}}>Add Team</Button>
+                </Link>
+                <br/>
+                <Link to="/">
+                    <Button variant="contained">Dashboard</Button>
+                </Link>
             </div>
         )
     }
