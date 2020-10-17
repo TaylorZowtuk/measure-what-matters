@@ -71,9 +71,8 @@ export class PlayerStatsService{
         const goal = await query1.getOne();
 
         for(let i=0; i<goal.lineup.length; i++){
-            const query2 = this.playerRepo.createQueryBuilder('player');
-            query2.andWhere("player.playerId = :id2", {id2:goal.lineup[i]});
-            const player = await query2.getOne();
+            const player: Player = await this.playerRepo.findOne(
+                {where: {playerId : goal.lineup[i]}});
             players.push(player);
             
         }
@@ -94,7 +93,7 @@ export class PlayerStatsService{
         players.forEach(element => {
           const playerDto: PlayerDTO = {
             playerId: element.playerId,
-            teamId: element.teamId,
+            teamId: element.teamId.teamId,
             name: element.name,
             jerseyNum: element.jerseyNum,
           };
