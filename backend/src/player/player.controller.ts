@@ -27,7 +27,7 @@ export class PlayerController {
         isArray: true,
         description: 'Returns array of players for the given team Id',
       })
-    async getPlayersbyTeamId(@Query('id') id: number ) : Promise<PlayerDTO[]>{  
-        return await this.playerService.getPlayers(id);
+    async getPlayersbyTeamId(@Query('teamId') teamId: number ) : Promise<PlayerDTO[]>{  
+        return await this.playerService.getPlayers(teamId);
     }
 }

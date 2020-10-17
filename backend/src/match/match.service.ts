@@ -35,18 +35,10 @@ export class MatchService {
     
     async getMatches(teamId : number) : Promise<MatchDTO[]> {
 
-
-        const query = this.matchRepo.createQueryBuilder('match');
-
-        if (teamId){
-            query.andWhere("match.teamId = :id", { id : teamId});
-        }
-
-        const matches = await query.getMany();
+        const matches: Match[] = await this.matchRepo.find(
+            {where: {teamId : teamId}}
+        )
         
-        for(let i=0; i<matches.length;i++){
-            matches[i].teamId = teamId;
-        } 
 
         return this.convertToDto(matches);
 
@@ -65,7 +57,7 @@ export class MatchService {
         matches.forEach(element => {
           const matchDto: MatchDTO = {
             matchId: element.matchId,
-            teamId: element.teamId,
+            teamId: element.teamId.teamId,
             time: element.time,
             isHomeTeam: element.isHomeTeam,
           };

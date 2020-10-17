@@ -33,18 +33,9 @@ export class PlayerService {
 
     async getPlayers(teamId : number) : Promise<PlayerDTO[]> {
 
-        const query = this.playerRepo.createQueryBuilder('player');
-
-        if (teamId){
-            query.andWhere("player.teamId = :id", { id : teamId});
-        }
-
-        const players = await query.getMany(); 
-
-        for(let i=0; i<players.length;i++){
-            players[i].teamId = teamId;
-        } 
-
+    const players: Player[] = await this.playerRepo.find(
+        {where: {teamId : teamId}});
+    
         return this.convertToDto(players);
 
     }
@@ -62,7 +53,7 @@ export class PlayerService {
         players.forEach(element => {
           const playerDto: PlayerDTO = {
             playerId: element.playerId,
-            teamId: element.teamId,
+            teamId: element.teamId.teamId,
             name: element.name,
             jerseyNum: element.jerseyNum,
           };

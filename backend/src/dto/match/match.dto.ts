@@ -8,7 +8,7 @@ export class MatchDTO {
     @ApiProperty()
     teamId : number;
 
-    @ApiProperty()
+    @ApiProperty({format: "int64"})
     time : number;
 
     @ApiProperty()
