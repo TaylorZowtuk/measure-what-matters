@@ -8,10 +8,10 @@ export class Team extends BaseEntity {
     @PrimaryGeneratedColumn()
     teamId : number;
 
-    @Column()
+    @Column({unique: true})
     name : string;
 
-    @ManyToOne(type => User, user => user.userId)
+    @ManyToOne(type => User, user => user.userId, {eager: true})
     @JoinColumn()
     userId: number;
     
