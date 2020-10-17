@@ -6,7 +6,6 @@ import axios from 'axios';
 
 import Button from '@material-ui/core/Button';
 import Team from './Team';
-import Player from './Player';
 import Bench from './Bench';
 import Field from './Field';
 
@@ -24,7 +23,6 @@ class Recording extends React.Component
     goals_for: number 
   }> {
 
-  players:any[] = []; // Draggable <Player />
   team_name:string = "Blue Blazers";
   opp_name:string = "Red Rockets";
 

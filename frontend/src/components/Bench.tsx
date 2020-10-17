@@ -10,10 +10,6 @@ import Button from '@material-ui/core/Button';
 import Player from './Player';
 
 
-type PlayerList = {
-    players:Player[]
-}
-
 export const roster:Player[] = 
 [
     {
@@ -93,17 +89,20 @@ export const roster:Player[] =
 class Bench extends React.Component 
     <{}, 
     {
-        on_bench: Player[],
+        onBench: Player[],
+        // The bench is in the expanded state once a player from the field
+        // has been dragged into the bench
         isExpanded: boolean,
+        // Player object of who to swap in to the bench from the field
+        substituteFor: Player | undefined,
     }> {
     
     constructor() {
         super({});
         this.state = {
-            on_bench: this.getPlayers(),
-            // The bench is in the expanded state once a player from the field
-            // has been dragged into the bench
+            onBench: this.getPlayers(),
             isExpanded: false,
+            substituteFor: undefined,
         }
     }
     
@@ -112,23 +111,51 @@ class Bench extends React.Component
     }
 
     setBench = (players:Player[]): void => {
-        this.setState({on_bench: players});
-    }
-    
-    getBench = (): Player[] => {
-        return this.state.on_bench;
+        this.setState({onBench: players});
     }
 
     addToBench = (player:Player) => {
         this.setState(state => {
-          const on_bench = state.on_bench.concat(player);
+          const onBench = state.onBench.concat(player);
      
-          return {on_bench}
+          return {onBench: onBench}
         })
+    }
+
+    removeFromBench = (removeNum:number) => {
+        // Remove the player (first instance) from onBench whose number is num
+        var array = [...this.state.onBench];
+        var index = array.findIndex(player => player.num === removeNum);
+        if (index !== -1) {
+            array.splice(index, 1)  // Remove the player
+            this.clearSubstituteFor();  // Update onBench
+        }
+        else {
+            console.log("Error: no element in onBench had num of", removeNum);
+        }
     }
 
     toggleIsExpanded = (): void => {
         this.setState({isExpanded: !this.state.isExpanded});
+    }
+
+    setSubstituteFor = (player:Player): void => {
+        this.setState({substituteFor: player})
+    }
+
+    clearSubstituteFor = (): void => {
+        this.setState({substituteFor: undefined})
+    }
+
+    substitute = (num:number): void => {
+        if (this.state.substituteFor === undefined) {
+            console.log("Error: substituteFor is undefined");
+            return;
+        }
+        this.removeFromBench(num);  // Remove player from bench
+        this.addToBench(this.state.substituteFor);  // Add player from field to bench
+        this.clearSubstituteFor();
+        this.toggleIsExpanded();    // Close the bench
     }
 
     componentDidUpdate(_prevProps: any, _prevState: any) {
@@ -138,12 +165,16 @@ class Bench extends React.Component
     render () {
         if (this.state.isExpanded) {
             return (
-                <OpenBench players={this.getBench()}/>
+                <OpenBench players={this.state.onBench} substitute={this.substitute}/>
             )
         }
         else {
             return (
-                <BenchTarget isExpanded={this.state.isExpanded} toggle={this.toggleIsExpanded}/>
+                <BenchTarget 
+                isExpanded={this.state.isExpanded} 
+                toggleIsExpanded={this.toggleIsExpanded}
+                setSubstituteFor={this.setSubstituteFor}
+                />
             )
         }
     }
@@ -151,14 +182,16 @@ class Bench extends React.Component
 
 type BenchTargetProps = {
     isExpanded:boolean,
-    toggle:Function // Function which toggles the isExpanded bool
+    toggleIsExpanded:Function,
+    setSubstituteFor:Function, // Function which takes the num of the Player that was dragged
 }
 
 function BenchTarget(props:BenchTargetProps) {
     const [, drop] = useDrop({
         accept: DraggableTypes.PLAYER,
         drop: (item: any, _monitor: DropTargetMonitor) => {
-            props.toggle();
+            props.toggleIsExpanded();
+            props.setSubstituteFor(item.player);
         }
     })
     
@@ -189,21 +222,25 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-export function OpenBench(props:PlayerList) {
-    const classes = useStyles();
-  
+type OpenBenchProps = {
+    players:Player[],
+    substitute:Function,
+}
+
+export function OpenBench(props:OpenBenchProps) {
+    const classes = useStyles();  
     return (
       <div className={classes.root}>
         <GridList className={classes.gridList} cols={10} cellHeight={'auto'}>
-          {props.players.map((player) => (
+          {props.players.map((player:Player) => (
             <GridListTile key={player.num}>
-                <Button variant="contained">{player.num} {player.first_name} {player.last_name}</Button>
+                <Button key={player.num} variant="contained" onClick={() => props.substitute(player.num)}>{player.num} {player.first_name} {player.last_name}</Button>
             </GridListTile>
           ))}
         </GridList>
       </div>
     );
-  }
+}
 
 
 export default Bench;
