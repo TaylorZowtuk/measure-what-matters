@@ -6,14 +6,17 @@ import { Repository } from 'typeorm';
 import { GoalService } from '../src/event/goal/goal.service';
 
 const goalDto: GoalDTO = {
+  id: 1,
   matchId: 1,
   playerId: 1,
   time: 200,
+  lineup: [1, 2, 3, 4, 5, 6]
 };
 
 const goalDtos: GoalDTO[] = [goalDto];
 
 const goal = new Goal();
+goal.id = 1;
 goal.playerId = 1;
 goal.matchId = 1;
 goal.time = 200;
