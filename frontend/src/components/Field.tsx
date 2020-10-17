@@ -1,8 +1,7 @@
 import React from 'react';
 import { DraggableTypes } from '../constants';
-import { DragSourceHookSpec, useDrop } from 'react-dnd'
+import { useDrop } from 'react-dnd'
 
-import Player from './Player';
 
 type FieldProps = {
     players:any[],
@@ -11,7 +10,7 @@ type FieldProps = {
 
 
 function Field(props: FieldProps) {
-    const [{isOver}, drop] = useDrop({
+    const [, drop] = useDrop({
         accept: DraggableTypes.PLAYER,
         drop: (item, monitor) => props.increment_score(true)
         // drop: (item, monitor) => {props.increment_score(     // TODO: increment correct teams score
