@@ -1,9 +1,10 @@
-import { Body, Controller, Post, Get, Param } from '@nestjs/common';
-import { ApiResponse } from '@nestjs/swagger';
+import { Body, Controller, Post, Get, Query} from '@nestjs/common';
+import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Player } from 'src/db/entities/player.entity';
 import { PlayerDTO } from 'src/dto/player/player.dto';
 import { PlayerService } from './player.service';
 
+@ApiTags('Players')
 @Controller('player')
 export class PlayerController {
 
@@ -15,18 +16,18 @@ export class PlayerController {
     
     @Post()
     @ApiResponse({ status: 201, description: 'Creates a new player' })
-    createPlayer(@Body() player: PlayerDTO){
-        this.playerService.savePlayer(player);
+    async createPlayer(@Body() player: PlayerDTO){
+        return await this.playerService.savePlayer(player);
     }
 
-    @Get('/:id')
+    @Get('/teamId')
     @ApiResponse({
         status: 200,
         type: Player,
         isArray: true,
         description: 'Returns array of players for the given team Id',
       })
-    getPlayersbyTeamId(@Param('id') id: number ) : Promise<Player[]>{  
-        return this.playerService.getPlayers(id);
+    async getPlayersbyTeamId(@Query('id') id: number ) : Promise<PlayerDTO[]>{  
+        return await this.playerService.getPlayers(id);
     }
 }

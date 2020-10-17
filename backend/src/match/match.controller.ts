@@ -1,9 +1,10 @@
-import { Body, Controller, Get, Param, Post } from "@nestjs/common";
-import { ApiResponse } from "@nestjs/swagger";
+import { Body, Controller, Get, Post, Query } from "@nestjs/common";
+import { ApiResponse, ApiTags } from "@nestjs/swagger";
 import { Match } from "src/db/entities/match.entity";
 import { MatchDTO } from "src/dto/match/match.dto";
 import { MatchService } from "./match.service";
 
+@ApiTags('Matches')
 @Controller('match')
 export class MatchController {
     matchService: MatchService;
@@ -14,19 +15,19 @@ export class MatchController {
 
     @Post('start')
     @ApiResponse({ status: 201, description: 'Creates a new match' })
-    startMatch(@Body() match: MatchDTO) {
-        return this.matchService.saveMatch(match);
+    async startMatch(@Body() match: MatchDTO) {
+        return await this.matchService.saveMatch(match);
     }
 
-    @Get('/:teamId')
+    @Get('/teamId')
     @ApiResponse({
         status: 200,
         type: Match,
         isArray: true,
         description: 'Returns a list of matches for the given teamid',
       })
-    getMatchesByTeamId(@Param('teamId') teamId: number ) : Promise<Match[]>{  
-        return this.matchService.getMatches(teamId);
+    async getMatchesByTeamId(@Query('teamId') teamId: number) : Promise<MatchDTO[]>{  
+        return await this.matchService.getMatches(teamId);
     }
 
 }

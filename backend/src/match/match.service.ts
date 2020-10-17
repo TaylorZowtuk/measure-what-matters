@@ -20,17 +20,9 @@ export class MatchService {
     */
 
     async saveMatch(match: MatchDTO): Promise<number> {
-        const { teamId, time, isHomeTeam } = match;
-
-        const new_match = new Match(); 
         
-        new_match.teamId = teamId;
-        new_match.time = time;
-        new_match.isHomeTeam = isHomeTeam;
-        
-        await this.matchRepo.save(new_match);
+        return this.matchRepo.save(match);
 
-        return new_match.matchId;
     }
 
     /**
@@ -41,7 +33,7 @@ export class MatchService {
     * @returns A promise of a list of matches
     */
     
-    async getMatches(teamId : number) : Promise<Match[]> {
+    async getMatches(teamId : number) : Promise<MatchDTO[]> {
 
 
         const query = this.matchRepo.createQueryBuilder('match');
@@ -56,16 +48,23 @@ export class MatchService {
             matches[i].teamId = teamId;
         } 
 
-        return matches;
+        return this.convertToDto(matches);
 
     }
 
+    /**
+    * Converts a list of match entities to a list of match dtos
+    *
+    * @param matches - The list of match entities we want to convert to a list of match DTOs
+    *
+    * @returns A list of match dtos converted from an entity
+    */
 
-    /* can be used to return match as DTO , for now returning whole match to get match ID
     private convertToDto(matches: any[]) {
-        var matchDtos: MatchDTO[] = [];
+        const matchDtos: MatchDTO[] = [];
         matches.forEach(element => {
           const matchDto: MatchDTO = {
+            matchId: element.matchId,
             teamId: element.teamId,
             time: element.time,
             isHomeTeam: element.isHomeTeam,
@@ -73,7 +72,6 @@ export class MatchService {
           matchDtos.push(matchDto);
         });
         return matchDtos;
-      }
-    */
+    }
 
 }

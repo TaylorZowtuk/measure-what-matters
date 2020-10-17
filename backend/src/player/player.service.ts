@@ -19,8 +19,8 @@ export class PlayerService {
     * @param player - The new team player to be saved to database
     */
 
-    async savePlayer(player: PlayerDTO) {
-        await this.playerRepo.save(player);
+    async savePlayer(player: PlayerDTO) : Promise<void> {
+        return await this.playerRepo.save(player);
     }
 
     /**
@@ -31,8 +31,7 @@ export class PlayerService {
     * @returns A promise of a list of players
     */
 
-    async getPlayers(teamId : number) : Promise<Player[]> {
-
+    async getPlayers(teamId : number) : Promise<PlayerDTO[]> {
 
         const query = this.playerRepo.createQueryBuilder('player');
 
@@ -46,8 +45,29 @@ export class PlayerService {
             players[i].teamId = teamId;
         } 
 
-        return players;
+        return this.convertToDto(players);
 
     }
 
+    /**
+    * Converts a list of player entities to a list of player dtos
+    *
+    * @param players - The list of player entities we want to convert to a list of player DTOs
+    *
+    * @returns A list of player dtos converted from an entity
+    */
+
+    private convertToDto(players: any[]) {
+        const playerDtos: PlayerDTO[] = [];
+        players.forEach(element => {
+          const playerDto: PlayerDTO = {
+            playerId: element.playerId,
+            teamId: element.teamId,
+            name: element.name,
+            jerseyNum: element.jerseyNum,
+          };
+          playerDtos.push(playerDto);
+        });
+        return playerDtos;
+    }
 }

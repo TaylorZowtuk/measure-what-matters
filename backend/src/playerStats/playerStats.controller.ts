@@ -1,7 +1,10 @@
-import { Controller, Get, Param } from "@nestjs/common";
-import { ApiResponse } from "@nestjs/swagger";
+import { Controller, Get, Param, Query } from "@nestjs/common";
+import { ApiResponse, ApiTags } from "@nestjs/swagger";
+import { query } from "express";
+import { PlayerDTO } from "src/dto/player/player.dto";
 import { PlayerStatsService } from "./playerStats.service";
 
+@ApiTags('Player Stats')
 @Controller('player_stats')
 export class PlayerStatsController {
 
@@ -12,21 +15,20 @@ export class PlayerStatsController {
     }
   
 
-    @Get('timeOnField/:playerId/:matchId/')
+    @Get('timeOnField')
     @ApiResponse({
         status: 200,
         type: Number,
         isArray: false,
         description: 'Returns time on field for a specified player',
       })
-    getTimeOnField(@Param() params){
-        
-        const playerId: number = +params.playerId;
-        const matchId: number = +params.matchId;
-
-        return this.playerStatsService.getSecondsPlayed(playerId,matchId);
+    async getTimeOnField(@Query('playerId') playerId:number, @Query('matchId') matchId:number ){
+        return await this.playerStatsService.getSecondsPlayed(playerId,matchId);
     }
 
-
+    @Get('onForGoal')
+    async getPlayersOnForGoal(@Query('goalId') goalId:number): Promise<PlayerDTO[]>{
+        return await this.playerStatsService.getPlayersOnForGoal(goalId);
+    }
 
 }

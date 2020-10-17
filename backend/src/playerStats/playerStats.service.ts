@@ -1,16 +1,28 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
+import { Goal } from "src/db/entities/events/goal.entity";
 import { Substitution } from "src/db/entities/events/substitution.entity";
+import { Player } from "src/db/entities/player.entity";
+import { PlayerDTO } from "src/dto/player/player.dto";
 import { Repository } from "typeorm";
 
 @Injectable()
 export class PlayerStatsService{
 
     subRepo: Repository<any>;
+    goalRepo: Repository<any>;
+    playerRepo: Repository<any>;
 
     constructor(@InjectRepository(Substitution)
-    subRepo: Repository<Substitution>) {
-        this.subRepo = subRepo
+    subRepo: Repository<Substitution>, 
+    @InjectRepository(Goal)
+    goalRepo: Repository<Goal>,
+    @InjectRepository(Player)
+    playerRepo : Repository<Player>
+    ) {
+        this.subRepo = subRepo;
+        this.goalRepo = goalRepo;
+        this.playerRepo = playerRepo;
     }
 
     /**
@@ -39,6 +51,56 @@ export class PlayerStatsService{
 
 
         return timeOnField;
+    }
+
+    /**
+    * Retrieves an array of players on the field at the time of a goal.
+    *
+    * @param goalId - The id for the goal scored
+    * 
+    * @returns the DTO array of players on the field during the time of the goal
+    */
+
+    async getPlayersOnForGoal(goalId: number) : Promise<PlayerDTO[]> {
+        const players: Player[] = [];
+
+        const query1 = this.goalRepo.createQueryBuilder('goal');
+
+        query1.andWhere("goal.id = :id1", {id1:goalId});
+
+        const goal = await query1.getOne();
+
+        for(let i=0; i<goal.lineup.length; i++){
+            const query2 = this.playerRepo.createQueryBuilder('player');
+            query2.andWhere("player.playerId = :id2", {id2:goal.lineup[i]});
+            const player = await query2.getOne();
+            players.push(player);
+            
+        }
+
+        return this.convertToPlayerDto(players);
+    }
+
+    /**
+    * Converts a list of player entities to a list of player dtos
+    *
+    * @param players - The list of player entities we want to convert to a list of player DTOs
+    *
+    * @returns A list of player dtos converted from an entity
+    */
+
+    private convertToPlayerDto(players: any[]) {
+        const playerDtos: PlayerDTO[] = [];
+        players.forEach(element => {
+          const playerDto: PlayerDTO = {
+            playerId: element.playerId,
+            teamId: element.teamId,
+            name: element.name,
+            jerseyNum: element.jerseyNum,
+          };
+          playerDtos.push(playerDto);
+        });
+        return playerDtos;
     }
 
 
