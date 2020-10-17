@@ -10,18 +10,16 @@ type PlayerProps = {
     team:string
 };
 
-function Player(props: PlayerProps) {
+export const Player: React.FC<PlayerProps> = ({identifier, number, team}) => {
     const [{ isDragging }, drag] = useDrag({
-        item: { type: DraggableTypes.PLAYER },
-        collect: (monitor) => ({
+        item: { type: DraggableTypes.PLAYER, team},
+        collect: (monitor: any) => ({
             isDragging: !!monitor.isDragging()
         })
     })
 
-    return( // TODO: fix the artifacts in the drag preview
-        <div ref={drag}>
-            <Button variant="contained">{props.identifier} {(props.number != -1) ? (props.number) : ""}</Button>
-        </div>
+    return(
+        <Button ref={drag} variant="contained">{identifier} {(number != -1) ? (number) : ""}</Button>
     )
 }
 
