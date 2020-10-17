@@ -7,84 +7,93 @@ import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
 import Button from '@material-ui/core/Button';
 
-type Player = {
-    first_name:string,
-    last_name:string,
-    num:number  // Jersey number
-}
+import Player from './Player';
+
 
 type PlayerList = {
     players:Player[]
 }
 
-const roster:Player[] = 
+export const roster:Player[] = 
 [
     {
         first_name: 'Charlie',
         last_name: 'Whittle',
-        num: 0
+        num: 0,
+        team: 'ours',
     },
     {
         first_name: 'Mac',
         last_name: 'Ferguson',
-        num: 1
+        num: 1,
+        team: 'ours',
     },
     {
         first_name: 'Dee',
         last_name: 'Barnes',
-        num: 2
+        num: 2,
+        team: 'ours',
     },
     {
         first_name: 'Dennis',
         last_name: 'Yang',
-        num: 3
+        num: 3,
+        team: 'ours',
     },
     {
         first_name: 'Aman',
         last_name: 'Luna',
-        num: 4
+        num: 4,
+        team: 'ours',
     },
     {
         first_name: 'Taylor',
         last_name: 'Wilkins',
-        num: 5
+        num: 5,
+        team: 'ours',
     },
     {
         first_name: 'Kevin',
         last_name: 'Leonard',
-        num: 6
+        num: 6,
+        team: 'ours',
     },
     {
         first_name: 'Laura',
         last_name: 'Watson',
-        num: 7
+        num: 7,
+        team: 'ours',
     },
     {
         first_name: 'Rennay',
         last_name: 'Gordon',
-        num: 8
+        num: 8,
+        team: 'ours',
     },
     {
         first_name: 'Clayton',
         last_name: 'Banks',
-        num: 9
+        num: 9,
+        team: 'ours',
     },
     {
         first_name: 'Zach',
         last_name: 'Ryan',
-        num: 10
+        num: 10,
+        team: 'ours',
     },
     {
         first_name: 'Clarence',
         last_name: 'Briggs',
-        num: 11
+        num: 11,
+        team: 'ours',
     }
 ]
 
 class Bench extends React.Component 
-    <{}, {
+    <{}, 
+    {
         on_bench: Player[],
-        on_field: Player[],
         isExpanded: boolean,
     }> {
     
@@ -92,10 +101,9 @@ class Bench extends React.Component
         super({});
         this.state = {
             on_bench: this.getPlayers(),
-            on_field: [],
             // The bench is in the expanded state once a player from the field
             // has been dragged into the bench
-            isExpanded: false
+            isExpanded: false,
         }
     }
     
@@ -116,14 +124,6 @@ class Bench extends React.Component
           const on_bench = state.on_bench.concat(player);
      
           return {on_bench}
-        })
-    }
-
-    addToField = (player:Player) => {
-        this.setState(state => {
-          const on_field = state.on_field.concat(player);
-     
-          return {on_field}
         })
     }
 
@@ -161,13 +161,8 @@ function BenchTarget(props:BenchTargetProps) {
             props.toggle();
         }
     })
-
-    if (props.isExpanded) {
-        return <div ref={drop} id="bench">Bench Expanded Area</div>
-    }
-    else {
-        return <div ref={drop} id="bench">Bench Area</div>;
-    }
+    
+    return <div ref={drop} id="bench">Bench Area</div>;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -200,9 +195,9 @@ export function OpenBench(props:PlayerList) {
     return (
       <div className={classes.root}>
         <GridList className={classes.gridList} cols={10} cellHeight={'auto'}>
-          {props.players.map((tile) => (
-            <GridListTile>
-                <Button variant="contained">{tile.num} {tile.first_name} {tile.last_name}</Button>
+          {props.players.map((player) => (
+            <GridListTile key={player.num}>
+                <Button variant="contained">{player.num} {player.first_name} {player.last_name}</Button>
             </GridListTile>
           ))}
         </GridList>
