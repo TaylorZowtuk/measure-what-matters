@@ -75,13 +75,18 @@ const roster:Player[] =
 class Bench extends React.Component 
     <{}, {
         on_bench: Player[],
-        on_field: Player[]
+        on_field: Player[],
+        isExpanded: boolean,
     }> {
+    
     constructor() {
         super({});
         this.state = {
             on_bench: [],
-            on_field: []
+            on_field: [],
+            // The bench is in the expanded state once a player from the field
+            // has been dragged into the bench
+            isExpanded: false
         }
     }
     
@@ -99,7 +104,7 @@ class Bench extends React.Component
      
           return {on_bench}
         })
-    };
+    }
 
     addToField = (player:Player) => {
         this.setState(state => {
@@ -107,25 +112,43 @@ class Bench extends React.Component
      
           return {on_field}
         })
-    };
+    }
+
+    toggleIsExpanded = (): void => {
+        this.setState({isExpanded: !this.state.isExpanded});
+    }
+
+    componentDidUpdate(_prevProps: any, _prevState: any) {
+        // console.log(this.state);
+    }
 
     render () {
-        return <BenchTarget/>
+
+        return (
+            <BenchTarget isExpanded={this.state.isExpanded} toggle={this.toggleIsExpanded}/>
+        )
     }
 }
 
+type BenchTargetProps = {
+    isExpanded:boolean,
+    toggle:Function // Function which toggles the isExpanded bool
+}
 
-function BenchTarget() {
+function BenchTarget(props:BenchTargetProps) {
     const [, drop] = useDrop({
         accept: DraggableTypes.PLAYER,
-        drop: (item: any, monitor: DropTargetMonitor) => {
-            console.log(item.team)
+        drop: (item: any, _monitor: DropTargetMonitor) => {
+            props.toggle();
         }
     })
 
-    return (
-        <div ref={drop} id="bench">Bench Area</div>
-    );
+    if (props.isExpanded) {
+        return <div ref={drop} id="bench">Bench Expanded Area</div>
+    }
+    else {
+        return <div ref={drop} id="bench">Bench Area</div>;
+    }
 }
 
 
