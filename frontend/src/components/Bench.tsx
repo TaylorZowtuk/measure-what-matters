@@ -1,18 +1,15 @@
 import React from 'react';
 import { DraggableTypes } from '../constants';
-import { useDrop } from 'react-dnd'
-
-type BenchProps = {
-};
+import { DropTargetMonitor, useDrop } from 'react-dnd'
 
 
-function Bench(props: BenchProps) {
-    const [{isOver}, drop] = useDrop({
+
+function Bench() {
+    const [, drop] = useDrop({
         accept: DraggableTypes.PLAYER,
-        drop: () => console.log("dropped in bench"),
-        collect: monitor => ({
-            isOver: !!monitor.isOver(),
-          })
+        drop: (item: any, monitor: DropTargetMonitor) => {
+            console.log(item.team)
+        }
     })
 
     return (
