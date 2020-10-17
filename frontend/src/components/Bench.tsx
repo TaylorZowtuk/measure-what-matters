@@ -2,10 +2,19 @@ import React from 'react';
 import { DraggableTypes } from '../constants';
 import { DropTargetMonitor, useDrop } from 'react-dnd'
 
+import { Theme, createStyles, makeStyles } from '@material-ui/core/styles';
+import GridList from '@material-ui/core/GridList';
+import GridListTile from '@material-ui/core/GridListTile';
+import Button from '@material-ui/core/Button';
+
 type Player = {
     first_name:string,
     last_name:string,
     num:number  // Jersey number
+}
+
+type PlayerList = {
+    players:Player[]
 }
 
 const roster:Player[] = 
@@ -82,7 +91,7 @@ class Bench extends React.Component
     constructor() {
         super({});
         this.state = {
-            on_bench: [],
+            on_bench: this.getPlayers(),
             on_field: [],
             // The bench is in the expanded state once a player from the field
             // has been dragged into the bench
@@ -95,7 +104,11 @@ class Bench extends React.Component
     }
 
     setBench = (players:Player[]): void => {
-        this.setState({on_bench: players})
+        this.setState({on_bench: players});
+    }
+    
+    getBench = (): Player[] => {
+        return this.state.on_bench;
     }
 
     addToBench = (player:Player) => {
@@ -119,14 +132,20 @@ class Bench extends React.Component
     }
 
     componentDidUpdate(_prevProps: any, _prevState: any) {
-        // console.log(this.state);
+        console.log(this.state);
     }
 
     render () {
-
-        return (
-            <BenchTarget isExpanded={this.state.isExpanded} toggle={this.toggleIsExpanded}/>
-        )
+        if (this.state.isExpanded) {
+            return (
+                <OpenBench players={this.getBench()}/>
+            )
+        }
+        else {
+            return (
+                <BenchTarget isExpanded={this.state.isExpanded} toggle={this.toggleIsExpanded}/>
+            )
+        }
     }
 }
 
@@ -150,6 +169,46 @@ function BenchTarget(props:BenchTargetProps) {
         return <div ref={drop} id="bench">Bench Area</div>;
     }
 }
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      display: 'flex',
+      flexWrap: 'wrap',
+      justifyContent: 'space-around',
+      overflow: 'hidden',
+      backgroundColor: theme.palette.background.paper,
+    },
+    gridList: {
+      flexWrap: 'nowrap',
+      // Promote the list into his own layer on Chrome. This cost memory but helps keeping high FPS.
+      transform: 'translateZ(0)',
+    },
+    title: {
+      color: theme.palette.primary.light,
+    },
+    titleBar: {
+      background:
+        'linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 70%, rgba(0,0,0,0) 100%)',
+    },
+  }),
+);
+
+export function OpenBench(props:PlayerList) {
+    const classes = useStyles();
+  
+    return (
+      <div className={classes.root}>
+        <GridList className={classes.gridList} cols={10} cellHeight={'auto'}>
+          {props.players.map((tile) => (
+            <GridListTile>
+                <Button variant="contained">{tile.num} {tile.first_name} {tile.last_name}</Button>
+            </GridListTile>
+          ))}
+        </GridList>
+      </div>
+    );
+  }
 
 
 export default Bench;
