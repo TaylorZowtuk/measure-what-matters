@@ -13,10 +13,7 @@ import { QueryFailedError } from 'typeorm';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  // create a user
-  // edit a user
-  //
-  @Post('/new')
+  @Post('/create')
   async createUser(@Body() data: CreateUserDTO) {
     try {
       if (data.password1 !== data.password2) {
