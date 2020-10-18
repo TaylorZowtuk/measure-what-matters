@@ -3,6 +3,7 @@ import TeamComponent from '../TeamComponent/TeamComponent';
 import Button from '@material-ui/core/Button';
 import './teams.css'
 import { Link } from 'react-router-dom';
+import axios from "axios";
 
 interface teamProps {
     teamList: Team[]

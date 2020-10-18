@@ -4,6 +4,7 @@ import './AddTeam.css'
 import Button from '@material-ui/core/Button';
 import Player from './Player';
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 interface createTeamState {
     teamName: string;
@@ -89,14 +90,18 @@ class AddTeam extends React.Component<{}, createTeamState> {
     onAddTeam = () => {
         //TODO: add new team to database
         if(this.state.teamName.trim() !== ''){
-            this.setState({
-                teamName: '',
-                playerList: [],
-                newPlayerFirstName: '',
-                newPlayerLastName: '',
-                newPlayerNumber: '',
-                id: 0
-            });
+            axios.post('/teams', {name: this.state.teamName, playerList: this.state.playerList})
+            .then(res => {
+                console.log("add team");
+                this.setState({
+                    teamName: '',
+                    playerList: [],
+                    newPlayerFirstName: '',
+                    newPlayerLastName: '',
+                    newPlayerNumber: '',
+                    id: 0
+                });
+            })
         }
         else{
             alert("Enter team name");
