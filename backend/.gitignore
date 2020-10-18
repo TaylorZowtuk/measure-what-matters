@@ -32,3 +32,12 @@ lerna-debug.log*
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+
+# Postgres developent db
+postgresData/
+
+# npm is slower
+package-lock/.js
+
+# generated docs
+documentation
