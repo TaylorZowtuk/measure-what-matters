@@ -1,5 +1,5 @@
 import React from 'react';
-import clsx from 'clsx';
+// import clsx from 'clsx';
 import { Link } from "react-router-dom";
 import Button from '@material-ui/core/Button';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
@@ -7,8 +7,8 @@ import TextField from '@material-ui/core/TextField';
 import FormControl from '@material-ui/core/FormControl';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
 import InputLabel from '@material-ui/core/InputLabel';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import IconButton from '@material-ui/core/IconButton';
+// import InputAdornment from '@material-ui/core/InputAdornment';
+// import IconButton from '@material-ui/core/IconButton';
 // import Visibility from '@material-ui/icons/Visibility';
 // import VisibilityOff from '@material-ui/icons/VisibilityOff';
 
@@ -57,13 +57,13 @@ const Login = () => {
         setValues({ ...values, [prop]: event.target.value });
     };
 
-    const handleClickShowPassword = () => {
-        setValues({ ...values, showPassword: !values.showPassword });
-    };
+    // const handleClickShowPassword = () => {
+    //     setValues({ ...values, showPassword: !values.showPassword });
+    // };
 
-    const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
-        event.preventDefault();
-    };
+    // const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+    //     event.preventDefault();
+    // };
 
     const handleOnClick = () => {
         // TODO: call to backend

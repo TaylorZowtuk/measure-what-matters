@@ -63,7 +63,7 @@ class AddTeam extends React.Component<{}, createTeamState> {
         e.preventDefault();
         if(this.state.newPlayerFirstName?.trim() !== "" && this.state.newPlayerLastName?.trim() !== "" && !isNaN(Number(this.state.newPlayerNumber)) && this.state.newPlayerNumber !== "") {
             const index = this.state.playerList.findIndex(oldPlayer => this.state.newPlayerNumber.trim() === oldPlayer.number);
-            if (index == -1) {
+            if (index === -1) {
                 let incrementId = this.state.id + 1;
                 this.setState({
                     playerList: [...this.state.playerList, {firstName: this.state.newPlayerFirstName, lastName: this.state.newPlayerLastName, number: this.state.newPlayerNumber.trim(), id: this.state.id}],

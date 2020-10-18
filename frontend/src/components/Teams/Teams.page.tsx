@@ -3,7 +3,7 @@ import TeamComponent from '../TeamComponent/TeamComponent';
 import Button from '@material-ui/core/Button';
 import './teams.css'
 import { Link } from 'react-router-dom';
-import axios from "axios";
+// import axios from "axios";
 
 interface teamProps {
     teamList: Team[]
@@ -23,23 +23,23 @@ interface Player{
     number: number;
 }
 
-const teams = {
-    teamList:
-    [{
-    playerList: [{
-        name: 'John',
-        number: 1
-    },
-    {
-        name: 'Tom',
-        number: 2
-    },
-    {
-        name: 'Bob',
-        number: 3
-    }]
-  }]
-};
+// const teams = {
+//     teamList:
+//     [{
+//     playerList: [{
+//         name: 'John',
+//         number: 1
+//     },
+//     {
+//         name: 'Tom',
+//         number: 2
+//     },
+//     {
+//         name: 'Bob',
+//         number: 3
+//     }]
+//   }]
+// };
 
 class Teams extends React.Component<{}, teamState>{
     constructor(props: {}){
