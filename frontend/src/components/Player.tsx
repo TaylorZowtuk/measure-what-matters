@@ -8,6 +8,7 @@ type Player = {
   last_name: string;
   num: number; // Jersey number
   team: string;
+  playerId: number; // Unique player id from the db
 };
 
 export const PlayerDraggable: React.FC<Player> = ({
@@ -15,12 +16,14 @@ export const PlayerDraggable: React.FC<Player> = ({
   last_name,
   num,
   team,
+  playerId,
 }) => {
   const player: Player = {
     first_name: first_name,
     last_name: last_name,
     num: num,
     team: team,
+    playerId: playerId,
   };
   const [, drag] = useDrag({
     item: { type: DraggableTypes.PLAYER, player },
@@ -52,6 +55,7 @@ export function createPlayerDraggable(players: Player[]): any[] {
         last_name={players[i].last_name}
         num={players[i].num}
         team="ours"
+        playerId={players[i].playerId}
       />
     );
   }
