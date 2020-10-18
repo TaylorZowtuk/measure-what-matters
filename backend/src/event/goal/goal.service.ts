@@ -62,7 +62,7 @@ export class GoalService {
   private convertToDto(goals: any[]) {
     const goalDtos: GoalDTO[] = [];
     goals.forEach(element => {
-      var lineup: number[] = [];
+      const lineup: number[] = [];
       element.lineup.forEach(playerId => {
         lineup.push(playerId);
       });

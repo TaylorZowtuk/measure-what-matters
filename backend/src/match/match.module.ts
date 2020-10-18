@@ -1,6 +1,6 @@
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { Match } from "src/db/entities/match.entity";
+import { Match } from "../db/entities/match.entity";
 import { MatchController } from "./match.controller";
 import { MatchService } from "./match.service";
 
