@@ -16,8 +16,10 @@ type Goal = {
   playerId: number;
 };
 
+type RecordingProps = {};
+
 class Recording extends React.Component<
-  {},
+  RecordingProps,
   {
     goals_against: number;
     goals_for: number;
@@ -28,8 +30,8 @@ class Recording extends React.Component<
   team_name: string = "Blue Blazers";
   opp_name: string = "Red Rockets";
 
-  constructor() {
-    super({});
+  constructor(props: RecordingProps) {
+    super(props);
     this.state = {
       goals_for: 0,
       goals_against: 0,
