@@ -96,6 +96,14 @@ export const roster: Player[] = [
   },
 ];
 
+export type Substitution = {
+  id?: number;
+  playerId: number;
+  matchId: number;
+  timeOn: number;
+  timeOff: number;
+};
+
 type BenchProps = {
   getStartingBench: Function;
   notifyOfSubs: Function;

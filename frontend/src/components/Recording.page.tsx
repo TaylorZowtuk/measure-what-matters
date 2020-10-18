@@ -6,9 +6,10 @@ import axios from "axios";
 
 import Button from "@material-ui/core/Button";
 import Team from "./Team";
-import Bench from "./Bench";
+import Bench, { Substitution } from "./Bench";
 import Field from "./Field";
 import Player from "./Player";
+import { time } from "console";
 
 type Goal = {
   id?: number;
@@ -70,7 +71,20 @@ class Recording extends React.Component<
   };
 
   provideStartingLine = (): Player[] => {
-    return this.state.roster.slice(0, 6); // First 6 players of roster are the starting lineup
+    let starting: Player[] = this.state.roster.slice(0, 6); // First 6 players of roster are the starting lineup
+    let body: any[] = [];
+    for (let i = 0; i < starting.length; i++) {
+      let sub: Substitution = {
+        id: undefined,
+        playerId: starting[i].playerId,
+        matchId: 1, // TODO: dont hardcode matchid
+        timeOn: Date.now(),
+        timeOff: Date.now() + 10000, // TODO: have timeoff removed from endpoint
+      };
+      body.push(sub);
+    }
+    // TODO: make call to /event/substitutions/startingLineup endpoint
+    return starting;
   };
 
   provideStartingBench = (): Player[] => {
