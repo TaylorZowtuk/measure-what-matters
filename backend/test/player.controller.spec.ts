@@ -19,7 +19,6 @@ const playerDtos: PlayerDTO[] = [
   },
 ];
 
-
 describe('PlayerController', () => {
   let controller: PlayerController;
   let playerService: PlayerService;
@@ -42,14 +41,16 @@ describe('PlayerController', () => {
   });
 
   it('should call player service to create', () => {
-    const playerArrayDTO : PlayerArrayDTO = {
-      playerArray:playerDtos
-    }
-    const spy = jest.spyOn(playerService, 'savePlayer').mockImplementation(() => {
-      return new Promise<Player[]>(() => {
-        return;
+    const playerArrayDTO: PlayerArrayDTO = {
+      playerArray: playerDtos,
+    };
+    const spy = jest
+      .spyOn(playerService, 'savePlayer')
+      .mockImplementation(() => {
+        return new Promise<Player[]>(() => {
+          return;
+        });
       });
-    });
     controller.createPlayers(playerArrayDTO);
     expect(spy).toBeCalledWith(playerArrayDTO);
   });
@@ -57,8 +58,7 @@ describe('PlayerController', () => {
   it('should call player service to get players by team id', () => {
     const teamId = 1;
     jest.spyOn(playerService, 'getPlayers').mockResolvedValue(playerDtos);
-    const response = controller.getPlayersbyTeamId(teamId);
+    const response = controller.getPlayersByTeamId(teamId);
     expect(response).resolves.toBe(playerDtos);
   });
-
 });

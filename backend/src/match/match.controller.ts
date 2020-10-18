@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { Match } from 'src/db/entities/match.entity';
-import { MatchDTO } from 'src/dto/match/match.dto';
+import { Match } from '../db/entities/match.entity';
+import { MatchDTO } from '../dto/match/match.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { MatchService } from './match.service';
 
