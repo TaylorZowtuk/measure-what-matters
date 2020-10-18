@@ -3,9 +3,9 @@ import { DraggableTypes } from "../constants";
 import { useDrop } from "react-dnd";
 
 import Player, { createPlayerDraggable } from "./Player";
-import { roster } from "./Bench";
 
 type FieldProps = {
+  getStartingLine: Function;
   incrementScore: Function;
   removeFromField: Player | undefined;
   addToField: Player | undefined;
@@ -21,13 +21,9 @@ class Field extends React.Component<
   constructor(props: FieldProps) {
     super(props);
     this.state = {
-      onField: createPlayerDraggable(this.getPlayers().slice(0, 6)),
+      onField: createPlayerDraggable(this.props.getStartingLine().slice(0, 6)),
     };
   }
-
-  getPlayers = (): Player[] => {
-    return roster;
-  };
 
   getOnField = (): Player[] => {
     return this.state.onField;
@@ -64,7 +60,7 @@ class Field extends React.Component<
   };
 
   substitute = (): void => {
-    this.removeFromField(this.props.removeFromField); // TODO: player is not being removed from field
+    this.removeFromField(this.props.removeFromField);
     this.addToField(this.props.addToField);
     this.props.resetSubs(undefined, undefined); // Reset subs
   };

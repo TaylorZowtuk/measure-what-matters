@@ -18,7 +18,10 @@ type Goal = {
   lineup: number[];
 };
 
-type RecordingProps = {};
+type RecordingProps = {
+  matchId: number;
+  teamId: number;
+};
 
 class Recording extends React.Component<
   RecordingProps,
@@ -27,6 +30,7 @@ class Recording extends React.Component<
     goals_for: number;
     subField: Player | undefined; // Player to remove from field
     subBench: Player | undefined; // Player to add to field from bench
+    roster: Player[]; // List of Players in this game for our team
   }
 > {
   team_name: string = "Blue Blazers";
@@ -39,8 +43,39 @@ class Recording extends React.Component<
       goals_against: 0,
       subField: undefined,
       subBench: undefined,
+      roster: [],
     };
   }
+
+  getRoster = async (): Promise<Player[]> => {
+    console.log("Requests roster");
+    const res = await axios.get(`/player/teamId?teamId=${this.props.teamId}`);
+    console.log("Gets roster response");
+    console.log("Response data:", res.data);
+    // TODO: handle error
+    let players: Player[] = [];
+    for (let i = 0; i < res.data.length; i++) {
+      let first: string = res.data[i].name.split(/[ ,]+/, 1)[0];
+      let last: string = res.data[i].name.split(/[ ,]+/, 1)[1];
+      let player: Player = {
+        first_name: first,
+        last_name: last,
+        num: res.data[i].jerseyNum,
+        team: "ours",
+        playerId: res.data[i].playerId,
+      };
+      players.push(player);
+    }
+    return players;
+  };
+
+  provideStartingLine = (): Player[] => {
+    return this.state.roster.slice(0, 6); // First 6 players of roster are the starting lineup
+  };
+
+  provideStartingBench = (): Player[] => {
+    return this.state.roster.slice(6, this.state.roster.length); // All but first 6 players start on bench
+  };
 
   setSubs = (
     subField: Player | undefined,
@@ -77,26 +112,43 @@ class Recording extends React.Component<
     }
   };
 
+  componentDidMount() {
+    if (!this.state.roster.length) {
+      this.getRoster().then((players: Player[]) => {
+        this.setState({ roster: players });
+      });
+    }
+  }
+
   render() {
-    return (
-      <DndProvider backend={HTML5Backend}>
-        <div className="recording">
-          <h1>Recording</h1>
-          <Bench notifyOfSubs={this.setSubs}></Bench>
-          <Team name={this.team_name} score={this.state.goals_for} />
-          <Team name={this.opp_name} score={this.state.goals_against} />
-          <Field
-            incrementScore={this.incrementScore}
-            removeFromField={this.state.subField}
-            addToField={this.state.subBench}
-            resetSubs={this.setSubs}
-          />
-          <Link to="/">
-            <Button variant="contained">Dashboard</Button>
-          </Link>
-        </div>
-      </DndProvider>
-    );
+    // If fetch request hasnt returned yet
+    if (!this.state.roster.length) {
+      return <h1>Loading...</h1>;
+    } else {
+      return (
+        <DndProvider backend={HTML5Backend}>
+          <div className="recording">
+            <h1>Recording</h1>
+            <Bench
+              getStartingBench={this.provideStartingBench}
+              notifyOfSubs={this.setSubs}
+            ></Bench>
+            <Team name={this.team_name} score={this.state.goals_for} />
+            <Team name={this.opp_name} score={this.state.goals_against} />
+            <Field
+              getStartingLine={this.provideStartingLine}
+              incrementScore={this.incrementScore}
+              removeFromField={this.state.subField}
+              addToField={this.state.subBench}
+              resetSubs={this.setSubs}
+            />
+            <Link to="/">
+              <Button variant="contained">Dashboard</Button>
+            </Link>
+          </div>
+        </DndProvider>
+      );
+    }
   }
 }
 

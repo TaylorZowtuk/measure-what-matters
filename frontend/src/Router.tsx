@@ -10,7 +10,11 @@ const Router = () => {
       {" "}
       {/* The Switch decides which component to show based on the current URL.*/}
       <Route exact path="/" component={Dashboard}></Route>
-      <Route exact path="/recording" component={Recording}></Route>
+      <Route
+        exact
+        path="/recording"
+        render={(props) => <Recording matchId={1} teamId={1} />} // TODO: Remove hardcoded matchId and teamId
+      ></Route>
     </Switch>
   );
 };

@@ -97,6 +97,7 @@ export const roster: Player[] = [
 ];
 
 type BenchProps = {
+  getStartingBench: Function;
   notifyOfSubs: Function;
 };
 
@@ -114,15 +115,11 @@ class Bench extends React.Component<
   constructor(props: BenchProps) {
     super(props);
     this.state = {
-      onBench: this.getPlayers(),
+      onBench: this.props.getStartingBench(),
       isExpanded: false,
       substituteFor: undefined,
     };
   }
-
-  getPlayers = (): Player[] => {
-    return roster;
-  };
 
   setBench = (players: Player[]): void => {
     this.setState({ onBench: players });
