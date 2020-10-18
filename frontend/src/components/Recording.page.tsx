@@ -11,9 +11,11 @@ import Field from "./Field";
 import Player from "./Player";
 
 type Goal = {
+  id?: number;
   matchId: number;
   time: number;
   playerId: number;
+  lineup: number[];
 };
 
 type RecordingProps = {};
@@ -47,31 +49,26 @@ class Recording extends React.Component<
     this.setState({ subField: subField, subBench: subBench });
   };
 
-  getSubs = (): Player[] => {
-    // ret[0] = subField
-    // ret[1] = subBench
-    // If either subField or subBench is undefined, the return is an empty arr
-
-    if (
-      this.state.subField === undefined ||
-      this.state.subBench === undefined
-    ) {
-      return [];
-    } else {
-      return [this.state.subField, this.state.subBench];
-    }
-  };
-
-  incrementScore = (goal_for: boolean): void => {
+  incrementScore = (
+    goal_for: boolean,
+    scorer: Player,
+    lineup: Player[]
+  ): void => {
     if (goal_for) {
       this.setState({ goals_for: this.state.goals_for + 1 });
+      let ids: number[] = [];
+      for (let i = 0; i < lineup.length; i++) {
+        ids.push(lineup[i].playerId);
+      }
       let goal: Goal = {
+        id: undefined,
         matchId: 1, // TODO: get matchid
         time: Date.now(), // Epoch time in ms
-        playerId: 1, // TODO: get playerid
+        playerId: scorer.playerId,
+        lineup: ids,
       };
       console.log(goal);
-      axios.post(`/events/goals`).then((res) => {
+      axios.post(`/event/goals`, goal).then((res) => {
         console.log(res); // TODO: catch error and handle if needed
       });
     } else {
