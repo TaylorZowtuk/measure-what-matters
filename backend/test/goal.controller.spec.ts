@@ -11,18 +11,19 @@ const goalDtos: GoalDTO[] = [
     matchId: 1,
     playerId: 1,
     time: 200,
+    lineup: [1, 2, 3, 4, 5, 6],
   },
   {
     matchId: 1,
     playerId: 1,
     time: 500,
+    lineup: [1, 2, 8, 9, 5, 6],
   },
 ];
 
 describe('GoalController', () => {
   let controller: GoalController;
   let goalService: GoalService;
-  // let goalRepository: Repository<Goal>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -35,7 +36,6 @@ describe('GoalController', () => {
 
     controller = module.get<GoalController>(GoalController);
     goalService = module.get<GoalService>(GoalService);
-    // goalRepository = module.get<Repository<Goal>>(getRepositoryToken(Goal));
   });
 
   it('should be defined', () => {
@@ -50,7 +50,7 @@ describe('GoalController', () => {
       });
     });
     controller.saveGoalEvent(goal);
-    expect(spy).toBeCalledTimes(1);
+    expect(spy).toBeCalledWith(goal);
   });
 
   it('should call goal service to get goals by player id', () => {
