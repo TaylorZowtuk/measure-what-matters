@@ -1,7 +1,4 @@
 {
-  "cSpell.words": [
-    "postgres",
-    "stackoverflow",
-    "typeorm"
-  ]
+  "cSpell.words": ["postgres", "stackoverflow", "typeorm"],
+  "typescript.preferences.importModuleSpecifier": "relative"
 }

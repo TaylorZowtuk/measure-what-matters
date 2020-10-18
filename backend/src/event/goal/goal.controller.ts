@@ -8,8 +8,8 @@ import { GoalService } from '../../event/goal/goal.service';
 export class GoalController {
   goalService: GoalService;
 
-  constructor(eventService: GoalService) {
-    this.goalService = eventService;
+  constructor(goalService: GoalService) {
+    this.goalService = goalService;
   }
 
   @Post('/')
@@ -26,7 +26,7 @@ export class GoalController {
     description: 'Returns array of goals for the specified player',
   })
   async getGoalByPlayer(@Query('playerId') playerId: number) {
-    return this.goalService.getGoalsByPlayerId(playerId);
+    return await this.goalService.getGoalsByPlayerId(playerId);
   }
 
   @Get('matchId')

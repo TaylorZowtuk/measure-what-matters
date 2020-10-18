@@ -1,28 +1,33 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Goal } from "src/db/entities/events/goal.entity";
-import { Substitution } from "src/db/entities/events/substitution.entity";
-import { Player } from "src/db/entities/player.entity";
-import { PlayerDTO } from "src/dto/player/player.dto";
+import { Goal } from "../db/entities/events/goal.entity";
+import { Substitution } from "../db/entities/events/substitution.entity";
+import { Player } from "../db/entities/player.entity";
+import { PlayerDTO } from "../dto/player/player.dto";
 import { Repository } from "typeorm";
-
+import { PlayerTimeDTO } from "src/dto/stats/playerTime.dto";
+import { Match } from "../db/entities/match.entity";
 @Injectable()
 export class PlayerStatsService{
 
     subRepo: Repository<any>;
     goalRepo: Repository<any>;
     playerRepo: Repository<any>;
+    matchRepo: Repository<any>;
 
     constructor(@InjectRepository(Substitution)
     subRepo: Repository<Substitution>, 
     @InjectRepository(Goal)
     goalRepo: Repository<Goal>,
     @InjectRepository(Player)
-    playerRepo : Repository<Player>
+    playerRepo : Repository<Player>,
+    @InjectRepository(Match)
+    matchRepo : Repository<Match>
     ) {
         this.subRepo = subRepo;
         this.goalRepo = goalRepo;
         this.playerRepo = playerRepo;
+        this.matchRepo = matchRepo;
     }
 
     /**
@@ -45,12 +50,41 @@ export class PlayerStatsService{
 
         for(let i=0; i<substitutions.length; i++){
             const time_on = (substitutions[i].timeOn);
-            const time_off = (substitutions[i].timeOff);
+            let time_off = (substitutions[i].timeOff);
+
+            // to be fixed, currently the end of the game does not update the time_off for the final substitution, we will fix for next sprint
+            if(time_off == null){
+                time_off = time_on + 100;
+            }
             timeOnField+=(time_off-time_on);
         }
 
-
         return timeOnField;
+    }
+
+    async getPlayersTimes(matchId:number) : Promise<PlayerTimeDTO[]> {
+        const playerTimeDtos: PlayerTimeDTO[] = [];
+        const match = await this.matchRepo.findOne(
+            {where: {matchId:matchId}}
+        );
+        const teamId = match.teamId.teamId;
+        
+        const players = await this.playerRepo.find(
+            {where: {teamId:teamId}}
+        );
+
+        for(let i=0; i<players.length;i++){
+
+            const playerId = players[i].playerId;
+            const name = players[i].name;
+            const jerseyNum = players[i].jerseyNum;
+            const secondsPlayed = await this.getSecondsPlayed(players[i].playerId, matchId);
+            const player_time_DTO: PlayerTimeDTO = {playerId:playerId, teamId:teamId, name:name, jerseyNum:jerseyNum, secondsPlayed:secondsPlayed};
+        
+            playerTimeDtos.push(player_time_DTO); 
+        }
+
+        return playerTimeDtos;
     }
 
     /**

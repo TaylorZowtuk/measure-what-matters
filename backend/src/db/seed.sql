@@ -12,4 +12,5 @@ WITH USERS AS (
 INSERT INTO public.player (name, "jerseyNum", "teamIdTeamId")
 SELECT 'playerName', 5, genTeamId FROM TEAMS;
 
+INSERT INTO public.user (name, username, password) VALUES ('test', 'test', '$2b$10$MRCZRg5j8N6ffZiQwl8U5ORIIDoKqSyQ11Iej8w5OmJQ3Wl0woxfC') ON CONFLICT DO NOTHING;
 COMMIT;
