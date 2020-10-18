@@ -24,7 +24,8 @@
     "db:stop": "docker stop mwm-psql",
     "db:logs": "docker logs -f mwm-psql",
     "db:cmd": "docker exec -it mwm-psql psql -U mwm",
-    "db:clean": "npm run db:stop; docker rm mwm-psql; node echo \"Database removed!\""
+    "db:clean": "npm run db:stop; docker rm mwm-psql; node echo \"Database removed!\"",
+    "docs:generate": "npx @compodoc/compodoc -p tsconfig.json -s"
   },
   "dependencies": {
     "@nestjs/common": "^7.0.0",
@@ -35,6 +36,7 @@
     "@nestjs/platform-express": "^7.0.0",
     "@nestjs/swagger": "^4.6.1",
     "@nestjs/typeorm": "^7.1.4",
+    "bcrypt": "^5.0.0",
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
@@ -47,9 +49,11 @@
   },
   "devDependencies": {
     "@babel/core": "^7.11.6",
+    "@compodoc/compodoc": "^1.1.11",
     "@nestjs/cli": "^7.0.0",
     "@nestjs/schematics": "^7.0.0",
     "@nestjs/testing": "^7.0.0",
+    "@types/bcrypt": "^3.0.0",
     "@types/express": "^4.17.3",
     "@types/jest": "26.0.10",
     "@types/node": "^13.9.1",
@@ -90,6 +94,9 @@
     ]
   },
   "eslintConfig": {
-    "eslint.validate": ["typescript", "typescriptreact"]
+    "eslint.validate": [
+      "typescript",
+      "typescriptreact"
+    ]
   }
 }

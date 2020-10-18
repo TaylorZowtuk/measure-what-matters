@@ -38,3 +38,6 @@ postgresData/
 
 # npm is slower
 package-lock/.js
+
+# generated docs
+documentation
