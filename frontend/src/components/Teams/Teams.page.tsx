@@ -5,10 +5,6 @@ import './teams.css'
 import { Link } from 'react-router-dom';
 // import axios from "axios";
 
-interface teamProps {
-    teamList: Team[]
-}
-
 interface teamState {
     teamList: Team[]
 }
@@ -22,24 +18,6 @@ interface Player{
     name: string;
     number: number;
 }
-
-// const teams = {
-//     teamList:
-//     [{
-//     playerList: [{
-//         name: 'John',
-//         number: 1
-//     },
-//     {
-//         name: 'Tom',
-//         number: 2
-//     },
-//     {
-//         name: 'Bob',
-//         number: 3
-//     }]
-//   }]
-// };
 
 class Teams extends React.Component<{}, teamState>{
     constructor(props: {}){
@@ -90,6 +68,7 @@ class Teams extends React.Component<{}, teamState>{
     public render(){
         return (
             <div className="container">
+                <h3>Your Teams</h3>
                 {this.state.teamList.map((team) => {
                     return (
                         <div className="teamList">

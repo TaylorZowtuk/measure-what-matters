@@ -4,7 +4,7 @@ import './AddTeam.css'
 import Button from '@material-ui/core/Button';
 import Player from './Player';
 import { Link } from "react-router-dom";
-import axios from "axios";
+// import axios from "axios";
 
 interface createTeamState {
     teamName: string;
@@ -35,6 +35,7 @@ class AddTeam extends React.Component<{}, createTeamState> {
         }
     }
 
+    /* handle input changes */
     handleTeamNameChange = (e: React.ChangeEvent<HTMLInputElement>):void =>  {
         this.setState({
             teamName: e.target.value
@@ -58,7 +59,8 @@ class AddTeam extends React.Component<{}, createTeamState> {
             newPlayerNumber: e.target.value
         })
     }
-
+    
+    // add player to the team list
     onAddPlayer = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>):void => {
         e.preventDefault();
         if(this.state.newPlayerFirstName?.trim() !== "" && this.state.newPlayerLastName?.trim() !== "" && !isNaN(Number(this.state.newPlayerNumber)) && this.state.newPlayerNumber !== "") {
@@ -76,6 +78,7 @@ class AddTeam extends React.Component<{}, createTeamState> {
         }
     }
 
+    // remove player from the team list
     onRemovePlayer = (player: newPlayer) => {
         const index = this.state.playerList.findIndex(oldPlayer => player.id === oldPlayer.id);
         if(index > -1) {
@@ -87,21 +90,32 @@ class AddTeam extends React.Component<{}, createTeamState> {
         }
     }
 
+    // handles when add team button is pressed
     onAddTeam = () => {
         //TODO: add new team to database
         if(this.state.teamName.trim() !== ''){
-            axios.post('/teams', {name: this.state.teamName, playerList: this.state.playerList})
-            .then(res => {
-                console.log("add team");
-                this.setState({
-                    teamName: '',
-                    playerList: [],
-                    newPlayerFirstName: '',
-                    newPlayerLastName: '',
-                    newPlayerNumber: '',
-                    id: 0
-                });
-            })
+            // axios.post('/teams', {name: this.state.teamName, playerList: this.state.playerList})
+            // .then(res => {
+            //     console.log("add team");
+            //     this.setState({
+            //         teamName: '',
+            //         playerList: [],
+            //         newPlayerFirstName: '',
+            //         newPlayerLastName: '',
+            //         newPlayerNumber: '',
+            //         id: 0
+            //     });
+            // })
+
+            console.log("add team");
+            this.setState({
+                teamName: '',
+                playerList: [],
+                newPlayerFirstName: '',
+                newPlayerLastName: '',
+                newPlayerNumber: '',
+                id: 0
+            });
         }
         else{
             alert("Enter team name");
@@ -111,6 +125,7 @@ class AddTeam extends React.Component<{}, createTeamState> {
     render() {
         return (
             <div className="container">
+                <h3>Add A New Team</h3>
                 <TextField
                     required
                     id="outlined-required"
@@ -130,11 +145,6 @@ class AddTeam extends React.Component<{}, createTeamState> {
                         </tr>
                     </thead>
                     <tbody>
-                        {/* <tr>
-                            <td>Player 1</td>
-                            <td>12</td>
-                            <td><button>remove</button></td>
-                        </tr> */}
                         {
                             this.state.playerList.map((player) => {
                                 return (
