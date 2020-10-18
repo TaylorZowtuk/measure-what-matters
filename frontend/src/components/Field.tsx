@@ -2,7 +2,7 @@ import React from "react";
 import { DraggableTypes } from "../constants";
 import { useDrop } from "react-dnd";
 
-import Player, { createPlayerDraggable, PlayerDraggable } from "./Player";
+import Player, { createPlayerDraggable } from "./Player";
 import { roster } from "./Bench";
 
 type FieldProps = {
@@ -31,7 +31,7 @@ class Field extends React.Component<
 
   addToField = (player: Player | undefined): void => {
     if (player === undefined) {
-      console.log("Error player to add to field was undefined");
+      console.log("Error: player to add to field was undefined");
     } else {
       let ret_arr: any = createPlayerDraggable([player]);
       let playerDraggable = ret_arr[0];
@@ -44,17 +44,17 @@ class Field extends React.Component<
 
   removeFromField = (player: Player | undefined): void => {
     if (player === undefined) {
-      console.log("Error player to add to field was undefined");
+      console.log("Error: player to add to field was undefined");
     } else {
       var array = [...this.state.onField];
       var index = array.findIndex(
-        (playerDraggable) => playerDraggable.number === player.num
+        (playerDraggable) => playerDraggable.props.num === player.num
       );
       if (index !== -1) {
-        return array.splice(index, 1)[0]; // Remove the player and return it
+        array.splice(index, 1);
+        this.setState({ onField: array });
       } else {
         console.log("Error: no element in onField had num of", player.num);
-        return undefined;
       }
     }
   };

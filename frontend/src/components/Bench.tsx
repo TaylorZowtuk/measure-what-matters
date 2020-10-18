@@ -128,7 +128,9 @@ class Bench extends React.Component<
     var array = [...this.state.onBench];
     var index = array.findIndex((player) => player.num === removeNum);
     if (index !== -1) {
-      return array.splice(index, 1)[0]; // Remove the player and return it
+      let p = array.splice(index, 1)[0];
+      this.setState({ onBench: array }); // Remove the player and return it
+      return p;
     } else {
       console.log("Error: no element in onBench had num of", removeNum);
       return undefined;
@@ -152,7 +154,6 @@ class Bench extends React.Component<
       console.log("Error: substituteFor is undefined");
       return;
     }
-    // TODO: not being removed from bench properly
     let moveToField = this.removeFromBench(num); // Remove player from bench
     // TODO: make api call
     this.addToBench(this.state.substituteFor); // Add player from field to bench
