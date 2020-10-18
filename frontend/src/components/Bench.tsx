@@ -155,7 +155,9 @@ class Bench extends React.Component
             console.log("Error: substituteFor is undefined");
             return;
         }
+        // TODO: not being removed from bench properly
         let moveToField = this.removeFromBench(num);  // Remove player from bench
+        // TODO: make api call
         this.addToBench(this.state.substituteFor);  // Add player from field to bench
         this.props.notifyOfSubs(this.state.substituteFor, moveToField)  // Notify field of a substitution
         this.clearSubstituteFor();
