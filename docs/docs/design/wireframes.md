@@ -1,6 +1,5 @@
 # Wireframes
-## Sprint 1
-![Wireframe](../images/design/wireframe/wireframe_1.png)
+![Wireframe](../images/design/wireframe/wireframe.png)
 
 View | Satisfies User Stories | Description
 ---- | -----------------------|------------
@@ -36,7 +35,3 @@ View | Satisfies User Stories | Description
 30 | 2.1.2 & 2.1.5 | Net location screen. Represents a teams net. Selecting an area will relate a shot with a particular position of the net and then a list of outcome text fields will be displayed for selection (not shown).
 31 | 2.1.6 | Players screen (repeat). See view 28 for general layout. When entered from the goal screen, allows selecting team mates who assisted the goal.
 32 | 2.3.1 | Player time on/off field. Displays bubbles for players on and off the bench. Each player has a integer field which displays their time on or off of the field as appropriate.
-
-
-## Sprint 2
-To be updated as required.
