@@ -86,8 +86,12 @@ export const roster:Player[] =
     }
 ]
 
+type BenchProps = {
+    notifyOfSubs:Function,
+}
+
 class Bench extends React.Component 
-    <{}, 
+    <BenchProps, 
     {
         onBench: Player[],
         // The bench is in the expanded state once a player from the field
@@ -97,8 +101,8 @@ class Bench extends React.Component
         substituteFor: Player | undefined,
     }> {
     
-    constructor() {
-        super({});
+    constructor(props:BenchProps) {
+        super(props);
         this.state = {
             onBench: this.getPlayers(),
             isExpanded: false,
@@ -117,21 +121,20 @@ class Bench extends React.Component
     addToBench = (player:Player) => {
         this.setState(state => {
           const onBench = state.onBench.concat(player);
-     
-          return {onBench: onBench}
+          return {onBench: onBench};
         })
     }
 
-    removeFromBench = (removeNum:number) => {
+    removeFromBench = (removeNum:number): Player | undefined => {
         // Remove the player (first instance) from onBench whose number is num
         var array = [...this.state.onBench];
         var index = array.findIndex(player => player.num === removeNum);
         if (index !== -1) {
-            array.splice(index, 1)  // Remove the player
-            this.clearSubstituteFor();  // Update onBench
+            return array.splice(index, 1)[0];  // Remove the player and return it
         }
         else {
             console.log("Error: no element in onBench had num of", removeNum);
+            return undefined;
         }
     }
 
@@ -140,11 +143,11 @@ class Bench extends React.Component
     }
 
     setSubstituteFor = (player:Player): void => {
-        this.setState({substituteFor: player})
+        this.setState({substituteFor: player});
     }
 
     clearSubstituteFor = (): void => {
-        this.setState({substituteFor: undefined})
+        this.setState({substituteFor: undefined});
     }
 
     substitute = (num:number): void => {
@@ -152,8 +155,9 @@ class Bench extends React.Component
             console.log("Error: substituteFor is undefined");
             return;
         }
-        this.removeFromBench(num);  // Remove player from bench
+        let moveToField = this.removeFromBench(num);  // Remove player from bench
         this.addToBench(this.state.substituteFor);  // Add player from field to bench
+        this.props.notifyOfSubs(this.state.substituteFor, moveToField)  // Notify field of a substitution
         this.clearSubstituteFor();
         this.toggleIsExpanded();    // Close the bench
     }

@@ -13,12 +13,12 @@ type Player = {
 export const PlayerDraggable: React.FC<Player> = ({first_name, last_name, num, team}) => {
     const player:Player = {first_name: first_name, last_name: last_name, num: num, team: team}
     const [, drag] = useDrag({
-        item: { type: DraggableTypes.PLAYER, player}
+        item: { type: DraggableTypes.PLAYER, player }
     })
 
     if (team === "ours") {
         return(
-            <Button ref={drag} variant="contained">{first_name} {last_name} {num}</Button>
+            <Button ref={drag} variant="contained">{num} {first_name} {last_name}</Button>
         )
     }
     else {  // If team is "theirs"
@@ -28,7 +28,7 @@ export const PlayerDraggable: React.FC<Player> = ({first_name, last_name, num, t
     }
 }
 
-export function createPlayerDraggable(players:Player[]) {
+export function createPlayerDraggable(players:Player[]): any[] {
     let playerDraggables:any[] = []
     // For each Player in the players array, create a PlayerDraggable jsx element
     for (var i = 0; i < players.length; i++) {
