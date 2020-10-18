@@ -95,7 +95,7 @@ type FieldTargetProps = {
   getLineup: Function;
 };
 
-function FieldTarget(props: FieldTargetProps) {
+export function FieldTarget(props: FieldTargetProps) {
   const [, drop] = useDrop({
     accept: DraggableTypes.PLAYER,
     drop: (item: any, monitor) =>
