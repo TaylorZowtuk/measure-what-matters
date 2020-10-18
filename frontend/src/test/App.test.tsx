@@ -1,10 +1,27 @@
 import React from "react";
-import { render } from "@testing-library/react";
+import { cleanup, render } from "@testing-library/react";
 import Recording from "../components/Recording.page";
 import { BrowserRouter } from "react-router-dom";
 
-test("renders recording", () => {
+afterEach(cleanup);
+
+test("renders recording screen header", () => {
   const { getByText } = render(<Recording />, { wrapper: BrowserRouter });
-  const linkElement = getByText(/Recording/i);
-  expect(linkElement).toBeInTheDocument();
+
+  const headerElement = getByText(/Recording/i);
+  expect(headerElement).toBeInTheDocument();
+});
+
+test("renders dashboard return button on recording screen", () => {
+  const { getByText } = render(<Recording />, { wrapper: BrowserRouter });
+
+  const dashboardButton = getByText(/Dashboard/i);
+  expect(dashboardButton).toBeInTheDocument();
+});
+
+test("renders bench on recording screen", () => {
+  const { getByText } = render(<Recording />, { wrapper: BrowserRouter });
+
+  const benchDiv = getByText(/Bench Area/i);
+  expect(benchDiv).toBeInTheDocument();
 });
