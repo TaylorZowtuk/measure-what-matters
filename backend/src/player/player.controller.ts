@@ -1,7 +1,6 @@
 import { Body, Controller, Post, Get, Query} from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { PlayerArrayDTO } from '../dto/player/playerArray.dto';
-import { Player } from '../db/entities/player.entity';
 import { PlayerDTO } from '../dto/player/player.dto';
 import { PlayerService } from './player.service';
 
@@ -24,7 +23,7 @@ export class PlayerController {
     @Get('/teamId')
     @ApiResponse({
         status: 200,
-        type: Player,
+        type: PlayerDTO,
         isArray: true,
         description: 'Returns array of players for the given team Id',
       })
