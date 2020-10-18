@@ -15,7 +15,9 @@ export class UsersService {
       username,
       password,
     });
+    console.log(newUser);
     const result = await this.userRepository.save(newUser);
+    console.log(result);
     delete result.password;
     return result;
   }
