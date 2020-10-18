@@ -4,7 +4,7 @@ import Dashboard from './components/Dashboard.page';
 import Recording from './components/Recording.page';
 import Login from './components/Login/Login.page';
 import Teams from './components/Teams/Teams.page';
-import AddTeam from './components/AddTeam/AddTeam.page'
+import AddTeam from './components/AddTeam/AddTeam.page';
 
 const Router = () => {
   return (

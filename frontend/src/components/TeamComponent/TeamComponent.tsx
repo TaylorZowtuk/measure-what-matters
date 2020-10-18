@@ -11,7 +11,6 @@ interface Player{
 }
 
 class TeamComponent extends React.Component<teamProps>{
-
     public render(){
         return (
             <div className="team">

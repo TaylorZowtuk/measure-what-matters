@@ -22,7 +22,6 @@ interface Player{
 class Teams extends React.Component<{}, teamState>{
     constructor(props: {}){
         super(props);
-
         // TODO: make request to retrieve team list
 
         this.state = {
