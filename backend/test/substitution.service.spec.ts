@@ -5,7 +5,6 @@ import { Substitution } from '../src/db/entities/events/substitution.entity';
 import { SubstitutionExchangeDTO } from '../src/dto/events/substitution/substitution-exchange.dto';
 import { SubstitutionDTO } from '../src/dto/events/substitution/substitution.dto';
 import { SubstitutionService } from '../src/event/substitution/substitution.service';
-import * as flushPromises from "flush-promises";
 
 const createQueryBuilder: any = {
   update: () => createQueryBuilder,
