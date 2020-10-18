@@ -13,7 +13,7 @@ const matchDtos: MatchDTO[] = [
     isHomeTeam: false,
   },
   {
-    teamId: 12,
+    teamId: 2,
     time: 500,
     isHomeTeam: false,
   },
@@ -51,7 +51,7 @@ describe('MatchController', () => {
     expect(spy).toBeCalledWith(match);
   });
 
-  it('should call match service to get matches by match id', () => {
+  it('should call match service to get matches by team id', () => {
     const teamId = 1;
     jest.spyOn(matchService, 'getMatches').mockResolvedValue(matchDtos);
     const response = controller.getMatchesByTeamId(teamId);
