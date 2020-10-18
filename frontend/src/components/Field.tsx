@@ -30,6 +30,7 @@ class Field extends React.Component<
   };
 
   addToField = (player: Player | undefined): void => {
+    // TODO: if (player)
     if (player === undefined) {
       console.log("Error: player to add to field was undefined");
     } else {

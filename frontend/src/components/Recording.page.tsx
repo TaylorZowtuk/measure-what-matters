@@ -11,9 +11,11 @@ import Field from "./Field";
 import Player from "./Player";
 
 type Goal = {
+  id?: number;
   matchId: number;
   time: number;
   playerId: number;
+  lineup: number[];
 };
 
 type RecordingProps = {};
@@ -66,12 +68,14 @@ class Recording extends React.Component<
     if (goal_for) {
       this.setState({ goals_for: this.state.goals_for + 1 });
       let goal: Goal = {
+        id: undefined,
         matchId: 1, // TODO: get matchid
         time: Date.now(), // Epoch time in ms
         playerId: 1, // TODO: get playerid
+        lineup: [0, 1, 2, 3, 4, 5], // TODO: get playerids of lineup
       };
       console.log(goal);
-      axios.post(`/events/goals`).then((res) => {
+      axios.post(`/event/goals`, goal).then((res) => {
         console.log(res); // TODO: catch error and handle if needed
       });
     } else {
