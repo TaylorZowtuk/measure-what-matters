@@ -35,6 +35,7 @@ export class User extends BaseEntity {
     team => team.teamId,
     { nullable: true },
   )
+  
   @JoinColumn()
   teamId: number;
 

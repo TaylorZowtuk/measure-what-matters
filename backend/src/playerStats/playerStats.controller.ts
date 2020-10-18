@@ -1,13 +1,13 @@
 import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { PlayerDTO } from 'src/dto/player/player.dto';
+import { PlayerTimeDTO } from 'src/dto/player/playerTime.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { PlayerStatsService } from './playerStats.service';
 
 @ApiTags('Player Stats')
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
-@Controller('player_stats')
+@Controller('player-stats')
 export class PlayerStatsController {
   constructor(private readonly playerStatsService: PlayerStatsService) {}
 
@@ -25,10 +25,29 @@ export class PlayerStatsController {
     return await this.playerStatsService.getSecondsPlayed(playerId, matchId);
   }
 
-  @Get('onForGoal')
-  async getPlayersOnForGoal(
-    @Query('goalId') goalId: number,
-  ): Promise<PlayerDTO[]> {
-    return await this.playerStatsService.getPlayersOnForGoal(goalId);
-  }
+    constructor(playerStatsService: PlayerStatsService) {
+      this.playerStatsService = playerStatsService;
+    }
+
+    @Get('timeOnField')
+    @ApiResponse({
+        status: 200,
+        type: PlayerTimeDTO,
+        isArray: true,
+        description: 'Returns an array of time on field for all players in a specific match',
+      })
+    async getTimeOnField(@Query('matchId') matchId:number ): Promise<PlayerTimeDTO[]>{
+        return await this.playerStatsService.getPlayersTimes(matchId);
+    }
+
+    @ApiResponse({
+      status: 201,
+      type: PlayerDTO,
+      isArray: true,
+      description: 'Creates the starting lineup substitutions'
+    })
+    @Get('onForGoal')
+    async getPlayersOnForGoal(@Query('goalId') goalId:number): Promise<PlayerDTO[]>{
+        return await this.playerStatsService.getPlayersOnForGoal(goalId);
+    }
 }
