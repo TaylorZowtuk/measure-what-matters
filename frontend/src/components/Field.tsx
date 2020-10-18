@@ -29,8 +29,11 @@ class Field extends React.Component<
     return roster;
   };
 
+  getOnField = (): Player[] => {
+    return this.state.onField;
+  };
+
   addToField = (player: Player | undefined): void => {
-    // TODO: if (player)
     if (player === undefined) {
       console.log("Error: player to add to field was undefined");
     } else {
@@ -80,6 +83,7 @@ class Field extends React.Component<
       <FieldTarget
         draggablePlayers={this.state.onField}
         incrementScore={this.props.incrementScore}
+        getLineup={this.getOnField}
       />
     );
   }
@@ -88,12 +92,14 @@ class Field extends React.Component<
 type FieldTargetProps = {
   draggablePlayers: any[];
   incrementScore: Function;
+  getLineup: Function;
 };
 
 function FieldTarget(props: FieldTargetProps) {
   const [, drop] = useDrop({
     accept: DraggableTypes.PLAYER,
-    drop: (item, monitor) => props.incrementScore(true),
+    drop: (item: any, monitor) =>
+      props.incrementScore(true, item.player, props.getLineup()),
     // drop: (item, monitor) => {props.increment_score(     // TODO: increment correct teams score
     //     (monitor.team == "ours") ? true : false
     // )},
