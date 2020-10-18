@@ -1,9 +1,7 @@
-import React from 'react';
-import 'fontsource-roboto';
-import './App.css';
-import Router from './Router';
-
-
+import React from "react";
+import "fontsource-roboto";
+import "./App.css";
+import Router from "./Router";
 
 function App() {
   return (
