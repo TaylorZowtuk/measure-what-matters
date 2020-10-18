@@ -87,6 +87,9 @@
     ]
   },
   "eslintConfig": {
-    "eslint.validate": ["typescript", "typescriptreact"]
+    "eslint.validate": [
+      "typescript",
+      "typescriptreact"
+    ]
   }
 }
