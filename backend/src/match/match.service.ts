@@ -20,7 +20,6 @@ export class MatchService {
     */
 
     async saveMatch(match: MatchDTO): Promise<number> {
-        console.log(match);
         return this.matchRepo.save(match);
 
     }
