@@ -1,5 +1,6 @@
 import { Body, Controller, Post, Get, Query} from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { PlayerArrayDTO } from '../dto/player/playerArray.dto';
 import { Player } from '../db/entities/player.entity';
 import { PlayerDTO } from '../dto/player/player.dto';
 import { PlayerService } from './player.service';
@@ -16,8 +17,8 @@ export class PlayerController {
     
     @Post()
     @ApiResponse({ status: 201, description: 'Creates a new player' })
-    async createPlayer(@Body() player: PlayerDTO){
-        return await this.playerService.savePlayer(player);
+    async createPlayers(@Body() players: PlayerArrayDTO){
+        return await this.playerService.savePlayer(players);
     }
 
     @Get('/teamId')

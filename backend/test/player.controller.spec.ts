@@ -3,6 +3,8 @@ import { PlayerDTO } from '../src/dto/player/player.dto';
 import { PlayerController } from '../src/player/player.controller';
 import { PlayerService } from '../src/player/player.service';
 import { Repository } from 'typeorm';
+import { PlayerArrayDTO } from '../src/dto/player/playerArray.dto';
+import { Player } from '../src/db/entities/player.entity';
 
 const playerDtos: PlayerDTO[] = [
   {
@@ -16,6 +18,7 @@ const playerDtos: PlayerDTO[] = [
     jerseyNum: 2,
   },
 ];
+
 
 describe('PlayerController', () => {
   let controller: PlayerController;
@@ -39,14 +42,16 @@ describe('PlayerController', () => {
   });
 
   it('should call player service to create', () => {
-    const player: PlayerDTO = new PlayerDTO();
+    const playerArrayDTO : PlayerArrayDTO = {
+      playerArray:playerDtos
+    }
     const spy = jest.spyOn(playerService, 'savePlayer').mockImplementation(() => {
-      return new Promise<void>(() => {
+      return new Promise<Player[]>(() => {
         return;
       });
     });
-    controller.createPlayer(player);
-    expect(spy).toBeCalledWith(player);
+    controller.createPlayers(playerArrayDTO);
+    expect(spy).toBeCalledWith(playerArrayDTO);
   });
 
   it('should call player service to get players by team id', () => {

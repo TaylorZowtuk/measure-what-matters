@@ -6,7 +6,7 @@ import { Player } from "../db/entities/player.entity";
 import { PlayerDTO } from "../dto/player/player.dto";
 import { Repository } from "typeorm";
 import { PlayerTimeDTO } from "src/dto/stats/playerTime.dto";
-import { Match } from "src/db/entities/match.entity";
+import { Match } from "../db/entities/match.entity";
 @Injectable()
 export class PlayerStatsService{
 
@@ -68,15 +68,12 @@ export class PlayerStatsService{
             {where: {teamId:teamId}}
         );
 
-        console.log(players);
-
         for(let i=0; i<players.length;i++){
 
             const playerId = players[i].playerId;
             const name = players[i].name;
             const jerseyNum = players[i].jerseyNum;
             const secondsPlayed = await this.getSecondsPlayed(players[i].playerId, matchId);
-            //const secondsPlayed = 100;
             const player_time_DTO: PlayerTimeDTO = {playerId:playerId, teamId:teamId, name:name, jerseyNum:jerseyNum, secondsPlayed:secondsPlayed};
         
             playerTimeDtos.push(player_time_DTO); 

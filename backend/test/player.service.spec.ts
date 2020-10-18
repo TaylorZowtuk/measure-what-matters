@@ -4,6 +4,7 @@ import { Player } from "../src/db/entities/player.entity";
 import { PlayerDTO } from "../src/dto/player/player.dto";
 import { getRepositoryToken } from "@nestjs/typeorm";
 import { Test, TestingModule } from "@nestjs/testing";
+import { PlayerArrayDTO } from "../src/dto/player/playerArray.dto";
 
 
 const playerDto: PlayerDTO = {
@@ -23,6 +24,10 @@ player.jerseyNum = 1;
 
 const playerDtos: PlayerDTO[] = [playerDto];
 const playerEntities: Player[] = [player];
+
+const playerArrayDTO: PlayerArrayDTO = {
+    playerArray: playerDtos,
+}
 
 describe('PlayerService Test', () => {
 
@@ -45,7 +50,7 @@ describe('PlayerService Test', () => {
 
     it('should create a player and add to database', () => {
         const spy = jest.spyOn(playerRepository, 'save');
-        playerService.savePlayer(playerDto);
+        playerService.savePlayer(playerArrayDTO);
         expect(spy).toHaveBeenCalledTimes(1);
     });
     
