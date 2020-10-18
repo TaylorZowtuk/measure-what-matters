@@ -1,28 +1,10 @@
-import React from 'react';
-import { Switch, Route } from 'react-router-dom';
-
+import React from "react";
+import { Switch, Route } from "react-router-dom";
 import Dashboard from './components/Dashboard.page';
 import Recording from './components/Recording.page';
 import Login from './components/Login/Login.page';
 import Teams from './components/Teams/Teams.page';
 import AddTeam from './components/AddTeam/AddTeam.page'
-
-const team = {
-  teamList:[{
-  playerList: [{
-      name: 'John',
-      number: 1
-  },
-  {
-      name: 'Tom',
-      number: 2
-  },
-  {
-      name: 'Bob',
-      number: 3
-  }]
-  }]
-};
 
 const Router = () => {
   return (
@@ -34,6 +16,6 @@ const Router = () => {
       <Route exact path='/create-team' component={AddTeam}></Route>
     </Switch>
   );
-}
+};
 
 export default Router;

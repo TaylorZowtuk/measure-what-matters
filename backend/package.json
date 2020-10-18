@@ -19,20 +19,23 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "db:init": "docker create --name mwm-psql -e POSTGRES_DB=mwm -e POSTGRES_USER=mwm -e POSTGRES_PASSWORD=mwm -v /$INIT_CWD/postgresData:/var/lib/postgresql/data -p 5432:5432 postgres:12 && node echo \"Container created, use 'npm run db:start' to start the database.\"",
+    "db:init": "docker create --name mwm-psql -e POSTGRES_DB=mwm -e POSTGRES_USER=mwm -e POSTGRES_PASSWORD=mwm -p 5432:5432 postgres:12 && node echo \"Container created, use 'npm run db:start' to start the database.\"",
     "db:start": "docker start mwm-psql",
     "db:stop": "docker stop mwm-psql",
     "db:logs": "docker logs -f mwm-psql",
     "db:cmd": "docker exec -it mwm-psql psql -U mwm",
-    "db:clean": "npm run db:stop; docker rm mwm-psql; node echo \"Removing database files...\"; rm -rf /$INIT_CWD/postgresData"
+    "db:clean": "npm run db:stop; docker rm mwm-psql; node echo \"Database removed!\""
   },
   "dependencies": {
     "@nestjs/common": "^7.0.0",
     "@nestjs/config": "^0.5.0",
     "@nestjs/core": "^7.4.4",
+    "@nestjs/passport": "^7.1.0",
     "@nestjs/platform-express": "^7.0.0",
     "@nestjs/swagger": "^4.6.1",
     "@nestjs/typeorm": "^7.1.4",
+    "passport": "^0.4.1",
+    "passport-local": "^1.0.0",
     "pg": "^8.4.1",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
@@ -48,11 +51,12 @@
     "@types/express": "^4.17.3",
     "@types/jest": "26.0.10",
     "@types/node": "^13.9.1",
+    "@types/passport-local": "^1.0.33",
     "@types/supertest": "^2.0.8",
-    "@typescript-eslint/eslint-plugin": "3.9.1",
-    "@typescript-eslint/parser": "3.9.1",
+    "@typescript-eslint/eslint-plugin": "^4.4.1",
+    "@typescript-eslint/parser": "^4.4.1",
     "babel-jest": "^26.5.2",
-    "eslint": "7.7.0",
+    "eslint": "^7.11.0",
     "eslint-config-prettier": "^6.10.0",
     "eslint-plugin-import": "^2.20.1",
     "jest": "26.4.2",
@@ -63,7 +67,7 @@
     "ts-node": "^9.0.0",
     "tsconfig-paths": "^3.9.0",
     "typedoc": "^0.19.2",
-    "typescript": "^3.7.4"
+    "typescript": "^4.0.3"
   },
   "jest": {
     "moduleFileExtensions": [
@@ -71,7 +75,7 @@
       "json",
       "ts"
     ],
-    "rootDir": "./",
+    "rootDir": "./test",
     "testRegex": ".spec.ts$",
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
@@ -81,5 +85,8 @@
     "modulePaths": [
       "<rootDir>"
     ]
+  },
+  "eslintConfig": {
+    "eslint.validate": ["typescript", "typescriptreact"]
   }
 }

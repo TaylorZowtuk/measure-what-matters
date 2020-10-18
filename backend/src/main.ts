@@ -7,14 +7,15 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   const options = new DocumentBuilder()
-  .setTitle('MWM Api')
-  .setDescription('The MWM API description')
-  .setVersion('1.0')
-  .build();
+    .setTitle('MWM Api')
+    .setDescription('The MWM API description')
+    .setVersion('1.0')
+    .build();
 
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('api', app, document);
   
+  app.enableCors({origin: false});
   await app.listen(3000);
 }
 bootstrap();

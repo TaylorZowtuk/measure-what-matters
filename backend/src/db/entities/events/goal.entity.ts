@@ -14,12 +14,15 @@ export class Goal extends BaseEntity implements IEvent{
     @JoinColumn()
     matchId: number;
 
-    @Column()
+    @Column({ type: "bigint" })
     time: number;
 
     @ManyToOne(type => Player, player => player.playerId, {eager: true})
     @JoinColumn()
     playerId: number;
+
+    @Column({ array: true })
+    lineup: number;
 
     @CreateDateColumn()
     createdDate: Date;
