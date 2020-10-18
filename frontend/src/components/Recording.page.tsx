@@ -84,7 +84,7 @@ class Recording extends React.Component<
     return (
       <DndProvider backend={HTML5Backend}>
         <div className="recording">
-          <h1>Recoding Interface</h1>
+          <h1>Recording</h1>
           <Bench notifyOfSubs={this.setSubs}></Bench>
           <Team name={this.team_name} score={this.state.goals_for} />
           <Team name={this.opp_name} score={this.state.goals_against} />
