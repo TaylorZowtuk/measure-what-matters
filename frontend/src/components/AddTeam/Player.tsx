@@ -6,7 +6,8 @@ interface PlayerProps {
 }
 
 interface newPlayer {
-    name: string;
+    firstName: string;
+    lastName: string;
     number: string;
     id: number;
 }
@@ -24,7 +25,7 @@ class Player extends React.Component<PlayerProps> {
     render() {
         return (
             <tr>
-                <td>{this.props.player.name}</td>
+                <td>{this.props.player.firstName + ' ' + this.props.player.lastName}</td>
                 <td>{this.props.player.number}</td>
                 <td><button onClick={this.removePlayer}>remove</button></td>
             </tr>

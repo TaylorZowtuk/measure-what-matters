@@ -8,13 +8,15 @@ import { Link } from "react-router-dom";
 interface createTeamState {
     teamName: string;
     playerList: newPlayer[];
-    newPlayerName: string;
+    newPlayerFirstName: string;
+    newPlayerLastName: string;
     newPlayerNumber: string;
     id: number;
 }
 
 interface newPlayer {
-    name: string;
+    firstName: string;
+    lastName: string
     number: string;
     id: number;
 }
@@ -25,7 +27,8 @@ class AddTeam extends React.Component<{}, createTeamState> {
         this.state = {
             teamName: '',
             playerList: [],
-            newPlayerName: '',
+            newPlayerFirstName:'',
+            newPlayerLastName: '',
             newPlayerNumber: '',
             id: 0
         }
@@ -37,9 +40,15 @@ class AddTeam extends React.Component<{}, createTeamState> {
         })
     }
 
-    handlePlayerNameChange = (e: React.ChangeEvent<HTMLInputElement>):void =>  {
+    handlePlayerFirstNameChange = (e: React.ChangeEvent<HTMLInputElement>):void =>  {
         this.setState({
-            newPlayerName: e.target.value
+            newPlayerFirstName: e.target.value
+        })
+    }
+
+    handlePlayerLastNameChange = (e: React.ChangeEvent<HTMLInputElement>):void =>  {
+        this.setState({
+            newPlayerLastName: e.target.value
         })
     }
 
@@ -51,14 +60,18 @@ class AddTeam extends React.Component<{}, createTeamState> {
 
     onAddPlayer = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>):void => {
         e.preventDefault();
-        if(this.state.newPlayerName?.trim() !== "" && !isNaN(Number(this.state.newPlayerNumber)) && this.state.newPlayerNumber !== "") {
-            let incrementId = this.state.id + 1;
-            this.setState({
-                playerList: [...this.state.playerList, {name: this.state.newPlayerName, number: this.state.newPlayerNumber, id: this.state.id}],
-                newPlayerName: '',
-                newPlayerNumber: '',
-                id: incrementId
-            });
+        if(this.state.newPlayerFirstName?.trim() !== "" && this.state.newPlayerLastName?.trim() !== "" && !isNaN(Number(this.state.newPlayerNumber)) && this.state.newPlayerNumber !== "") {
+            const index = this.state.playerList.findIndex(oldPlayer => this.state.newPlayerNumber.trim() === oldPlayer.number);
+            if (index == -1) {
+                let incrementId = this.state.id + 1;
+                this.setState({
+                    playerList: [...this.state.playerList, {firstName: this.state.newPlayerFirstName, lastName: this.state.newPlayerLastName, number: this.state.newPlayerNumber.trim(), id: this.state.id}],
+                    newPlayerFirstName: '',
+                    newPlayerLastName: '',
+                    newPlayerNumber: '',
+                    id: incrementId
+                });
+            }
         }
     }
 
@@ -79,7 +92,8 @@ class AddTeam extends React.Component<{}, createTeamState> {
             this.setState({
                 teamName: '',
                 playerList: [],
-                newPlayerName: '',
+                newPlayerFirstName: '',
+                newPlayerLastName: '',
                 newPlayerNumber: '',
                 id: 0
             });
@@ -130,13 +144,22 @@ class AddTeam extends React.Component<{}, createTeamState> {
                         <TextField
                             style={{marginRight: 10}}
                             id="outlined-required"
-                            label="Player Name"
+                            label="Player First Name"
                             variant="outlined"
                             margin="dense"
-                            value={this.state.newPlayerName}
-                            onChange={this.handlePlayerNameChange}
+                            value={this.state.newPlayerFirstName}
+                            onChange={this.handlePlayerFirstNameChange}
                         />
 
+                        <TextField
+                            style={{marginRight: 10}}
+                            id="outlined-required"
+                            label="Player Last Name"
+                            variant="outlined"
+                            margin="dense"
+                            value={this.state.newPlayerLastName}
+                            onChange={this.handlePlayerLastNameChange}
+                        />
 
                         <TextField
                         style={{marginRight: 10}}
