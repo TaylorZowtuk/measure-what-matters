@@ -50,7 +50,12 @@ export class PlayerStatsService{
 
         for(let i=0; i<substitutions.length; i++){
             const time_on = (substitutions[i].timeOn);
-            const time_off = (substitutions[i].timeOff);
+            let time_off = (substitutions[i].timeOff);
+
+            // to be fixed, currently the end of the game does not update the time_off for the final substitution, we will fix for next sprint
+            if(time_off == null){
+                time_off = time_on + 100;
+            }
             timeOnField+=(time_off-time_on);
         }
 
