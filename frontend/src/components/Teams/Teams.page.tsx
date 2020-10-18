@@ -20,24 +20,6 @@ interface Player{
     number: number;
 }
 
-const teams = {
-    teamList:
-    [{
-    playerList: [{
-        name: 'John',
-        number: 1
-    },
-    {
-        name: 'Tom',
-        number: 2
-    },
-    {
-        name: 'Bob',
-        number: 3
-    }]
-  }]
-};
-
 class Teams extends React.Component<{}, teamState>{
     constructor(props: {}){
         super(props);
