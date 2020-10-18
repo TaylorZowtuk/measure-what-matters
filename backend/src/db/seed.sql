@@ -1,16 +1,44 @@
-BEGIN;
+INSERT INTO public.user ("userId", "username", "name", "password")
+VALUES (1, 'username', 'name','password');
 
-WITH USERS AS (
-	INSERT INTO public.user (name, password)
-	VALUES ('username','password')
-	RETURNING "userId" AS genUserId
-), TEAMS AS (
-    INSERT INTO public.team (name, "userIdUserId") 
-    SELECT 'teamName', genUserId FROM USERS 
-    RETURNING "teamId" AS genTeamId 
-)
-INSERT INTO public.player (name, "jerseyNum", "teamIdTeamId")
-SELECT 'playerName', 5, genTeamId FROM TEAMS;
+INSERT INTO public.team ("teamId", "name", "userIdUserId")
+VALUES (1, 'team', 1);
 
-INSERT INTO public.user (name, username, password) VALUES ('test', 'test', '$2b$10$MRCZRg5j8N6ffZiQwl8U5ORIIDoKqSyQ11Iej8w5OmJQ3Wl0woxfC') ON CONFLICT DO NOTHING;
-COMMIT;
+INSERT INTO public.match ("teamIdTeamId", "time", "isHomeTeam")
+VALUES (1, 46544654, true);
+
+INSERT INTO public.player ("playerId", "teamIdTeamId", "name", "jerseyNum")
+VALUES (1, 1, 'Aaminah Hood', 1);
+
+INSERT INTO public.player ("playerId", "teamIdTeamId", "name", "jerseyNum")
+VALUES (2, 1, 'Addison Connor', 2);
+
+INSERT INTO public.player ("playerId", "teamIdTeamId", "name", "jerseyNum")
+VALUES (3, 1, 'Khaleesi Harrison', 3);
+
+INSERT INTO public.player ("playerId", "teamIdTeamId", "name", "jerseyNum")
+VALUES (4, 1, 'Usman Mcintyre', 4);
+
+INSERT INTO public.player ("playerId", "teamIdTeamId", "name", "jerseyNum")
+VALUES (5, 1, 'Wayne Townsend', 5);
+
+INSERT INTO public.player ("playerId", "teamIdTeamId", "name", "jerseyNum")
+VALUES (6, 1, 'Marco Lu', 6);
+
+INSERT INTO public.player ("playerId", "teamIdTeamId", "name", "jerseyNum")
+VALUES (7, 1, 'Theodor Levine', 7);
+
+INSERT INTO public.player ("playerId", "teamIdTeamId", "name", "jerseyNum")
+VALUES (8, 1, 'Kerrie Grainger', 8);
+
+INSERT INTO public.player ("playerId", "teamIdTeamId", "name", "jerseyNum")
+VALUES (9, 1, 'Rae Freeman', 9);
+
+INSERT INTO public.player ("playerId", "teamIdTeamId", "name", "jerseyNum")
+VALUES (10, 1, 'Sabah Preece', 10);
+
+INSERT INTO public.player ("playerId", "teamIdTeamId", "name", "jerseyNum")
+VALUES (11, 1, 'Mohammad Enriquez', 11);
+
+
+
