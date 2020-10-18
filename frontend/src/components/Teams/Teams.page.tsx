@@ -2,16 +2,15 @@ import React from 'react';
 import TeamComponent from '../TeamComponent/TeamComponent';
 import Button from '@material-ui/core/Button';
 import './teams.css'
-
-interface teamProps {
-    teamList: Team[]
-}
+import { Link } from 'react-router-dom';
+// import axios from "axios";
 
 interface teamState {
     teamList: Team[]
 }
 
 interface Team {
+    teamName: string;
     playerList: Player[]
 }
 
@@ -23,10 +22,12 @@ interface Player{
 class Teams extends React.Component<{}, teamState>{
     constructor(props: {}){
         super(props);
+        // TODO: make request to retrieve team list
 
         this.state = {
             teamList: [
                 {
+                    teamName: 'Boys Team',
                     playerList: [
                         {
                             name: 'John',
@@ -43,6 +44,7 @@ class Teams extends React.Component<{}, teamState>{
                     ]
                 },
                 {
+                    teamName: 'Girls Team',
                     playerList: [
                         {
                             name: 'Cat',
@@ -61,23 +63,27 @@ class Teams extends React.Component<{}, teamState>{
             ]
         }
     };
-
-    addTeam = (): void => {
-
-    }
     
     public render(){
         return (
             <div className="container">
+                <h3>Your Teams</h3>
                 {this.state.teamList.map((team) => {
                     return (
                         <div className="teamList">
+                            <p>{team.teamName}</p>
                             <TeamComponent playerList={team.playerList}></TeamComponent>
-                            <Button variant="contained">Edit Team</Button>
+                            {/* <Button variant="contained">Edit Team</Button> */}
                         </div>
                     )
                 })}
-                <Button variant="contained">Add Team</Button>
+                <Link to="/create-team">
+                    <Button variant="contained" style={{marginBottom: 10}}>Add Team</Button>
+                </Link>
+                <br/>
+                <Link to="/">
+                    <Button variant="contained">Dashboard</Button>
+                </Link>
             </div>
         )
     }
