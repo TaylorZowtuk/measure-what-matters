@@ -1,5 +1,5 @@
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Player } from 'src/db/entities/player.entity';
+import { Player } from '../db/entities/player.entity';
 import { Module } from '@nestjs/common';
 import { PlayerController } from './player.controller';
 import { PlayerService } from './player.service';

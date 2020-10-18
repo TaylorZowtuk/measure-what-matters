@@ -1,7 +1,7 @@
 import { Body, Controller, Post, Get, Query} from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
-import { Player } from 'src/db/entities/player.entity';
-import { PlayerDTO } from 'src/dto/player/player.dto';
+import { Player } from '../db/entities/player.entity';
+import { PlayerDTO } from '../dto/player/player.dto';
 import { PlayerService } from './player.service';
 
 @ApiTags('Players')

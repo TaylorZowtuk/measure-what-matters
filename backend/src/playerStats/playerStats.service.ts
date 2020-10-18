@@ -1,9 +1,9 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Goal } from "src/db/entities/events/goal.entity";
-import { Substitution } from "src/db/entities/events/substitution.entity";
-import { Player } from "src/db/entities/player.entity";
-import { PlayerDTO } from "src/dto/player/player.dto";
+import { Goal } from "../db/entities/events/goal.entity";
+import { Substitution } from "../db/entities/events/substitution.entity";
+import { Player } from "../db/entities/player.entity";
+import { PlayerDTO } from "../dto/player/player.dto";
 import { Repository } from "typeorm";
 
 @Injectable()

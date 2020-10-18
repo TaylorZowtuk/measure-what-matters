@@ -1,7 +1,7 @@
 import { Controller, Get, Param, Query } from "@nestjs/common";
 import { ApiResponse, ApiTags } from "@nestjs/swagger";
 import { query } from "express";
-import { PlayerDTO } from "src/dto/player/player.dto";
+import { PlayerDTO } from "../dto/player/player.dto";
 import { PlayerStatsService } from "./playerStats.service";
 
 @ApiTags('Player Stats')

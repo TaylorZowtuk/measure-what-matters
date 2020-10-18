@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Post, Query } from "@nestjs/common";
 import { ApiResponse, ApiTags } from "@nestjs/swagger";
-import { Match } from "src/db/entities/match.entity";
-import { MatchDTO } from "src/dto/match/match.dto";
+import { Match } from "../db/entities/match.entity";
+import { MatchDTO } from "../dto/match/match.dto";
 import { MatchService } from "./match.service";
 
 @ApiTags('Matches')
