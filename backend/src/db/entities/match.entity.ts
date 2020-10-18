@@ -8,11 +8,11 @@ export class Match extends BaseEntity {
     @PrimaryGeneratedColumn()
     matchId : number;
 
-    @ManyToOne(type => Team, team => team.teamId)
+    @ManyToOne(type => Team, team => team.teamId, {eager: true})
     @JoinColumn()
     teamId: number;
 
-    @Column()
+    @Column({ type: "bigint" })
     time: number;
 
     @Column()

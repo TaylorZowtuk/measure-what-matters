@@ -1,8 +1,8 @@
 BEGIN;
 
 WITH USERS AS (
-	INSERT INTO public.user (name)
-	VALUES ('username')
+	INSERT INTO public.user (name, password)
+	VALUES ('username','password')
 	RETURNING "userId" AS genUserId
 ), TEAMS AS (
     INSERT INTO public.team (name, "userIdUserId") 
