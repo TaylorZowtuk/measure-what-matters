@@ -91,7 +91,7 @@ type FieldTargetProps = {
   getLineup: Function;
 };
 
-function FieldTarget(props: FieldTargetProps) {
+export function FieldTarget(props: FieldTargetProps) {
   const [, drop] = useDrop({
     accept: DraggableTypes.PLAYER,
     drop: (item: any, monitor) =>
@@ -104,9 +104,7 @@ function FieldTarget(props: FieldTargetProps) {
   return (
     <div ref={drop} id="Field">
       {props.draggablePlayers.map((player, index) => (
-        <div className="player" key={index}>
-          {player}
-        </div>
+        <div key={index}>{player}</div>
       ))}
       {/* Opposing team number is null*/}
       {/* <Player identifier="Bad Guys" number={-1} team="theirs"/>  */}

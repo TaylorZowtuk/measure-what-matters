@@ -71,4 +71,55 @@ Here are the general rules for assigning tasks on the team:
 | Back-end for reports | Bard | October 17 |
 | Front end for time on field report | Taylor | October 17 |
 
+### Sprint 3  
+**Due: Continued from Sprint 2**
+
+| **Task To-Do** | **Assigned To** | **Date To Complete By** |
+| --- | --- | --- | 
+| Player endpoint testing & goal and time on field stats testing & error handling sprint 2 user stories | Bard | October 20 |
+| Finish connecting to BE for substitutions & test Bench, Player & error handling requests | Taylor | October 20 |
+| Connect user login, team creation, and lineup during goals report to the BE | Chloe | October 21 |
+| User login connecting FE to BE & token storage | Joe | October 21 |
+| Unit test for match, goal, and substitution controller | Ayub | October 21 |
+| Start recording & time on field stat user stories | Taylor | October 22 |
+| Testing auth and users modules | Joe | October 22 |
+| Error handling for match, goal, and substitution controller | Ayub | October 22 |
+
+**Due: November 15**
+
+| **Task To-Do** | **Assigned To** | **Date To Complete By** |
+| --- | --- | --- | 
+| View account profile and info BE | Joe | October 23 |
+| Edit account info BE | Joe | October 23 |
+| Create game event assists BE | Bard | October 22 |
+| Export CSV FE | Ayub | October 21 |
+| Export CSV BE | Joe | October 23 |
+| Create game event assists FE | Taylor | October 23 |
+| Create a match lineup FE | Ayub | October 25 |
+| Create a match lineup BE | Bard | October 25 |
+| Logout FE | Ayub | October 31 |
+| Create an account FE | Chloe | November 1 |
+| Game event ball possession FE | Taylor | November 1 |
+| Game event ball possession BE | Joe | November 1 |
+| Timer (start + stop) FE | Chloe | November 1 |
+| Ball possession FE | Ayub | November 1 |
+| Ball possession BE | Bard | November 1 |
+| Flag event BE | Joe | November 2 |
+| Edit team roster FE | Ayub | November 3 |
+| Edit team roster BE | Bard | November 3 |
+| Flag event FE | Ayub | November 5 |
+| Game event shots on net BE | Bard | November 6 |
+| View account profile and info FE | Chloe | November 6 |
+| Game event shots on net FE | Taylor | November 7 |
+| +/- BE | Bard | November 8 |
+| Edit account info FE | Chloe | November 10 |
+| List game events BE | Joe | November 11 |
+| +/- FE | Taylor | November 12 |
+| List game events FE | Chloe | November 12 |
+| Date range selector FE | Ayub | November 12 |
+| Timeline FE | Taylor | November 13 |
+| Timeline BE | Joe | November 13 |
+| Cache events | Taylor | November 13 |
+| Player summary BE | Joe | November 14 |
+| Player summary FE | Chloe | November 14 |
 

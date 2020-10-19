@@ -29,70 +29,105 @@ export const roster: Player[] = [
     last_name: "Barnes",
     num: 2,
     team: "ours",
-    playerId: 2,
+    playerId: 3,
   },
   {
     first_name: "Dennis",
     last_name: "Yang",
     num: 3,
     team: "ours",
-    playerId: 3,
+    playerId: 4,
   },
   {
     first_name: "Aman",
     last_name: "Luna",
     num: 4,
     team: "ours",
-    playerId: 4,
+    playerId: 5,
   },
   {
     first_name: "Taylor",
     last_name: "Wilkins",
     num: 5,
     team: "ours",
-    playerId: 5,
+    playerId: 6,
   },
   {
     first_name: "Kevin",
     last_name: "Leonard",
     num: 6,
     team: "ours",
-    playerId: 6,
+    playerId: 7,
   },
   {
     first_name: "Laura",
     last_name: "Watson",
     num: 7,
     team: "ours",
-    playerId: 7,
+    playerId: 8,
   },
   {
     first_name: "Rennay",
     last_name: "Gordon",
     num: 8,
     team: "ours",
-    playerId: 8,
+    playerId: 9,
   },
   {
     first_name: "Clayton",
     last_name: "Banks",
     num: 9,
     team: "ours",
-    playerId: 9,
+    playerId: 10,
   },
   {
     first_name: "Zach",
     last_name: "Ryan",
     num: 10,
     team: "ours",
-    playerId: 10,
+    playerId: 11,
   },
   {
     first_name: "Clarence",
     last_name: "Briggs",
     num: 11,
     team: "ours",
-    playerId: 11,
+    playerId: 12,
+  },
+  {
+    first_name: "Bo",
+    last_name: "Briggs",
+    num: 12,
+    team: "ours",
+    playerId: 13,
+  },
+  {
+    first_name: "Snow",
+    last_name: "White",
+    num: 13,
+    team: "ours",
+    playerId: 14,
+  },
+  {
+    first_name: "Bard",
+    last_name: "Papi",
+    num: 14,
+    team: "ours",
+    playerId: 15,
+  },
+  {
+    first_name: "Kalvin",
+    last_name: "Coolio",
+    num: 15,
+    team: "ours",
+    playerId: 16,
+  },
+  {
+    first_name: "Robert",
+    last_name: "Patton",
+    num: 16,
+    team: "ours",
+    playerId: 17,
   },
 ];
 
@@ -128,6 +163,10 @@ class Bench extends React.Component<
       substituteFor: undefined,
     };
   }
+
+  getPlayers = (): Player[] => {
+    return roster.splice(6, roster.length);
+  };
 
   setBench = (players: Player[]): void => {
     this.setState({ onBench: players });
