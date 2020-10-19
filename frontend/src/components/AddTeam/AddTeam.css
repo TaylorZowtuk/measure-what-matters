@@ -1,0 +1,27 @@
+table {
+    color: #282c34;
+    font-size: small;
+}
+
+/* table thead {
+    font-weight: bold;
+} */
+
+form {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.container {
+    background-color: white;
+    border-radius: 5px;
+    color: #282c34;
+    font-weight: normal;
+    padding: 30px;
+    /* padding: "20px 10px";
+    margin: "20px 10px" */
+}
+
+.input {
+    margin-right: 10px;
+}
