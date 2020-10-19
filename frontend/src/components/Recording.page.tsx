@@ -56,21 +56,22 @@ class Recording extends React.Component<
   ): void => {
     if (goal_for) {
       this.setState({ goals_for: this.state.goals_for + 1 });
-      let ids: number[] = [];
-      for (let i = 0; i < lineup.length; i++) {
-        ids.push(lineup[i].playerId);
-      }
-      let goal: Goal = {
-        id: undefined,
-        matchId: 1, // TODO: get matchid
-        time: Date.now(), // Epoch time in ms
-        playerId: scorer.playerId,
-        lineup: ids,
-      };
-      console.log(goal);
-      axios.post(`/event/goals`, goal).then((res) => {
-        console.log(res); // TODO: catch error and handle if needed
-      });
+      // TODO: Uncomment, removed for demo
+      // let ids: number[] = [];
+      // for (let i = 0; i < lineup.length; i++) {
+      //   ids.push(lineup[i].playerId);
+      // }
+      // let goal: Goal = {
+      //   id: undefined,
+      //   matchId: 1, // TODO: get matchid
+      //   time: Date.now(), // Epoch time in ms
+      //   playerId: scorer.playerId,
+      //   lineup: ids,
+      // };
+      // console.log(goal);
+      // axios.post(`/event/goals`, goal).then((res) => {
+      //   console.log(res); // TODO: catch error and handle if needed
+      // });
     } else {
       this.setState({ goals_against: this.state.goals_against + 1 });
       // TODO: add backend call to add against goal
