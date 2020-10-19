@@ -73,6 +73,7 @@ Here are the general rules for assigning tasks on the team:
 
 ### Sprint 3  
 **Due: Continued from Sprint 2**
+
 | **Task To-Do** | **Assigned To** | **Date To Complete By** |
 | --- | --- | --- | 
 | Player endpoint testing & goal and time on field stats testing & error handling sprint 2 user stories | Bard | October 20 |
@@ -85,6 +86,7 @@ Here are the general rules for assigning tasks on the team:
 | Error handling for match, goal, and substitution controller | Ayub | October 22 |
 
 **Due: November 15**
+
 | **Task To-Do** | **Assigned To** | **Date To Complete By** |
 | --- | --- | --- | 
 | View account profile and info BE | Joe | October 23 |
