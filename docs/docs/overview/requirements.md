@@ -20,35 +20,17 @@ User Stories are described with a specific format: "As a", "I want", and "So Tha
 
 ---
 
-#### 1.1.1 - Create An Account
+#### 1.1.1 - User Account
 
-> **As a user,** <br></br> > **I want** to be able to create an account with a unique username from the log in,<br></br> > **So that** I can have a saved profile for future use.
+> **As a user,** <br></br> > **I want** to be to have an account,<br></br> > **So that** I can have a saved profile for future use.
 
-> **Acceptance:** User has own account to keep local information and rosters, unique username and password satisfied.
+> **Acceptance:**
 
-#### 1.1.2 - User Login
-
-> **As a user,** <br></br> > **I want** to be able to log into my account,<br></br> > **So that** I can access my profile.
-
-> **Acceptance:** Log in process completes, logs into correct account, profile shows up.
-
-#### 1.1.3 - User Logout
-
-> **As a user,** <br></br> > **I want**to be able to log out of my account,<br></br> > **So that** no one else can use my account.
-
-> **Acceptance:** Log out completes and return to home screen achieved.
-
-#### 1.1.4 - View Account Profile and Info
-
-> **As a user,** <br></br> > **I want** to be able to view my account information,<br></br> > **So that** I can ensure it is correct and be reminded of the information entered.
-
-> **Acceptance:** Interface with correct account information showing accessible.
-
-#### 1.1.5 - Edit Account Info
-
-> **As a user,** <br></br> > **I want** to be able to edit my account information,<br></br> > **So that** I can correct any misinformation or add changes.
-
-> **Acceptance:** Edits have simple interface, view account information show updates correctly.
+1. User can create an account using the account creation page
+1. User can view their account details using the view
+1. User can login
+1. User can logout
+1. User can edit account details
 
 ---
 
@@ -354,7 +336,6 @@ Acceptance: The coach receives at least novel advice, like a reminder to make su
 - 3.2.9 - Export as CSV
 - 3.2.10 - Stat - Date Range Selection
 - 3.2.12 - Stat - Player Summary
-
 
 #### Could Have
 
