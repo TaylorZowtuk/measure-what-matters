@@ -11,6 +11,8 @@ import InputLabel from '@material-ui/core/InputLabel';
 // import IconButton from '@material-ui/core/IconButton';
 // import Visibility from '@material-ui/icons/Visibility';
 // import VisibilityOff from '@material-ui/icons/VisibilityOff';
+import AuthService from '../../services/auth.service';
+import {useHistory} from 'react-router-dom';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -38,7 +40,7 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-interface State {
+interface LoginState {
     email: string,
     password: string;
     showPassword: boolean;
@@ -47,14 +49,14 @@ interface State {
 const Login = () => {
     const classes = useStyles();
 
-    const [values, setValues] = React.useState<State>({
+    const [currentState, setCurrentState] = React.useState<LoginState>({
         email: '',
         password: '',
         showPassword: false,
     });
 
-    const handleChange = (prop: keyof State) => (event: React.ChangeEvent<HTMLInputElement>) => {
-        setValues({ ...values, [prop]: event.target.value });
+    const handleChange = (prop: keyof LoginState) => (event: React.ChangeEvent<HTMLInputElement>) => {
+        setCurrentState({ ...currentState, [prop]: event.target.value });
     };
 
     // const handleClickShowPassword = () => {
@@ -65,8 +67,47 @@ const Login = () => {
     //     event.preventDefault();
     // };
 
-    const handleOnClick = () => {
+    const history = useHistory();
+
+    const handleLogin= (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         // TODO: call to backend
+        // if(this.state.username && this.state.password){
+        //     const user = {
+        //         username: this.state.email,
+        //         password: this.state.password
+        //     }
+
+        //     event.preventDefault();
+        //     fetch('/auth/login', {
+        //         method: 'POST',
+        //         body: JSON.stringify(user), 
+        //         headers: {
+        //             'Content-Type': 'application/json'
+        //         },})
+        //         .then(r => r.json())
+        //         .then(token => {
+
+        //         });
+        // }
+        
+        event.preventDefault();
+        if(currentState.email && currentState.password){
+            AuthService.login(currentState.email, currentState.password).then(
+                () => {
+                    history.push("/dashboard");
+                    window.location.reload();
+                },
+                error => {
+                const resMessage =
+                    (error.response &&
+                    error.response.data &&
+                    error.response.data.message) ||
+                    error.message ||
+                    error.toString();
+                }
+            );
+        }
+        
     }
 
     return (
@@ -90,8 +131,8 @@ const Login = () => {
                     <InputLabel htmlFor="outlined-adornment-password" color='secondary'>Password</InputLabel>
                     <OutlinedInput
                         id="outlined-adornment-password"
-                        type={values.showPassword ? 'text' : 'password'}
-                        value={values.password}
+                        type={currentState.showPassword ? 'text' : 'password'}
+                        value={currentState.password}
                         onChange={handleChange('password')}
                         margin="dense"
                         color='secondary'
@@ -111,7 +152,7 @@ const Login = () => {
                 </FormControl>
 
                 <br></br>
-                <Button variant="contained" className={classes.button} onClick={handleOnClick}>Log in</Button>
+                <Button variant="contained" className={classes.button} onClick={handleLogin}>Log in</Button>
 
             </div>
             <p></p>
