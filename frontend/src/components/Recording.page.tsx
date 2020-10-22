@@ -105,7 +105,6 @@ class Recording extends React.Component<
   ): void => {
     if (goal_for) {
       this.setState({ goals_for: this.state.goals_for + 1 });
-      // TODO: Uncomment, removed for demo
       let ids: number[] = [];
       for (let i = 0; i < lineup.length; i++) {
         ids.push(lineup[i].playerId);
