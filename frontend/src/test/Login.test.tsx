@@ -12,16 +12,9 @@ test("renders login header", () => {
   expect(headerElement).toBeInTheDocument();
 });
 
-test("renders dashboard return button on login page", () => {
+test("renders login button on login page", () => {
   const { getByText } = render(<Login />, { wrapper: BrowserRouter });
 
-  const dashboardButton = getByText(/Dashboard/i);
-  expect(dashboardButton).toBeInTheDocument();
+  const loginButton = getByText(/Log In/i);
+  expect(loginButton).toBeInTheDocument();
 });
-
-test("renders login button on login page", () => {
-    const { getByText } = render(<Login />, { wrapper: BrowserRouter });
-  
-    const loginButton = getByText(/Log In/i);
-    expect(loginButton).toBeInTheDocument();
-  });
