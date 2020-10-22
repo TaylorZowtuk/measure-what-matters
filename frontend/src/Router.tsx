@@ -15,11 +15,7 @@ const Router = () => {
       <Route exact path="/dashboard" component={Dashboard}></Route>
       <Route exact path="/teams" component={Teams}></Route>
       <Route exact path="/create-team" component={AddTeam}></Route>
-      <Route
-        exact
-        path="/recording"
-        render={(props) => <Recording matchId={1} teamId={1} />} // TODO: Remove hardcoded matchId and teamId
-      ></Route>
+      <Route exact path="/recording" component={Recording}></Route>
     </Switch>
   );
 };

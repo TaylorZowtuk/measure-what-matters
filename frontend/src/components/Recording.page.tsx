@@ -1,5 +1,6 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { StaticContext } from "react-router";
+import { Link, RouteComponentProps } from "react-router-dom";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import axios from "axios";
@@ -9,7 +10,6 @@ import Team from "./Team";
 import Bench, { Substitution } from "./Bench";
 import Field from "./Field";
 import Player from "./Player";
-import { time } from "console";
 
 type Goal = {
   id?: number;
@@ -20,12 +20,12 @@ type Goal = {
 };
 
 type RecordingProps = {
-  matchId: number;
-  teamId: number;
+  matchId: string;
+  teamId: string;
 };
 
 class Recording extends React.Component<
-  RecordingProps,
+  RouteComponentProps<{}, StaticContext, RecordingProps>,
   {
     goals_against: number;
     goals_for: number;
@@ -37,7 +37,7 @@ class Recording extends React.Component<
   team_name: string = "Blue Blazers";
   opp_name: string = "Red Rockets";
 
-  constructor(props: RecordingProps) {
+  constructor(props: RouteComponentProps<{}, StaticContext, RecordingProps>) {
     super(props);
     this.state = {
       goals_for: 0,
@@ -50,7 +50,10 @@ class Recording extends React.Component<
 
   getRoster = async (): Promise<Player[]> => {
     console.log("Requests roster");
-    const res = await axios.get(`/player/teamId?teamId=${this.props.teamId}`);
+    console.log(this.props.location.state);
+    const res = await axios.get(
+      `/player/teamId?teamId=${this.props.location.state.matchId}`
+    );
     console.log("Gets roster response");
     console.log("Response data:", res.data);
     // TODO: handle error
