@@ -91,6 +91,7 @@ const Login = () => {
         // }
         
         event.preventDefault();
+        console.log('clicked')
         if(currentState.email && currentState.password){
             AuthService.login(currentState.email, currentState.password).then(
                 () => {
@@ -98,12 +99,13 @@ const Login = () => {
                     window.location.reload();
                 },
                 error => {
-                const resMessage =
-                    (error.response &&
-                    error.response.data &&
-                    error.response.data.message) ||
-                    error.message ||
-                    error.toString();
+                // const resMessage =
+                //     (error.response &&
+                //     error.response.data &&
+                //     error.response.data.message) ||
+                //     error.message ||
+                //     error.toString();
+                console.log("invalid credential");
                 }
             );
         }
