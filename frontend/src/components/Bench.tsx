@@ -106,7 +106,7 @@ class Bench extends React.Component<
     axios
       .post(`/event/substitutions`, sub, { headers: authHeader() })
       .then((res) => {
-        console.log(res); // TODO: catch error and handle if needed
+        console.log("Post sub response:", res); // TODO: catch error and handle if needed
       });
     let moveToField = this.removeFromBench(num); // Remove player from bench
     this.addToBench(this.state.substituteFor); // Add player from field to bench
@@ -115,9 +115,7 @@ class Bench extends React.Component<
     this.toggleIsExpanded(); // Close the bench
   };
 
-  componentDidUpdate(_prevProps: any, _prevState: any) {
-    console.log(this.state);
-  }
+  componentDidUpdate(_prevProps: any, _prevState: any) {}
 
   render() {
     if (this.state.isExpanded) {

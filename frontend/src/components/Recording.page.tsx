@@ -50,14 +50,11 @@ class Recording extends React.Component<
   }
 
   getRoster = async (): Promise<Player[]> => {
-    console.log("Requests roster");
-    console.log(authHeader());
     const res = await axios.get(
       `/player/teamId?teamId=${this.props.location.state.matchId}`,
       { headers: authHeader() }
     );
-    console.log("Gets roster response");
-    console.log("Response data:", res.data);
+    console.log("Get roster response:", res.data);
     // TODO: handle error
     let players: Player[] = [];
     for (let i = 0; i < res.data.length; i++) {
@@ -91,7 +88,7 @@ class Recording extends React.Component<
     axios
       .post(`/event/substitutions/startingLineup`, lineupSubs)
       .then((res) => {
-        console.log(res); // TODO: catch error and handle if needed
+        console.log("Post starting lineup response:", res); // TODO: catch error and handle if needed
       });
     return starting;
   };
@@ -125,7 +122,6 @@ class Recording extends React.Component<
         playerId: scorer.playerId,
         lineup: ids,
       };
-      console.log(goal);
       axios
         .post(`/event/goals`, goal, { headers: authHeader() })
         .then((res) => {
