@@ -7,7 +7,7 @@ import axios from "axios";
 
 import Button from "@material-ui/core/Button";
 import Team from "./Team";
-import Bench, { Substitution } from "./Bench";
+import Bench, { StartingPlayer } from "./Bench";
 import Field from "./Field";
 import Player from "./Player";
 import authHeader from "../services/auth.header";
@@ -79,10 +79,10 @@ class Recording extends React.Component<
     let starting: Player[] = this.state.roster.slice(0, 6); // First 6 players of roster are the starting lineup
     let lineupSubs: any[] = [];
     for (let i = 0; i < starting.length; i++) {
-      let sub: Substitution = {
+      let sub: StartingPlayer = {
         id: undefined,
         playerId: starting[i].playerId,
-        matchId: 1, // TODO: dont hardcode matchid
+        matchId: Number(this.props.location.state.matchId),
         timeOn: Date.now(),
         timeOff: Date.now() + 10000, // TODO: have timeoff removed from endpoint
       };
@@ -120,15 +120,17 @@ class Recording extends React.Component<
       }
       let goal: Goal = {
         id: undefined,
-        matchId: 1, // TODO: get matchid
+        matchId: Number(this.props.location.state.matchId),
         time: Date.now(), // Epoch time in ms
         playerId: scorer.playerId,
         lineup: ids,
       };
       console.log(goal);
-      axios.post(`/event/goals`, goal).then((res) => {
-        console.log(res); // TODO: catch error and handle if needed
-      });
+      axios
+        .post(`/event/goals`, goal, { headers: authHeader() })
+        .then((res) => {
+          console.log(res); // TODO: catch error and handle if needed
+        });
     } else {
       this.setState({ goals_against: this.state.goals_against + 1 });
       // TODO: add backend call to add against goal
@@ -153,6 +155,7 @@ class Recording extends React.Component<
           <div className="recording">
             <h1>Recording</h1>
             <Bench
+              matchId={Number(this.props.location.state.matchId)}
               getStartingBench={this.provideStartingBench}
               notifyOfSubs={this.setSubs}
             ></Bench>
