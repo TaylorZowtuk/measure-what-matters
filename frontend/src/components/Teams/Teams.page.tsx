@@ -3,7 +3,8 @@ import TeamComponent from "../TeamComponent/TeamComponent";
 import Button from "@material-ui/core/Button";
 import "./teams.css";
 import { Link } from "react-router-dom";
-// import axios from "axios";
+import axios from "axios";
+import AuthService from "../../services/auth.service";
 
 interface teamState {
   teamList: Team[];
@@ -19,56 +20,85 @@ interface Player {
   number: number;
 }
 
+const currentUser = AuthService.getCurrentUser();
+
 class Teams extends React.Component<{}, teamState> {
   constructor(props: {}) {
     super(props);
-    // TODO: make request to retrieve team list
-
     this.state = {
-      teamList: [
-        {
-          teamName: "Boys Team",
-          playerList: [
-            {
-              name: "John",
-              number: 1,
-            },
-            {
-              name: "Tom",
-              number: 2,
-            },
-            {
-              name: "Bob",
-              number: 3,
-            },
-          ],
+      teamList: []
+    }
+    // TODO: make request to retrieve team list
+    axios.get(`/teams/userId?userId=${currentUser.userId}`)
+    .then(response => {
+      let teams = response.data;
+      let teamArray: Team[] = [];
+      
+      teams.forEach((element: any) => {
+        axios.get(`/player/teamId?teamId=${element.teamId}`)
+        .then(response => {
+          let players: Array<Player> = [];
+          response.data.playerArray.forEach((player: any) => {
+            players.push({name: player.name, number: player.jerseyNum});
+          });
+          teamArray.push({teamName: element.name, playerList: players});
+          this.setState({teamList: teamArray});
         },
-        {
-          teamName: "Girls Team",
-          playerList: [
-            {
-              name: "Cat",
-              number: 5,
-            },
-            {
-              name: "Lily",
-              number: 6,
-            },
-            {
-              name: "Mag",
-              number: 8,
-            },
-          ],
-        },
-      ],
-    };
+        (error) => {
+          console.log("getting errors");
+        });
+      });
+    },
+    (error) => {
+      console.log("getting errors");
+    })
+
+  //   this.state = {
+  //     teamList: [
+  //       {
+  //         teamName: "Boys Team",
+  //         playerList: [
+  //           {
+  //             name: "John",
+  //             number: 1,
+  //           },
+  //           {
+  //             name: "Tom",
+  //             number: 2,
+  //           },
+  //           {
+  //             name: "Bob",
+  //             number: 3,
+  //           },
+  //         ],
+  //       },
+  //       {
+  //         teamName: "Girls Team",
+  //         playerList: [
+  //           {
+  //             name: "Cat",
+  //             number: 5,
+  //           },
+  //           {
+  //             name: "Lily",
+  //             number: 6,
+  //           },
+  //           {
+  //             name: "Mag",
+  //             number: 8,
+  //           },
+  //         ],
+  //       },
+  //     ],
+  //   };
   }
 
   public render() {
     return (
       <div className="container">
         <h3>Your Teams</h3>
-        {this.state.teamList.map((team) => {
+        {
+        this.state.teamList.map((team) => {
           return (
             <div className="teamList">
               <p>{team.teamName}</p>
@@ -76,7 +106,8 @@ class Teams extends React.Component<{}, teamState> {
               {/* <Button variant="contained">Edit Team</Button> */}
             </div>
           );
-        })}
+        })
+        }
         <Link to="/create-team">
           <Button variant="contained" style={{ marginBottom: 10 }}>
             Add Team
