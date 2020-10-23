@@ -4,7 +4,7 @@ import Button from "@material-ui/core/Button";
 import "./teams.css";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import AuthService from "../../services/auth.service";
+// import AuthService from "../../services/auth.service";
 
 interface teamState {
   teamList: Team[];
@@ -20,7 +20,7 @@ interface Player {
   number: number;
 }
 
-const currentUser = AuthService.getCurrentUser();
+// const currentUser = AuthService.getCurrentUser();
 
 class Teams extends React.Component<{}, teamState> {
   constructor(props: {}) {
@@ -29,11 +29,11 @@ class Teams extends React.Component<{}, teamState> {
       teamList: []
     }
     // TODO: make request to retrieve team list
-    axios.get(`/teams/userId?userId=${currentUser.userId}`)
+    axios.get(`/teams/userId?userId=0`)
     .then(response => {
       let teams = response.data;
       let teamArray: Team[] = [];
-      
+
       teams.forEach((element: any) => {
         axios.get(`/player/teamId?teamId=${element.teamId}`)
         .then(response => {

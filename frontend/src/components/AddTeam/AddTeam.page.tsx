@@ -4,7 +4,7 @@ import './AddTeam.css'
 import Button from '@material-ui/core/Button';
 import Player from './Player';
 import { Link } from "react-router-dom";
-// import axios from "axios";
+import axios from "axios";
 
 interface createTeamState {
     teamName: string;
@@ -107,15 +107,36 @@ class AddTeam extends React.Component<{}, createTeamState> {
             //     });
             // })
 
-            console.log("add team");
-            this.setState({
-                teamName: '',
-                playerList: [],
-                newPlayerFirstName: '',
-                newPlayerLastName: '',
-                newPlayerNumber: '',
-                id: 0
-            });
+            axios.post('/teams', {name: this.state.teamName})
+            .then(response => {
+                if(response.data.teamId) {
+                    if (this.state.playerList.length !== 0) {
+                        let playerArray: Array<{teamId: number, name: string, jerseyNum: number}> = [];
+                        this.state.playerList.forEach((player: any) => {
+                            playerArray.push({
+                                teamId: response.data.teamId,
+                                name: player.firstName + ' ' + player.lastName,
+                                jerseyNum: player.number
+                            });
+                        });
+                        axios.post('/player', {playerArray});
+                    }
+                    console.log("add team");
+                    this.setState({
+                        teamName: '',
+                        playerList: [],
+                        newPlayerFirstName: '',
+                        newPlayerLastName: '',
+                        newPlayerNumber: '',
+                        id: 0
+                    });
+                }
+            },
+            (error) => {
+                console.log("team not created");
+            })
+
+            
         }
         else{
             alert("Enter team name");
