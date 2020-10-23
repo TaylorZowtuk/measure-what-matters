@@ -92,7 +92,7 @@ class Recording extends React.Component<
             addToField={this.state.subBench}
             resetSubs={this.setSubs}
           />
-          <Link to="/">
+          <Link to="/dashboard">
             <Button variant="contained">Dashboard</Button>
           </Link>
         </div>
