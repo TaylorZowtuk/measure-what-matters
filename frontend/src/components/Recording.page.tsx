@@ -10,6 +10,7 @@ import Team from "./Team";
 import Bench, { Substitution } from "./Bench";
 import Field from "./Field";
 import Player from "./Player";
+import authHeader from "../services/auth.header";
 
 type Goal = {
   id?: number;
@@ -50,9 +51,10 @@ class Recording extends React.Component<
 
   getRoster = async (): Promise<Player[]> => {
     console.log("Requests roster");
-    console.log(this.props.location.state);
+    console.log(authHeader());
     const res = await axios.get(
-      `/player/teamId?teamId=${this.props.location.state.matchId}`
+      `/player/teamId?teamId=${this.props.location.state.matchId}`,
+      { headers: authHeader() }
     );
     console.log("Gets roster response");
     console.log("Response data:", res.data);
