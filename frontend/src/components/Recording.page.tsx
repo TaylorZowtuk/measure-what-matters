@@ -75,7 +75,7 @@ class Recording extends React.Component<
 
   provideStartingLine = (): Player[] => {
     let starting: Player[] = this.state.roster.slice(0, 6); // First 6 players of roster are the starting lineup
-    let body: any[] = [];
+    let lineupSubs: any[] = [];
     for (let i = 0; i < starting.length; i++) {
       let sub: Substitution = {
         id: undefined,
@@ -84,9 +84,13 @@ class Recording extends React.Component<
         timeOn: Date.now(),
         timeOff: Date.now() + 10000, // TODO: have timeoff removed from endpoint
       };
-      body.push(sub);
+      lineupSubs.push(sub);
     }
-    // TODO: make call to /event/substitutions/startingLineup endpoint
+    axios
+      .post(`/event/substitutions/startingLineup`, lineupSubs)
+      .then((res) => {
+        console.log(res); // TODO: catch error and handle if needed
+      });
     return starting;
   };
 
