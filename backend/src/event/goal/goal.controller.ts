@@ -50,7 +50,7 @@ export class GoalController {
         throw new BadRequestException(err.message);
       } else {
         throw new InternalServerErrorException(
-          'Something went wrong try again later.',
+          'Something went wrong. Please try again later.',
         );
       }
     }
