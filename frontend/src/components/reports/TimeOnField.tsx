@@ -37,7 +37,7 @@ function createData(
   return { name, number, minutes };
 }
 
-const hard_coded_rows = [
+const hardCodedRows = [
   createData("Rob", "Park", 7, 125),
   createData("Jake", "Floyd", 1, 1256),
   createData("Jim", "Floyd", 12, 1678),
@@ -57,10 +57,10 @@ const hard_coded_rows = [
 // Enable using a hardcoded set of values for testing or to use data from an api call
 function getRows(debug = true): FormattedData[] {
   if (debug) {
-    return hard_coded_rows;
+    return hardCodedRows;
   }
   // TODO: add api call
-  return hard_coded_rows;
+  return hardCodedRows;
 }
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
