@@ -69,24 +69,24 @@ describe('GoalService', () => {
     );
   });
 
-  it('should get goals with specified player id', () => {
+  it('should get goals with specified player id', async () => {
     jest.spyOn(goalRepository, 'find').mockResolvedValue(goalEntities);
-    const goals = goalService.getGoalsByPlayerId(goal.playerId);
-    expect(goals).resolves.toBe(goalDtos);
+    const goals = await goalService.getGoalsByPlayerId(goal.playerId);
+    expect(goals).toEqual(goalDtos);
   });
 
-  it('should get goals with specified matchId', () => {
+  it('should get goals with specified matchId', async () => {
     jest.spyOn(goalRepository, 'find').mockResolvedValue(goalEntities);
-    const goals = goalService.getGoalsByMatchId(goal.matchId);
-    expect(goals).resolves.toBe(goalDtos);
+    const goals = await goalService.getGoalsByMatchId(goal.matchId);
+    expect(goals).toEqual(goalDtos);
   });
 
-  it('should get goals with specified matchId and player id', () => {
+  it('should get goals with specified matchId and player id', async () => {
     jest.spyOn(goalRepository, 'find').mockResolvedValue(goalEntities);
-    const goals = goalService.getGoalsForPlayerInMatch(
+    const goals = await goalService.getGoalsForPlayerInMatch(
       goal.playerId,
       goal.matchId,
     );
-    expect(goals).resolves.toBe(goalDtos);
+    expect(goals).toEqual(goalDtos);
   });
 });
