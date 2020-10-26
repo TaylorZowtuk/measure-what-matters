@@ -57,7 +57,9 @@ describe('PlayerController', () => {
 
   it('should call player service to get players by team id', () => {
     const teamId = 1;
-    jest.spyOn(playerService, 'getPlayers').mockResolvedValue(playerDtos);
+    jest
+      .spyOn(playerService, 'getPlayersByTeamId')
+      .mockResolvedValue(playerDtos);
     const response = controller.getPlayersByTeamId(teamId);
     expect(response).resolves.toBe(playerDtos);
   });

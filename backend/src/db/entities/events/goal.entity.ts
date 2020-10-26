@@ -5,24 +5,30 @@ import { Player } from "../player.entity";
 
 @Entity()
 
-export class Goal extends BaseEntity implements IEvent{
+export class Goal extends BaseEntity {
 
     @PrimaryGeneratedColumn()
     id : number;
 
-    @ManyToOne(type => Match, match => match.matchId, {eager: true})
-    @JoinColumn()
-    matchId: number;
+    @ManyToOne(() => Match, match => match.matchId, {eager: true})
+    @JoinColumn({name: 'matchId'})
+    match: Match;
 
     @Column({ type: "bigint" })
     time: number;
 
-    @ManyToOne(type => Player, player => player.playerId, {eager: true})
-    @JoinColumn()
+    @ManyToOne(() => Player, player => player.playerId, {eager: true})
+    @JoinColumn({name: 'playerId'})
+    player: Player;
+
+    @Column()
     playerId: number;
 
-    @Column({ array: true })
-    lineup: number;
+    @Column()
+    matchId: number;
+
+    @Column("int", { array: true })
+    lineup: number[];
 
     @CreateDateColumn()
     createdDate: Date;
