@@ -94,12 +94,10 @@ const Login = () => {
     // }
 
     event.preventDefault();
-    console.log("clicked");
     if (currentState.email && currentState.password) {
       AuthService.login(currentState.email, currentState.password).then(
         () => {
           history.push("/dashboard");
-          window.location.reload();
         },
         (error) => {
           // const resMessage =

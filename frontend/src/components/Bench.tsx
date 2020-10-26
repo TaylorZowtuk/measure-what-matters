@@ -7,131 +7,29 @@ import GridList from "@material-ui/core/GridList";
 import GridListTile from "@material-ui/core/GridListTile";
 import Button from "@material-ui/core/Button";
 
+import authHeader from "../services/auth.header";
+import axios from "axios";
+
 import Player from "./Player";
 
-export const roster: Player[] = [
-  {
-    first_name: "Charlie",
-    last_name: "Whittle",
-    num: 0,
-    team: "ours",
-    playerId: 1,
-  },
-  {
-    first_name: "Mac",
-    last_name: "Ferguson",
-    num: 1,
-    team: "ours",
-    playerId: 2,
-  },
-  {
-    first_name: "Dee",
-    last_name: "Barnes",
-    num: 2,
-    team: "ours",
-    playerId: 3,
-  },
-  {
-    first_name: "Dennis",
-    last_name: "Yang",
-    num: 3,
-    team: "ours",
-    playerId: 4,
-  },
-  {
-    first_name: "Aman",
-    last_name: "Luna",
-    num: 4,
-    team: "ours",
-    playerId: 5,
-  },
-  {
-    first_name: "Taylor",
-    last_name: "Wilkins",
-    num: 5,
-    team: "ours",
-    playerId: 6,
-  },
-  {
-    first_name: "Kevin",
-    last_name: "Leonard",
-    num: 6,
-    team: "ours",
-    playerId: 7,
-  },
-  {
-    first_name: "Laura",
-    last_name: "Watson",
-    num: 7,
-    team: "ours",
-    playerId: 8,
-  },
-  {
-    first_name: "Rennay",
-    last_name: "Gordon",
-    num: 8,
-    team: "ours",
-    playerId: 9,
-  },
-  {
-    first_name: "Clayton",
-    last_name: "Banks",
-    num: 9,
-    team: "ours",
-    playerId: 10,
-  },
-  {
-    first_name: "Zach",
-    last_name: "Ryan",
-    num: 10,
-    team: "ours",
-    playerId: 11,
-  },
-  {
-    first_name: "Clarence",
-    last_name: "Briggs",
-    num: 11,
-    team: "ours",
-    playerId: 12,
-  },
-  {
-    first_name: "Bo",
-    last_name: "Briggs",
-    num: 12,
-    team: "ours",
-    playerId: 13,
-  },
-  {
-    first_name: "Snow",
-    last_name: "White",
-    num: 13,
-    team: "ours",
-    playerId: 14,
-  },
-  {
-    first_name: "Bard",
-    last_name: "Papi",
-    num: 14,
-    team: "ours",
-    playerId: 15,
-  },
-  {
-    first_name: "Kalvin",
-    last_name: "Coolio",
-    num: 15,
-    team: "ours",
-    playerId: 16,
-  },
-  {
-    first_name: "Robert",
-    last_name: "Patton",
-    num: 16,
-    team: "ours",
-    playerId: 17,
-  },
-];
+export type StartingPlayer = {
+  id?: number;
+  playerId: number;
+  matchId: number;
+  timeOn: number;
+  timeOff: number;
+};
+
+type Substitution = {
+  playerIdIn: number;
+  playerIdOut: number;
+  matchId: number;
+  time: number;
+};
 
 type BenchProps = {
+  matchId: number;
+  getStartingBench: Function;
   notifyOfSubs: Function;
 };
 
@@ -149,15 +47,11 @@ class Bench extends React.Component<
   constructor(props: BenchProps) {
     super(props);
     this.state = {
-      onBench: this.getPlayers(),
+      onBench: this.props.getStartingBench(),
       isExpanded: false,
       substituteFor: undefined,
     };
   }
-
-  getPlayers = (): Player[] => {
-    return roster.splice(6, roster.length);
-  };
 
   setBench = (players: Player[]): void => {
     this.setState({ onBench: players });
@@ -201,17 +95,27 @@ class Bench extends React.Component<
       console.log("Error: substituteFor is undefined");
       return;
     }
+    let sub: Substitution = {
+      playerIdIn: this.state.onBench[
+        this.state.onBench.findIndex((player) => player.num === num)
+      ].playerId, // Player who is coming onto field
+      playerIdOut: this.state.substituteFor.playerId, // Player who is leaving field
+      matchId: 1,
+      time: Date.now(),
+    };
+    axios
+      .post(`/event/substitutions`, sub, { headers: authHeader() })
+      .then((res) => {
+        console.log("Post sub response:", res); // TODO: catch error and handle if needed
+      });
     let moveToField = this.removeFromBench(num); // Remove player from bench
-    // TODO: make api call
     this.addToBench(this.state.substituteFor); // Add player from field to bench
     this.props.notifyOfSubs(this.state.substituteFor, moveToField); // Notify field of a substitution
     this.clearSubstituteFor();
     this.toggleIsExpanded(); // Close the bench
   };
 
-  componentDidUpdate(_prevProps: any, _prevState: any) {
-    console.log(this.state);
-  }
+  componentDidUpdate(_prevProps: any, _prevState: any) {}
 
   render() {
     if (this.state.isExpanded) {
