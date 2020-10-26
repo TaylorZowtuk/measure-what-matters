@@ -1,39 +1,53 @@
-import { BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
-import { IEvent } from "./IEvent.interface";
-import { Match } from "../match.entity";
-import { Player } from "../player.entity";
+import {
+  BaseEntity,
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
+import { IEvent } from './IEvent.interface';
+import { Match } from '../match.entity';
+import { Player } from '../player.entity';
 
 @Entity()
+export class Goal extends BaseEntity implements IEvent {
+  @PrimaryGeneratedColumn()
+  id: number;
 
-export class Goal extends BaseEntity {
+  @ManyToOne(
+    () => Match,
+    match => match.matchId,
+    { eager: true },
+  )
+  @JoinColumn({ name: 'matchId' })
+  match: Match;
 
-    @PrimaryGeneratedColumn()
-    id : number;
+  @Column({ type: 'bigint' })
+  time: number;
 
-    @ManyToOne(() => Match, match => match.matchId, {eager: true})
-    @JoinColumn({name: 'matchId'})
-    match: Match;
+  @ManyToOne(
+    () => Player,
+    player => player.playerId,
+    { eager: true },
+  )
+  @JoinColumn({ name: 'playerId' })
+  player: Player;
 
-    @Column({ type: "bigint" })
-    time: number;
+  @Column()
+  playerId: number;
 
-    @ManyToOne(() => Player, player => player.playerId, {eager: true})
-    @JoinColumn({name: 'playerId'})
-    player: Player;
+  @Column()
+  matchId: number;
 
-    @Column()
-    playerId: number;
+  @Column('int', { array: true })
+  lineup: number[];
 
-    @Column()
-    matchId: number;
+  @CreateDateColumn()
+  createdDate: Date;
 
-    @Column("int", { array: true })
-    lineup: number[];
-
-    @CreateDateColumn()
-    createdDate: Date;
-  
-    @UpdateDateColumn()
-    updatedDate: Date;
+  @UpdateDateColumn()
+  updatedDate: Date;
 }
-
