@@ -14,12 +14,17 @@ import { LocalAuthGuard } from './local-auth.guard';
 @ApiTags('Authentication')
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(
+    private readonly logger: Logger,
+    private readonly authService: AuthService,
+  ) {}
 
   @UseGuards(LocalAuthGuard)
   @Post('login')
   login(@Body() credentials: LoginDTO, @Request() req) {
-    Logger.log(JSON.stringify({ type: 'LOGIN', user: credentials.username }));
+    this.logger.log(
+      JSON.stringify({ type: 'LOGIN', user: credentials.username }),
+    );
     return this.authService.login(req.user);
   }
 }
