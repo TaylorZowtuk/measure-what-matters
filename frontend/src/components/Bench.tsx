@@ -131,7 +131,16 @@ export const roster: Player[] = [
   },
 ];
 
+export type Substitution = {
+  id?: number;
+  playerId: number;
+  matchId: number;
+  timeOn: number;
+  timeOff: number;
+};
+
 type BenchProps = {
+  getStartingBench: Function;
   notifyOfSubs: Function;
 };
 
@@ -149,7 +158,7 @@ class Bench extends React.Component<
   constructor(props: BenchProps) {
     super(props);
     this.state = {
-      onBench: this.getPlayers(),
+      onBench: this.props.getStartingBench(),
       isExpanded: false,
       substituteFor: undefined,
     };

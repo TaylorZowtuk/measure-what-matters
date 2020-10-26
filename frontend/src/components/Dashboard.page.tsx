@@ -7,7 +7,15 @@ const Dashboard = () => (
     <h1>Dashboard Interface</h1>
     <p>Here is the dashboard</p>
     <br></br>
-    <Link to="/recording">
+    <Link
+      to={{
+        pathname: "/recording",
+        state: {
+          matchId: 1,
+          teamId: 1,
+        },
+      }}
+    >
       <Button variant="contained">Recording</Button>
     </Link>
     <br></br>
