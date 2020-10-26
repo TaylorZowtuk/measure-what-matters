@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import Button from "@material-ui/core/Button";
+import TimeOnField from "./reports/TimeOnField";
 
 const Dashboard = () => (
   <div className="dashboard">
@@ -22,6 +23,7 @@ const Dashboard = () => (
     <Link to="/teams">
       <Button variant="contained">Teams</Button>
     </Link>
+    <TimeOnField />
   </div>
 );
 
