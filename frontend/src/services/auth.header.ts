@@ -4,6 +4,7 @@ export default function authHeader() {
     if (!json_user) {
         return {};
     }
+    
     const user = JSON.parse(json_user);
     if(!user || !user.accessToken) {
         return {};
