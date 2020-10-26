@@ -36,7 +36,7 @@ describe('UsersService', () => {
   });
 
   // Broken tests
-  describe('creating a user', () => {
+  describe('creates a User', () => {
     const userData = {
       name: 'testName',
       username: 'testUsername',
@@ -51,7 +51,7 @@ describe('UsersService', () => {
       ...saveDefaults,
     } as User;
 
-    it('can create users', async () => {
+    it('calls the User repository with correct details', async () => {
       const { name, username, password } = userData;
       userRepo.create.mockReturnValueOnce(userData);
       userRepo.save.mockReturnValueOnce(userCreatedData);
@@ -65,7 +65,7 @@ describe('UsersService', () => {
       expect(result).not.toHaveProperty('password');
     });
 
-    it('can find one user by username', async () => {
+    it('can find one User by username', async () => {
       const { username } = userData;
       userRepo.findOne.mockReturnValueOnce(userCreatedData);
       const result = await service.findOne(username);
