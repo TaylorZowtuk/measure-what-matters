@@ -28,6 +28,6 @@ export class PlayerController {
   async getPlayersByTeamId(
     @Query('teamId') teamId: number,
   ): Promise<PlayerDTO[]> {
-    return await this.playerService.getPlayers(teamId);
+    return await this.playerService.getPlayersByTeamId(teamId);
   }
 }
