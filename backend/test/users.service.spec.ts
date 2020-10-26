@@ -36,32 +36,45 @@ describe('UsersService', () => {
   });
 
   // Broken tests
-  // describe('creating a user', () => {
-  //   const userData = {
-  //     name: 'testName',
-  //     username: 'testUsername',
-  //     password: 'testPassword',
-  //   };
+  describe('creating a user', () => {
+    const userData = {
+      name: 'testName',
+      username: 'testUsername',
+      password: 'testPassword',
+    };
 
-  //   const userCreatedData = {
-  //     name: 'testName',
-  //     username: 'testUsername',
-  //     userId: 24,
-  //     password: '$2b$10$OcXuQKgoKdXe1Ns0xVFEUO0bnAY48ZJIYhr1qJzLsmJtZ6ipDFAVe',
-  //     ...saveDefaults,
-  //   } as User;
+    const userCreatedData = {
+      name: 'testName',
+      username: 'testUsername',
+      userId: 24,
+      password: '$2b$10$OcXuQKgoKdXe1Ns0xVFEUO0bnAY48ZJIYhr1qJzLsmJtZ6ipDFAVe',
+      ...saveDefaults,
+    } as User;
 
-  //   it('can create users', async () => {
-  //     const { name, username, password } = userData;
-  //     const result = await service.create(name, username, password);
-  //     userRepo.create.mockReturnValueOnce(userData);
-  //     userRepo.save.mockReturnValueOnce(Promise.resolve(userCreatedData));
+    it('can create users', async () => {
+      const { name, username, password } = userData;
+      userRepo.create.mockReturnValueOnce(userData);
+      userRepo.save.mockReturnValueOnce(userCreatedData);
+      const result = await service.create(name, username, password);
 
-  //     expect(userRepo.create).toBeCalledTimes(1);
-  //     expect(userRepo.save).toBeCalledTimes(1);
-  //     expect(result).toHaveProperty('userId');
-  //     expect(result).toHaveProperty('name');
-  //     expect(result).toHaveProperty('username');
-  //   });
-  //});
+      expect(userRepo.create).toBeCalledTimes(1);
+      expect(userRepo.save).toBeCalledTimes(1);
+      expect(result).toHaveProperty('userId');
+      expect(result).toHaveProperty('name');
+      expect(result).toHaveProperty('username');
+      expect(result).not.toHaveProperty('password');
+    });
+
+    it('can find one user by username', async () => {
+      const { username } = userData;
+      userRepo.findOne.mockReturnValueOnce(userCreatedData);
+      const result = await service.findOne(username);
+      expect(userRepo.findOne).toBeCalledTimes(1);
+      expect(userRepo.findOne).toBeCalledWith({ username: username });
+      expect(result).toHaveProperty('name');
+      expect(result).toHaveProperty('userId');
+      expect(result).toHaveProperty('username');
+      expect(result).toHaveProperty('password');
+    });
+  });
 });
