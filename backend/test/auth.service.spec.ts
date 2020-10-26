@@ -61,9 +61,7 @@ describe('AuthService', () => {
     it('should call the user service to find the user by username', async () => {
       const { username, password } = userData;
 
-      const spy = jest
-        .spyOn(userService, 'findOne')
-        .mockResolvedValueOnce(userCreatedData);
+      const spy = jest.spyOn(userService, 'findOne');
 
       await service.validateUser(username, password);
 
@@ -105,9 +103,7 @@ describe('AuthService', () => {
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InQiLCJzdWIiOjIsImlhdCI6MTYwMzY4MTIxMywiZXhwIjoxNjAzNjgxNTEzfQ.AEhiKgegHhGEHV3qlzzbXucs_Xy2Uptte4cZ-NMqKbw',
     };
     it('should call sign on jwtService to generate the userAuth token', async () => {
-      const spy = jest
-        .spyOn(jwtService, 'sign')
-        .mockReturnValueOnce(authResponse.accessToken);
+      const spy = jest.spyOn(jwtService, 'sign');
 
       await service.login(userPayload);
 

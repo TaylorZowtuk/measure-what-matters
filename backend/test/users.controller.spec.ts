@@ -68,18 +68,8 @@ describe('UsersController', () => {
       password2: 'Naughty password that should not be here!',
     };
 
-    const userCreatedData = {
-      name: 'testName',
-      username: 'testUsername',
-      userId: 24,
-      password: '$2b$10$OcXuQKgoKdXe1Ns0xVFEUO0bnAY48ZJIYhr1qJzLsmJtZ6ipDFAVe',
-      ...saveDefaults,
-    } as User;
-
     it('should call create on userService', async () => {
-      const spy = jest
-        .spyOn(service, 'create')
-        .mockResolvedValue(userCreatedData);
+      const spy = jest.spyOn(service, 'create');
 
       await controller.createUser(validCreateUserRequest);
 
