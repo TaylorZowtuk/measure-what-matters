@@ -37,12 +37,13 @@ export class GoalController {
       return await this.goalService.saveGoal(goal);
     } catch (err) {
       if (err instanceof QueryFailedError) {
-        if (
-          err.message.includes('violates foreign key constraint') ||
-          err.message.includes('violates not-null constraint')
-        ) {
+        if (err.message.includes('violates foreign key constraint')) {
           throw new BadRequestException(
-            'The DTO contains invalid or missing field',
+            'The request body contains invalid playerId or matchId',
+          );
+        } else if (err.message.includes('violates not-null constraint')) {
+          throw new BadRequestException(
+            'The request body contains a missing or null field',
           );
         }
       } else if (err instanceof InvalidLineupError) {
