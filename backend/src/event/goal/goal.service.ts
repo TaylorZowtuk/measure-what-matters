@@ -1,27 +1,31 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Goal } from '../../db/entities/events/goal.entity';
 import { GoalDTO } from '../../dto/events/goal.dto';
 import { Repository } from 'typeorm';
+import { PlayerService } from '../../player/player.service';
+import { InvalidLineupError } from '../../exceptions/lineup.exception';
 
 @Injectable()
 export class GoalService {
-  goalRepo: Repository<any>;
-
   constructor(
-    @InjectRepository(Goal)
-    goalRepo: Repository<Goal>,
-  ) {
-    this.goalRepo = goalRepo;
-  }
+    @InjectRepository(Goal) private readonly goalRepo: Repository<Goal>,
+    private readonly playerService: PlayerService,
+  ) {}
 
   /**
    * Saves a goal event to the DB.
    *
    * @param goal - The goal we want to save to the DB
    */
-  async saveGoal(goal: GoalDTO): Promise<void> {
-    return this.goalRepo.save(goal);
+  async saveGoal(goal: GoalDTO): Promise<GoalDTO> {
+    const playersInLineupEntities = await this.playerService.getPlayers(
+      goal.lineup,
+    );
+    if (playersInLineupEntities.includes(undefined)) {
+      throw new InvalidLineupError(goal.lineup);
+    }
+    return this.convertToDto([await this.goalRepo.save(goal)])[0];
   }
 
   /**
@@ -32,8 +36,8 @@ export class GoalService {
    * @returns A list of goal dtos in a resolved promise
    */
   async getGoalsByPlayerId(playerId: number): Promise<GoalDTO[]> {
-    const goals: any[] = await this.goalRepo.find({
-      where: { playerId: playerId },
+    const goals: Goal[] = await this.goalRepo.find({
+      where: { player: { playerId: playerId } },
     });
     return this.convertToDto(goals);
   }
@@ -46,8 +50,23 @@ export class GoalService {
    * @returns A list of goal dtos in a resolved promise
    */
   async getGoalsByMatchId(matchId: number): Promise<GoalDTO[]> {
-    const goals: any[] = await this.goalRepo.find({
-      where: { matchId: matchId },
+    const goals: Goal[] = await this.goalRepo.find({
+      where: { match: { matchId: matchId } },
+    });
+    return this.convertToDto(goals);
+  }
+
+  /**
+   *
+   * @param playerId - The id of the player which we want goals for
+   * @param matchId - The id of the match we want goals for
+   */
+  async getGoalsForPlayerInMatch(playerId: number, matchId: number) {
+    const goals: Goal[] = await this.goalRepo.find({
+      where: {
+        match: { matchId: matchId },
+        player: { playerId: playerId },
+      },
     });
     return this.convertToDto(goals);
   }
@@ -59,18 +78,18 @@ export class GoalService {
    *
    * @returns A list of goal dtos converted from an entity
    */
-  private convertToDto(goals: any[]) {
+  private convertToDto(goals: Goal[]) {
     const goalDtos: GoalDTO[] = [];
-    goals.forEach(element => {
+    goals.forEach(goal => {
       const lineup: number[] = [];
-      element.lineup.forEach(playerId => {
+      goal.lineup.forEach(playerId => {
         lineup.push(playerId);
       });
       const goalDto: GoalDTO = {
-        id: element.id,
-        matchId: element.matchId.matchId,
-        playerId: element.playerId.playerId,
-        time: element.time,
+        id: goal.id,
+        matchId: goal.matchId,
+        playerId: goal.playerId,
+        time: goal.time,
         lineup: lineup,
       };
       goalDtos.push(goalDto);
