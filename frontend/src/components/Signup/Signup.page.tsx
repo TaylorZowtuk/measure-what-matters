@@ -39,22 +39,27 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-interface LoginState {
-  email: string;
-  password: string;
+interface SignupState {
+  name: string;
+  username: string;
+  password1: string;
+  password2: string;
   showPassword: boolean;
+
 }
 
-const Login = () => {
+const Signup = () => {
   const classes = useStyles();
 
-  const [currentState, setCurrentState] = React.useState<LoginState>({
-    email: "",
-    password: "",
+  const [currentState, setCurrentState] = React.useState<SignupState>({
+    name: "",
+    username: "",
+    password1: "",
+    password2: "",
     showPassword: false,
   });
 
-  const handleChange = (prop: keyof LoginState) => (
+  const handleChange = (prop: keyof SignupState) => (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     setCurrentState({ ...currentState, [prop]: event.target.value });
@@ -94,8 +99,8 @@ const Login = () => {
     // }
 
     event.preventDefault();
-    if (currentState.email && currentState.password) {
-      AuthService.login(currentState.email, currentState.password).then(
+    if (currentState.name && currentState.username && currentState.password2 && currentState.password1) {
+      AuthService.login(currentState.username, currentState.password1).then(
         () => {
           history.push("/dashboard");
         },
@@ -114,8 +119,18 @@ const Login = () => {
 
   return (
     <div className="login">
-      <h1>Login</h1>
+      <h1>Sign Up</h1>
       <div className={classes.root}>
+        <TextField
+          label="name"
+          id="outlined-margin-dense"
+          className={classes.textField}
+          margin="dense"
+          variant="outlined"
+          color="secondary"
+          onChange={handleChange("name")}
+        />
+        <br />
         <TextField
           label="Username"
           id="outlined-margin-dense"
@@ -123,7 +138,7 @@ const Login = () => {
           margin="dense"
           variant="outlined"
           color="secondary"
-          onChange={handleChange("email")}
+          onChange={handleChange("username")}
         />
         <br />
         <FormControl variant="outlined" className={classes.textField}>
@@ -133,8 +148,8 @@ const Login = () => {
           <OutlinedInput
             id="outlined-adornment-password"
             type={currentState.showPassword ? "text" : "password"}
-            value={currentState.password}
-            onChange={handleChange("password")}
+            value={currentState.password1}
+            onChange={handleChange("password1")}
             margin="dense"
             color="secondary"
             // endAdornment={
@@ -158,14 +173,12 @@ const Login = () => {
           className={classes.button}
           onClick={handleLogin}
         >
-          Log in
+          Sign up
         </Button>
-        <br/>
-        <p style={{fontSize: '12pt'}}><a href='/signup'>Sign up here</a></p>
       </div>
       <p></p>
     </div>
   );
 };
 
-export default Login;
+export default Signup;
