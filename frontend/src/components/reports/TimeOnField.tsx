@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   createStyles,
   lighten,
@@ -18,12 +18,22 @@ import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Switch from "@material-ui/core/Switch";
+import axios from "axios";
+import authHeader from "../../services/auth.header";
 
 interface FormattedData {
   name: string;
   number: number;
   minutes: number;
 }
+
+type PlayerTimeDTO = {
+  playerId: number;
+  teamId: number;
+  name: string;
+  jerseyNum: number;
+  secondsPlayed: number;
+};
 
 // Parse data in a consistent manner for display in table columns
 function createData(
@@ -55,12 +65,25 @@ const hardCodedRows = [
 ];
 
 // Enable using a hardcoded set of values for testing or to use data from an api call
-function getRows(debug = true): FormattedData[] {
+async function fetchRows(debug = false): Promise<FormattedData[]> {
   if (debug) {
     return hardCodedRows;
   }
-  // TODO: add api call
-  return hardCodedRows;
+
+  const res = await axios.get(
+    `/player-stats/timeOnField?matchId=1`, // TODO: Remove hardcoded matchId
+    { headers: authHeader() }
+  );
+
+  let rows: FormattedData[] = [];
+  for (let i = 0; i < res.data.length; i++) {
+    let player: PlayerTimeDTO = res.data[i];
+    let first: string = player.name.split(/[ ,]+/, 1)[0];
+    let last: string = player.name.split(/[ ,]+/, 1)[1];
+    rows.push(createData(first, last, player.jerseyNum, player.secondsPlayed));
+  }
+
+  return rows;
 }
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
@@ -269,8 +292,19 @@ export default function EnhancedTable() {
     setDense(event.target.checked);
   };
 
+  const [rows, setRows] = useState<FormattedData[] | null>(null);
+  useEffect(() => {
+    async function getRows() {
+      setRows(await fetchRows());
+    }
+    getRows();
+  }, []);
+
+  let _rows: FormattedData[] = [];
+  if (rows) _rows = rows;
+
   const emptyRows =
-    rowsPerPage - Math.min(rowsPerPage, getRows().length - page * rowsPerPage);
+    rowsPerPage - Math.min(rowsPerPage, _rows.length - page * rowsPerPage);
 
   return (
     <div className={classes.root}>
@@ -290,7 +324,7 @@ export default function EnhancedTable() {
               onRequestSort={handleRequestSort}
             />
             <TableBody>
-              {stableSort(getRows(), getComparator(order, orderBy))
+              {stableSort(_rows, getComparator(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row) => {
                   return (
@@ -314,7 +348,7 @@ export default function EnhancedTable() {
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={getRows().length}
+          count={_rows.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onChangePage={handleChangePage}
