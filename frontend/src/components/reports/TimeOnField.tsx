@@ -75,11 +75,12 @@ async function fetchRows(debug = false): Promise<FormattedData[]> {
     { headers: authHeader() }
   );
 
+  console.log(res.data);
   let rows: FormattedData[] = [];
   for (let i = 0; i < res.data.length; i++) {
     let player: PlayerTimeDTO = res.data[i];
-    let first: string = player.name.split(/[ ,]+/, 1)[0];
-    let last: string = player.name.split(/[ ,]+/, 1)[1];
+    let first: string = player.name.split(/[ ,]+/, 2)[0];
+    let last: string = player.name.split(/[ ,]+/, 2)[1];
     rows.push(createData(first, last, player.jerseyNum, player.secondsPlayed));
   }
 

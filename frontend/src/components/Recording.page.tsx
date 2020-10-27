@@ -58,8 +58,9 @@ class Recording extends React.Component<
     // TODO: handle error
     let players: Player[] = [];
     for (let i = 0; i < res.data.length; i++) {
-      let first: string = res.data[i].name.split(/[ ,]+/, 1)[0];
-      let last: string = res.data[i].name.split(/[ ,]+/, 1)[1];
+      let first: string = res.data[i].name.split(/[ ,]+/, 2)[0];
+      let last: string = res.data[i].name.split(/[ ,]+/, 2)[1];
+      console.log(first, last);
       let player: Player = {
         first_name: first,
         last_name: last,
