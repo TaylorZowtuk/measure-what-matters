@@ -75,7 +75,7 @@ async function fetchRows(debug = false): Promise<FormattedData[]> {
     { headers: authHeader() }
   );
 
-  console.log(res.data);
+  console.log("Time on field response:", res.data);
   let rows: FormattedData[] = [];
   for (let i = 0; i < res.data.length; i++) {
     let player: PlayerTimeDTO = res.data[i];
@@ -220,7 +220,7 @@ const useToolbarStyles = makeStyles((theme: Theme) =>
 
 const EnhancedTableToolbar = () => {
   const classes = useToolbarStyles();
-
+  const matchId: number = 1;
   return (
     <Toolbar>
       <Typography
@@ -229,7 +229,8 @@ const EnhancedTableToolbar = () => {
         id="tableTitle"
         component="div"
       >
-        Time on Field
+        Time on Field for Match {matchId}
+        {/* TODO: Remove hardcoded matchid */}
       </Typography>
     </Toolbar>
   );
