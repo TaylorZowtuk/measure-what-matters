@@ -167,6 +167,8 @@ const Signup = () => {
         >
           Sign up
         </Button>
+        <br/>
+        <p style={{fontSize: '12pt'}}><a href='/'>Log in</a></p>
       </div>
       <p></p>
     </div>
