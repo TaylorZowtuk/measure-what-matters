@@ -75,7 +75,7 @@ const Signup = () => {
 
   const history = useHistory();
 
-  const handleLogin = (
+  const handleSignup = (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
     // TODO: call to backend
@@ -99,7 +99,9 @@ const Signup = () => {
     // }
 
     event.preventDefault();
-    if (currentState.name && currentState.username && currentState.password2 && currentState.password1) {
+    if (currentState.name.trim() && currentState.username.trim() !== '' &&
+      currentState.password2 && currentState.password1 &&
+      !currentState.username.includes(' ') && !currentState.password1.includes(' ')  && currentState.password1 === currentState.password2) {
       AuthService.login(currentState.username, currentState.password1).then(
         () => {
           history.push("/dashboard");
@@ -114,6 +116,9 @@ const Signup = () => {
           console.log("invalid credential");
         }
       );
+    }
+    else{
+      console.log("wrong info");
     }
   };
 
@@ -166,12 +171,29 @@ const Signup = () => {
             labelWidth={70}
           />
         </FormControl>
+        <br></br>
+
+        <FormControl variant="outlined" className={classes.textField}>
+          <InputLabel htmlFor="outlined-adornment-password" color="secondary">
+            Confirm Password
+          </InputLabel>
+          <OutlinedInput
+            label="confirm password"
+            id="outlined-adornment-password"
+            type={currentState.showPassword ? "text" : "password"}
+            value={currentState.password2}
+            onChange={handleChange("password2")}
+            margin="dense"
+            color="secondary"
+            labelWidth={70}
+          />
+        </FormControl>
 
         <br></br>
         <Button
           variant="contained"
           className={classes.button}
-          onClick={handleLogin}
+          onClick={handleSignup}
         >
           Sign up
         </Button>
