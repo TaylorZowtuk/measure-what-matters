@@ -2,6 +2,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import JwtPayload from '../interface/jwtPayload.interface';
 
 interface ValidationPayload {
   username: string;
@@ -21,7 +22,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   // Magic middleware that is called by passport internally
-  async validate(payload: ValidationPayload) {
+  async validate(payload: ValidationPayload): Promise<JwtPayload> {
     return { userId: payload.sub, username: payload.username };
   }
 }

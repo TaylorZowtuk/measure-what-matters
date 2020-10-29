@@ -15,11 +15,10 @@ export class UsersService {
       username,
       password,
     });
-    console.log(newUser);
     const result = await this.userRepository.save(newUser);
-    console.log(result);
-    delete result.password;
-    return result;
+    const copyWithoutPass = { ...result };
+    delete copyWithoutPass.password;
+    return copyWithoutPass;
   }
 
   findOne(username: string) {

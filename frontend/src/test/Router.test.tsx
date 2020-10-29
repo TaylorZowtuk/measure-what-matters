@@ -6,6 +6,8 @@ import Router from "../Router";
 afterEach(cleanup);
 
 // TODO: fix starting from an initial route; https://medium.com/@antonybudianto/react-router-testing-with-jest-and-enzyme-17294fefd303
+// TODO: switch to using selenium for nav tests
+
 test("just passes", () => {});
 
 // test("navigates from root to recording", () => {
