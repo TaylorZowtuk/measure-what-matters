@@ -29,7 +29,7 @@ class Teams extends React.Component<{}, teamState> {
       teamList: []
     }
     // TODO: make request to retrieve team list
-    axios.get(`/teams/userId?userId=0`)
+    axios.get(`/teams`)
     .then(response => {
       let teams = response.data;
       let teamArray: Team[] = [];

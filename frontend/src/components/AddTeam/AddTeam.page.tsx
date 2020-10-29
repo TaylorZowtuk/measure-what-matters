@@ -109,17 +109,24 @@ class AddTeam extends React.Component<{}, createTeamState> {
 
             axios.post('/teams', {name: this.state.teamName})
             .then(response => {
+                console.log("team name pass");
                 if(response.data.teamId) {
                     if (this.state.playerList.length !== 0) {
                         let playerArray: Array<{teamId: number, name: string, jerseyNum: number}> = [];
-                        this.state.playerList.forEach((player: any) => {
+                        this.state.playerList.forEach((player: newPlayer) => {
                             playerArray.push({
                                 teamId: response.data.teamId,
                                 name: player.firstName + ' ' + player.lastName,
-                                jerseyNum: player.number
+                                jerseyNum: player.id
                             });
                         });
-                        axios.post('/player', {playerArray});
+                        axios.post('/player', {playerArray})
+                        .then(response => {
+                            console.log("team added successfully");
+                        },
+                        (error) => {
+                            console.log("unsuccessful team creation");
+                        });
                     }
                     console.log("add team");
                     this.setState({
@@ -130,6 +137,9 @@ class AddTeam extends React.Component<{}, createTeamState> {
                         newPlayerNumber: '',
                         id: 0
                     });
+                }
+                else{
+                    console.log(response.data);
                 }
             },
             (error) => {
