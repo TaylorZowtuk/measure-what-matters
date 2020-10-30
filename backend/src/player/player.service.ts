@@ -39,13 +39,32 @@ export class PlayerService {
     * @returns A promise of a list of players
     */
 
-    async getPlayers(teamId : number) : Promise<PlayerDTO[]> {
+    async getPlayersByTeamId(teamId : number) : Promise<PlayerDTO[]> {
 
     const players: Player[] = await this.playerRepo.find(
         {where: {teamId : teamId}});
     
         return this.convertToDto(players);
 
+    }
+
+    /**
+    * Retrieves a list of players by their Ids
+    *
+    * @param playerIds the ids of the players we want to return
+    *
+    * @returns A promise of a list of players
+    */
+
+   async getPlayers(playerIds : number[]) : Promise<Player[]> {
+       const players: Player[] = [];
+        for(let i=0; i<playerIds.length; i++){
+            const player:Player = await this.playerRepo.findOne({
+                where: {playerId: playerIds[i]}
+            });
+            players.push(player);
+        }
+        return players;
     }
 
     /**
