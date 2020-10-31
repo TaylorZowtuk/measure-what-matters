@@ -29,12 +29,11 @@ export class GoalController {
   @Post('/')
   @ApiResponse({
     status: 201,
-    type: GoalDTO,
     description: 'Creates a new goal event',
   })
   async saveGoalEvent(@Body() goal: GoalDTO) {
     try {
-      return await this.goalService.saveGoal(goal);
+      await this.goalService.saveGoal(goal);
     } catch (err) {
       if (err instanceof QueryFailedError) {
         if (err.message.includes('violates foreign key constraint')) {
