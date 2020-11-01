@@ -52,7 +52,7 @@ const Signup = () => {
     password1: "",
     password2: "",
     showPassword: false,
-    errorMessage: ''
+    errorMessage: "",
   });
 
   const handleChange = (prop: keyof SignupState) => (
@@ -72,31 +72,56 @@ const Signup = () => {
     setCurrentState({ ...currentState, errorMessage: "" });
 
     // validate user inputs
-    if (currentState.name.trim() === '') {
-      setCurrentState({ ...currentState, errorMessage: "Please enter your name." });
-    }
-    else if (currentState.username.trim() === '' || currentState.username.includes(' ')) {
-      setCurrentState({ ...currentState, errorMessage: "Please enter a valid username. It should not contain spaces." });
-    }
-    else if (currentState.password1.trim() === '' || currentState.password1.includes(' ')) {
-      setCurrentState({ ...currentState, errorMessage: "Please enter a valid password. It should not contain spaces." });
-    }
-    else if (currentState.password1 !== currentState.password2) {
-      setCurrentState({ ...currentState, errorMessage: "Passwords must match!" });
-    }
-    else{
-      AuthService.register(currentState.name,currentState.username, currentState.password1, currentState.password2)
-      .then(
+    if (currentState.name.trim() === "") {
+      setCurrentState({
+        ...currentState,
+        errorMessage: "Please enter your name.",
+      });
+    } else if (
+      currentState.username.trim() === "" ||
+      currentState.username.includes(" ")
+    ) {
+      setCurrentState({
+        ...currentState,
+        errorMessage:
+          "Please enter a valid username. It should not contain spaces.",
+      });
+    } else if (
+      currentState.password1.trim() === "" ||
+      currentState.password1.includes(" ")
+    ) {
+      setCurrentState({
+        ...currentState,
+        errorMessage:
+          "Please enter a valid password. It should not contain spaces.",
+      });
+    } else if (currentState.password1 !== currentState.password2) {
+      setCurrentState({
+        ...currentState,
+        errorMessage: "Passwords must match!",
+      });
+    } else {
+      AuthService.register(
+        currentState.name,
+        currentState.username,
+        currentState.password1,
+        currentState.password2
+      ).then(
         (response) => {
           if (response.status) {
-            setCurrentState({ ...currentState, errorMessage: response.message});
-          }
-          else {
+            setCurrentState({
+              ...currentState,
+              errorMessage: response.message,
+            });
+          } else {
             history.push("/");
           }
         },
         (error) => {
-          setCurrentState({ ...currentState, errorMessage: error.response.data.message || error.message});
+          setCurrentState({
+            ...currentState,
+            errorMessage: error.response.data.message || error.message,
+          });
         }
       );
     }
@@ -106,7 +131,17 @@ const Signup = () => {
     <div className="login">
       <h1>Sign Up</h1>
       <div className={classes.root}>
-        <p style={{color: 'crimson', fontSize: 14, width: '25ch', marginLeft: 'auto', marginRight: 'auto'}}>{currentState.errorMessage}</p>
+        <p
+          style={{
+            color: "crimson",
+            fontSize: 14,
+            width: "25ch",
+            marginLeft: "auto",
+            marginRight: "auto",
+          }}
+        >
+          {currentState.errorMessage}
+        </p>
         <TextField
           label="name"
           id="outlined-margin-dense"
@@ -167,8 +202,10 @@ const Signup = () => {
         >
           Sign up
         </Button>
-        <br/>
-        <p style={{fontSize: '12pt'}}><a href='/'>Log in</a></p>
+        <br />
+        <p style={{ fontSize: "12pt" }}>
+          <a href="/">Log in</a>
+        </p>
       </div>
       <p></p>
     </div>

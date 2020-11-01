@@ -47,7 +47,7 @@ class Teams extends React.Component<{}, teamState> {
               playerId: 3,
             },
           ],
-          teamId: 1
+          teamId: 1,
         },
         {
           teamName: "Girls Team",
@@ -68,7 +68,7 @@ class Teams extends React.Component<{}, teamState> {
               playerId: 6,
             },
           ],
-          teamId: 2
+          teamId: 2,
         },
       ],
     };
