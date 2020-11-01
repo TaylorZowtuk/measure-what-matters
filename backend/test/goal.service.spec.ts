@@ -10,7 +10,6 @@ import { InvalidLineupError } from '../src/exceptions/lineup.exception';
 import { repositoryMockFactory } from './mocks/repositoryMockFactory';
 
 const goalDto: GoalDTO = {
-  id: 1,
   matchId: 1,
   playerId: 1,
   time: 200,
