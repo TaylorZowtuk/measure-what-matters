@@ -35,7 +35,8 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface SignupState {
-  name: string;
+  firstName: string;
+  lastName: string;
   username: string;
   password1: string;
   password2: string;
@@ -47,7 +48,8 @@ const Signup = () => {
   const classes = useStyles();
 
   const [currentState, setCurrentState] = React.useState<SignupState>({
-    name: "",
+    firstName: "",
+    lastName: "",
     username: "",
     password1: "",
     password2: "",
@@ -72,10 +74,13 @@ const Signup = () => {
     setCurrentState({ ...currentState, errorMessage: "" });
 
     // validate user inputs
-    if (currentState.name.trim() === "") {
+    if (
+      currentState.firstName.trim() === "" ||
+      currentState.lastName.trim() === ""
+    ) {
       setCurrentState({
         ...currentState,
-        errorMessage: "Please enter your name.",
+        errorMessage: "Please enter your full name.",
       });
     } else if (
       currentState.username.trim() === "" ||
@@ -102,7 +107,7 @@ const Signup = () => {
       });
     } else {
       AuthService.register(
-        currentState.name,
+        currentState.firstName + " " + currentState.lastName,
         currentState.username,
         currentState.password1,
         currentState.password2
@@ -143,13 +148,23 @@ const Signup = () => {
           {currentState.errorMessage}
         </p>
         <TextField
-          label="name"
+          label="First Name"
           id="outlined-margin-dense"
           className={classes.textField}
           margin="dense"
           variant="outlined"
           color="secondary"
-          onChange={handleChange("name")}
+          onChange={handleChange("firstName")}
+        />
+        <br />
+        <TextField
+          label="Last Name"
+          id="outlined-margin-dense"
+          className={classes.textField}
+          margin="dense"
+          variant="outlined"
+          color="secondary"
+          onChange={handleChange("lastName")}
         />
         <br />
         <TextField
