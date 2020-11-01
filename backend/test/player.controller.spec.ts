@@ -41,9 +41,6 @@ describe('PlayerController', () => {
   });
 
   it('should call player service to create', () => {
-    const playerArrayDTO: PlayerArrayDTO = {
-      playerArray: playerDtos,
-    };
     const spy = jest
       .spyOn(playerService, 'savePlayer')
       .mockImplementation(() => {
@@ -51,8 +48,8 @@ describe('PlayerController', () => {
           return;
         });
       });
-    controller.createPlayers(playerArrayDTO);
-    expect(spy).toBeCalledWith(playerArrayDTO);
+    controller.createPlayers(playerDtos);
+    expect(spy).toBeCalledWith(playerDtos);
   });
 
   it('should call player service to get players by team id', () => {
