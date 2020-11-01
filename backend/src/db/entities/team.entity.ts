@@ -23,7 +23,10 @@ export class Team extends BaseEntity {
     user => user.userId,
     { eager: true },
   )
-  @JoinColumn()
+  @JoinColumn({ name: 'userId' })
+  user: User;
+
+  @Column()
   userId: number;
 
   @CreateDateColumn()
