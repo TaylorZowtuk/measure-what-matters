@@ -21,7 +21,7 @@ export class UsersService {
     return copyWithoutPass;
   }
 
-  findOne(username: string) {
+  findOne(username: string): Promise<User> {
     return this.userRepository.findOne({ username });
   }
 }

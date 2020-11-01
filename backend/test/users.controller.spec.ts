@@ -10,17 +10,14 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { QueryFailedError } from 'typeorm';
+import { ConflictException, UnauthorizedException } from '@nestjs/common';
+import { mockUserLoggedIn, mockUserNotLoggedIn } from './mocks/mockUserLoggin';
 
 describe('UsersController', () => {
   let controller: UsersController;
   let service: UsersService;
 
   jest.spyOn(Date, 'now').mockImplementation(() => 1603044974000);
-
-  const saveDefaults = {
-    createdDate: new Date(),
-    updatedDate: new Date(),
-  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -71,7 +68,7 @@ describe('UsersController', () => {
     it('should call create on userService', async () => {
       const spy = jest.spyOn(service, 'create');
 
-      await controller.createUser(validCreateUserRequest);
+      await controller.createUser(validCreateUserRequest, mockUserNotLoggedIn);
 
       expect(spy).toBeCalledWith(
         userData.name,
@@ -81,16 +78,31 @@ describe('UsersController', () => {
     });
 
     it('should throw a BadRequestException if passwords do not match', async () => {
-      const result = await controller.createUser(invalidCreateUserRequest);
-
-      expect(result).toBeInstanceOf(BadRequestException);
-
-      if (result instanceof BadRequestException) {
-        expect(result.message).toBe('Passwords must match!');
+      try {
+        await controller.createUser(
+          invalidCreateUserRequest,
+          mockUserNotLoggedIn,
+        );
+        fail('Error was not thrown');
+      } catch (error) {
+        expect(error).toBeInstanceOf(BadRequestException);
+        expect(error.message).toBe('Passwords must match.');
       }
     });
 
-    it('should throw a BadRequestException if username is taken', async () => {
+    it('should throw a UnauthorizedException if user is logged in already', async () => {
+      try {
+        await controller.createUser(invalidCreateUserRequest, mockUserLoggedIn);
+        fail('Error was not thrown');
+      } catch (error) {
+        expect(error).toBeInstanceOf(UnauthorizedException);
+        expect(error.message).toBe(
+          'Cannot create a new user from an existing account.',
+        );
+      }
+    });
+
+    it('should throw a ConflictException if username is taken', async () => {
       jest
         .spyOn(service, 'create')
         .mockRejectedValueOnce(
@@ -101,10 +113,15 @@ describe('UsersController', () => {
           ),
         );
 
-      const result = await controller.createUser(validCreateUserRequest);
-      expect(result).toBeInstanceOf(BadRequestException);
-      if (result instanceof BadRequestException) {
-        expect(result.message).toBe('Username is taken!');
+      try {
+        await controller.createUser(
+          validCreateUserRequest,
+          mockUserNotLoggedIn,
+        );
+        fail('Error was not thrown');
+      } catch (error) {
+        expect(error).toBeInstanceOf(ConflictException);
+        expect(error.message).toBe('Username is taken.');
       }
     });
 
@@ -115,10 +132,15 @@ describe('UsersController', () => {
           new Error('Hah, I got no idea what is going on XD'),
         );
 
-      const result = await controller.createUser(validCreateUserRequest);
-      expect(result).toBeInstanceOf(InternalServerErrorException);
-      if (result instanceof InternalServerErrorException) {
-        expect(result.message).toBe("We don't know what went wrong :(");
+      try {
+        await controller.createUser(
+          validCreateUserRequest,
+          mockUserNotLoggedIn,
+        );
+        fail('Error was not thrown');
+      } catch (error) {
+        expect(error).toBeInstanceOf(InternalServerErrorException);
+        expect(error.message).toBe("We don't know what went wrong :(");
       }
     });
   });
