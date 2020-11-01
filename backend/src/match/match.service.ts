@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Match } from '../db/entities/match.entity';
 import { MatchDTO } from '../dto/match/match.dto';
 import { Repository } from 'typeorm';
+import { CreateMatchDTO } from '../dto/match/createMatch.dto';
 
 @Injectable()
 export class MatchService {
@@ -19,8 +20,10 @@ export class MatchService {
     * @param match - The beginning of a new match session to be saved to database
     */
 
-    async saveMatch(match: MatchDTO): Promise<number> {
-        return this.matchRepo.save(match);
+    async saveMatch(match: CreateMatchDTO): Promise<number> {
+        let matchDTO = new MatchDTO;
+        matchDTO = {teamId:match.teamId,time:match.time,isHomeTeam:match.isHomeTeam}
+        return this.matchRepo.save(matchDTO);
 
     }
 

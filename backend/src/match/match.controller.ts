@@ -5,6 +5,7 @@ import { MatchDTO } from '../dto/match/match.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { MatchService } from './match.service';
 import { QueryFailedError } from 'typeorm';
+import { CreateMatchDTO } from '../dto/match/createMatch.dto';
 
 @ApiTags('Matches')
 @ApiBearerAuth()
@@ -19,7 +20,7 @@ export class MatchController {
 
   @Post('start')
   @ApiResponse({ status: 201, description: 'Creates a new match' })
-  async startMatch(@Body() match: MatchDTO) {
+  async startMatch(@Body() match: CreateMatchDTO) {
     
     try{
       if (!match.teamId){

@@ -76,10 +76,11 @@ export class PlayerStatsService{
         for(let i=0; i<players.length;i++){
 
             const playerId = players[i].playerId;
-            const name = players[i].name;
+            const firstName = players[i].firstName;
+            const lastName = players[i].lastName;
             const jerseyNum = players[i].jerseyNum;
             const secondsPlayed = await this.getSecondsPlayed(players[i].playerId, matchId);
-            const player_time_DTO: PlayerTimeDTO = {playerId:playerId, teamId:teamId, name:name, jerseyNum:jerseyNum, secondsPlayed:secondsPlayed};
+            const player_time_DTO: PlayerTimeDTO = {playerId:playerId, teamId:teamId, firstName:firstName, lastName: lastName, jerseyNum:jerseyNum, secondsPlayed:secondsPlayed};
         
             playerTimeDtos.push(player_time_DTO); 
         }
@@ -128,7 +129,8 @@ export class PlayerStatsService{
           const playerDto: PlayerDTO = {
             playerId: element.playerId,
             teamId: element.teamId.teamId,
-            name: element.name,
+            firstName: element.firstName,
+            lastName: element.lastName,
             jerseyNum: element.jerseyNum,
           };
           playerDtos.push(playerDto);

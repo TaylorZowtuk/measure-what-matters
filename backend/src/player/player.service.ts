@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Player } from '../db/entities/player.entity';
 import { PlayerDTO } from '../dto/player/player.dto';
 import { Repository } from 'typeorm';
+import { CreatePlayerDTO } from '../dto/player/createPlayer.dto';
 
 @Injectable()
 export class PlayerService {
@@ -19,10 +20,12 @@ export class PlayerService {
     * @param player - The new team player to be saved to database
     */
 
-    async savePlayer(players: PlayerDTO[]) : Promise<Player[]> {
+    async savePlayer(players: CreatePlayerDTO[]) : Promise<Player[]> {
         const playersSaved: Player[] = [];
         for(let i=0; i<players.length; i++){
-            const player:Player = await this.playerRepo.save(players[i]);
+            let playerDTO = new PlayerDTO;
+            playerDTO = {teamId:players[i].teamId,firstName:players[i].firstName,lastName:players[i].lastName,jerseyNum:players[i].jerseyNum};
+            const player:Player = await this.playerRepo.save(playerDTO);
             playersSaved.push(player);
         }
         
@@ -80,7 +83,8 @@ export class PlayerService {
           const playerDto: PlayerDTO = {
             playerId: element.playerId,
             teamId: element.teamId.teamId,
-            name: element.name,
+            firstName: element.firstName,
+            lastName: element.lastName,
             jerseyNum: element.jerseyNum,
           };
           playerDtos.push(playerDto);

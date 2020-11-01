@@ -13,7 +13,10 @@ export class Player extends BaseEntity {
     teamId: number;
 
     @Column()
-    name: string;
+    firstName: string;
+
+    @Column()
+    lastName: string;
 
     @Column()
     jerseyNum: number;

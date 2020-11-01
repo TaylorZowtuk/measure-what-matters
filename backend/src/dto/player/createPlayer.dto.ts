@@ -1,9 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 
-export class PlayerTimeDTO {
-
-    @ApiProperty()
-    playerId: number;
+export class CreatePlayerDTO {
 
     @ApiProperty()
     teamId : number;
@@ -16,8 +13,5 @@ export class PlayerTimeDTO {
 
     @ApiProperty()
     jerseyNum : number;
-
-    @ApiProperty()
-    secondsPlayed : number;
 
 }

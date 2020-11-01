@@ -1,10 +1,10 @@
 import { Body, Controller, Post, Get, Query, UseGuards, BadRequestException } from '@nestjs/common';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { PlayerArrayDTO } from '../dto/player/playerArray.dto';
 import { PlayerDTO } from '../dto/player/player.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { PlayerService } from './player.service';
 import { QueryFailedError } from 'typeorm';
+import { CreatePlayerDTO } from '../dto/player/createPlayer.dto';
 
 @ApiTags('Players')
 //@ApiBearerAuth()
@@ -15,11 +15,12 @@ export class PlayerController {
 
   @Post()
   @ApiResponse({ status: 201, description: 'Creates a new player' })
-  async createPlayers(@Body() players: PlayerDTO[]) {
+  async createPlayers(@Body() players: CreatePlayerDTO[]) {
     try{
       for(let i = 0; i < players.length; i++){
         if (!players[i].teamId){return new BadRequestException("At least one of the players inputted has an empty teamId");}
-        else if(!players[i].name){return new BadRequestException("At least one of the players inputted has an empty name");}
+        else if(!players[i].firstName){return new BadRequestException("At least one of the players inputted has an empty first name");}
+        else if(!players[i].lastName){return new BadRequestException("At least one of the players inputted has an empty first name");}
         else if(!players[i].jerseyNum){return new BadRequestException("At least one of the players inputted has an empty jerseyNum");}
       }
       return await this.playerService.savePlayer(players);
@@ -42,7 +43,7 @@ export class PlayerController {
   @Get('/teamId')
   @ApiResponse({
     status: 200,
-    type: PlayerArrayDTO,
+    type: PlayerDTO,
     isArray: true,
     description: 'Returns array of players for the given team Id',
   })
