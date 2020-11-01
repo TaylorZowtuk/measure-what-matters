@@ -44,6 +44,10 @@ describe('UsersController', () => {
     expect(service).toBeDefined();
   });
 
+  describe('User details API', () => {
+    // TODO
+  });
+
   describe('User creation API', () => {
     const userData = {
       name: 'testName',

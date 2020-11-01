@@ -21,23 +21,20 @@ import { RequestUser } from '../types/requestUser.type';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   @Get('/')
   async getUserDetails(@Request() { user }: RequestUser) {
     try {
       const userData = await this.usersService.findOne(user.username);
       if (!userData) {
-        throw 'No user found!';
+        throw new BadRequestException('User not found.');
       }
       const returnable = { ...userData };
       delete returnable.password;
       return returnable;
     } catch (error) {
-      if (typeof error === 'string') {
-        return new BadRequestException(error);
-      }
-      return new InternalServerErrorException(
+      throw new InternalServerErrorException(
         "We don't know what went wrong :(",
       );
     }
