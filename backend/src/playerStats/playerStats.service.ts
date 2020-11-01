@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Goal } from "../db/entities/events/goal.entity";
 import { Substitution } from "../db/entities/events/substitution.entity";
@@ -96,7 +96,7 @@ export class PlayerStatsService{
     * @returns the DTO array of players on the field during the time of the goal
     */
 
-    async getPlayersOnForGoal(goalId: number) : Promise<PlayerDTO[]> {
+    async getPlayersOnForGoal(goalId: number) {
         const players: Player[] = [];
 
         const query1 = this.goalRepo.createQueryBuilder('goal');
@@ -104,6 +104,7 @@ export class PlayerStatsService{
         query1.andWhere("goal.id = :id1", {id1:goalId});
 
         const goal = await query1.getOne();
+        if(!goal){return new BadRequestException("Goal not in database");}
 
         for(let i=0; i<goal.lineup.length; i++){
             const player: Player = await this.playerRepo.findOne(

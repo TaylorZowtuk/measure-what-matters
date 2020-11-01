@@ -23,14 +23,10 @@ export class PlayerService {
     async savePlayer(players: CreatePlayerDTO[]) : Promise<Player[]> {
         const playersSaved: Player[] = [];
         for(let i=0; i<players.length; i++){
-            let playerDTO = new PlayerDTO;
-            playerDTO = {teamId:players[i].teamId,firstName:players[i].firstName,lastName:players[i].lastName,jerseyNum:players[i].jerseyNum};
-            const player:Player = await this.playerRepo.save(playerDTO);
+            const player:Player = await this.playerRepo.save(players[i]);
             playersSaved.push(player);
         }
-        
-        return playersSaved;
-        
+        return playersSaved;  
     }
 
     /**

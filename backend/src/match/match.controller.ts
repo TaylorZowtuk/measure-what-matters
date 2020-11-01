@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, InternalServerErrorException, Post, Query, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Match } from '../db/entities/match.entity';
 import { MatchDTO } from '../dto/match/match.dto';
@@ -8,8 +8,8 @@ import { QueryFailedError } from 'typeorm';
 import { CreateMatchDTO } from '../dto/match/createMatch.dto';
 
 @ApiTags('Matches')
-@ApiBearerAuth()
-@UseGuards(JwtAuthGuard)
+//@ApiBearerAuth()
+//@UseGuards(JwtAuthGuard)
 @Controller('match')
 export class MatchController {
   matchService: MatchService;
@@ -40,7 +40,7 @@ export class MatchController {
         return new BadRequestException("null value entered for parameter");
       }
       else{
-        return new BadRequestException("Unknown error");
+        return new InternalServerErrorException("Unknown error");
       }
     }
   }
@@ -54,7 +54,19 @@ export class MatchController {
   })
   async getMatchesByTeamId(
     @Query('teamId') teamId: number,
-  ): Promise<MatchDTO[]> {
-    return await this.matchService.getMatches(teamId);
+  ) {
+    if(!teamId){return new BadRequestException("No teamId entered");}
+    try{
+      teamId = +teamId;
+      return await this.matchService.getMatches(teamId);
+    }
+    catch(error){
+      if (error instanceof QueryFailedError){
+        if(error.message.includes("invalid input syntax for type integer")){
+          return new BadRequestException("Please enter a valid integer");
+        }
+      }
+      else{ return new InternalServerErrorException("Unknown problem occured");}
+    }
   }
 }

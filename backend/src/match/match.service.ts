@@ -20,10 +20,10 @@ export class MatchService {
     * @param match - The beginning of a new match session to be saved to database
     */
 
-    async saveMatch(match: CreateMatchDTO): Promise<number> {
-        let matchDTO = new MatchDTO;
-        matchDTO = {teamId:match.teamId,time:match.time,isHomeTeam:match.isHomeTeam}
-        return this.matchRepo.save(matchDTO);
+    async saveMatch(match: CreateMatchDTO): Promise<Match> {
+        //let matchDTO = new MatchDTO;
+        //matchDTO = {teamId:match.teamId,time:match.time,isHomeTeam:match.isHomeTeam}
+        return this.matchRepo.save(match);
 
     }
 

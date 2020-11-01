@@ -1,13 +1,14 @@
-import { Controller, Get, Query, UseGuards } from '@nestjs/common';
+import { BadRequestException, Controller, Get, InternalServerErrorException, Query, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { PlayerTimeDTO } from '../dto/stats/playerTime.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { PlayerStatsService } from './playerStats.service';
 import { PlayerDTO } from '../dto/player/player.dto';
+import { QueryFailedError } from 'typeorm';
 
 @ApiTags('Player Stats')
-@ApiBearerAuth()
-@UseGuards(JwtAuthGuard)
+//@ApiBearerAuth()
+//@UseGuards(JwtAuthGuard)
 @Controller('player-stats')
 export class PlayerStatsController {
   constructor(private readonly playerStatsService: PlayerStatsService) {}
@@ -22,8 +23,15 @@ export class PlayerStatsController {
   })
   async getTimeOnField(
     @Query('matchId') matchId: number,
-  ): Promise<PlayerTimeDTO[]> {
-    return await this.playerStatsService.getPlayersTimes(matchId);
+  ) {
+    try{
+      matchId = +matchId;
+      if(typeof matchId !== "number"){return new BadRequestException("Enter a valid matchId");}
+      return await this.playerStatsService.getPlayersTimes(matchId);
+    }
+    catch(error){
+      return new InternalServerErrorException("Unknown error occured");
+    }
   }
 
   @ApiResponse({
@@ -35,7 +43,20 @@ export class PlayerStatsController {
   @Get('onForGoal')
   async getPlayersOnForGoal(
     @Query('goalId') goalId: number,
-  ): Promise<PlayerDTO[]> {
-    return await this.playerStatsService.getPlayersOnForGoal(goalId);
+  ){
+    try{
+      goalId = +goalId;
+      return await this.playerStatsService.getPlayersOnForGoal(goalId);
+    }
+    catch(error){
+      if(error instanceof QueryFailedError){
+        if(error.message.includes("invalid input syntax for type integer")){
+          return new BadRequestException("Please enter a valid integer for goalId");
+        }
+      }
+      else{
+        return new InternalServerErrorException("Unknown error occured");
+      }
+    }
   }
 }

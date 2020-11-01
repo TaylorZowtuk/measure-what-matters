@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Get, Query, UseGuards, BadRequestException } from '@nestjs/common';
+import { Body, Controller, Post, Get, Query, UseGuards, BadRequestException, InternalServerErrorException } from '@nestjs/common';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { PlayerDTO } from '../dto/player/player.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -35,7 +35,7 @@ export class PlayerController {
         return new BadRequestException("null value entered for parameter");
       }
       else{
-        return new BadRequestException("Unknown error");
+        return new InternalServerErrorException("Unknown error");
       }
     }
   }
@@ -49,8 +49,20 @@ export class PlayerController {
   })
   async getPlayersByTeamId(
     @Query('teamId') teamId: number,
-  ): Promise<PlayerDTO[]> {
-    return await this.playerService.getPlayersByTeamId(teamId);
+  ){
+    if(!teamId){return new BadRequestException("No teamId entered");}
+    try{
+      teamId = +teamId;
+      return await this.playerService.getPlayersByTeamId(teamId);
+    }
+    catch(error){
+      if (error instanceof QueryFailedError){
+        if(error.message.includes("invalid input syntax for type integer")){
+          return new BadRequestException("Please enter a valid integer");
+        }
+      }
+      else{ return new InternalServerErrorException("Unknown problem occured")}
+    }
   }
 }
 
