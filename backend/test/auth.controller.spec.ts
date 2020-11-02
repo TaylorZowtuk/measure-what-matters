@@ -42,6 +42,7 @@ describe('AuthController', () => {
     };
 
     const authResponse = {
+      userId: 1,
       username: 't',
       accessToken:
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InQiLCJzdWIiOjIsImlhdCI6MTYwMzY4MTIxMywiZXhwIjoxNjAzNjgxNTEzfQ.AEhiKgegHhGEHV3qlzzbXucs_Xy2Uptte4cZ-NMqKbw',

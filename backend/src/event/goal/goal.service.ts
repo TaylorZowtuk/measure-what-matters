@@ -18,14 +18,14 @@ export class GoalService {
    *
    * @param goal - The goal we want to save to the DB
    */
-  async saveGoal(goal: GoalDTO): Promise<GoalDTO> {
+  async saveGoal(goal: GoalDTO) {
     const playersInLineupEntities = await this.playerService.getPlayers(
       goal.lineup,
     );
     if (playersInLineupEntities.includes(undefined)) {
       throw new InvalidLineupError(goal.lineup);
     }
-    return this.convertToDto([await this.goalRepo.save(goal)])[0];
+    await this.goalRepo.save(goal);
   }
 
   /**
@@ -86,7 +86,6 @@ export class GoalService {
         lineup.push(playerId);
       });
       const goalDto: GoalDTO = {
-        id: goal.id,
         matchId: goal.matchId,
         playerId: goal.playerId,
         time: goal.time,

@@ -98,6 +98,7 @@ describe('AuthService', () => {
     };
 
     const authResponse = {
+      userId: 5,
       username: 't',
       accessToken:
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InQiLCJzdWIiOjIsImlhdCI6MTYwMzY4MTIxMywiZXhwIjoxNjAzNjgxNTEzfQ.AEhiKgegHhGEHV3qlzzbXucs_Xy2Uptte4cZ-NMqKbw',
@@ -121,6 +122,7 @@ describe('AuthService', () => {
       expect(result).toHaveProperty('accessToken');
       expect(result.username).toBe(authResponse.username);
       expect(result.accessToken).toBe(authResponse.accessToken);
+      expect(result.userId).toBe(authResponse.userId);
     });
   });
 });
