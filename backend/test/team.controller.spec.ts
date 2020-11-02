@@ -7,8 +7,9 @@ import {
   BadRequestException,
   InternalServerErrorException,
 } from '@nestjs/common';
+import { CreateTeamDTO } from '../src/dto/team/createTeam.dto';
 
-const teamDto: TeamDTO = {
+const teamDto: CreateTeamDTO = {
   name: 'team',
 };
 
@@ -35,7 +36,13 @@ describe('TeamController', () => {
   });
 
   it('should call team service to create a team', async () => {
-    const spy = jest.spyOn(teamService, 'saveTeam').mockResolvedValue();
+    const teams: TeamDTO[] = [
+      {
+        teamId: 1,
+        name: 'firstTeam',
+      },
+    ];
+    const spy = jest.spyOn(teamService, 'saveTeam').mockResolvedValue(teams);
     await controller.createTeam(teamDto, userId);
     expect(spy).toBeCalledWith(teamDto, userId);
   });
@@ -43,10 +50,12 @@ describe('TeamController', () => {
   it('should call team service to get teams by user id', async () => {
     const teamDtos: TeamDTO[] = [
       {
+        teamId: 1,
         name: 'firstTeam',
         userId: userId,
       },
       {
+        teamId: 2,
         name: 'secondTeam',
         userId: userId,
       },
