@@ -36,13 +36,13 @@ describe('TeamController', () => {
   });
 
   it('should call team service to create a team', async () => {
-    const teams: TeamDTO[] = [
-      {
-        teamId: 1,
-        name: 'firstTeam',
-      },
-    ];
-    const spy = jest.spyOn(teamService, 'saveTeam').mockResolvedValue(teams);
+    const createdTeam: TeamDTO = {
+      teamId: 1,
+      name: 'firstTeam',
+    };
+    const spy = jest
+      .spyOn(teamService, 'saveTeam')
+      .mockResolvedValue(createdTeam);
     await controller.createTeam(teamDto, userId);
     expect(spy).toBeCalledWith(teamDto, userId);
   });
@@ -52,12 +52,10 @@ describe('TeamController', () => {
       {
         teamId: 1,
         name: 'firstTeam',
-        userId: userId,
       },
       {
         teamId: 2,
         name: 'secondTeam',
-        userId: userId,
       },
     ];
     const spy = jest
