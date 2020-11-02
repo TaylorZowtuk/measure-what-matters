@@ -25,12 +25,21 @@ export class UsersController {
     status: 200,
     description: 'Gets user data for currently authenticated user.',
   })
-  @ApiResponse({ status: 400, description: 'User data not found.' })
-  @ApiResponse({ status: 401, description: 'User is not authenticated.' })
-  @ApiResponse({ status: 500, description: 'Unknown exception ocurred.' })
+  @ApiResponse({
+    status: 400,
+    description: 'User data not found.',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'User is not authenticated.',
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Unknown exception ocurred.',
+  })
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @Get('/')
+  @Get('/profile')
   async getUserDetails(@Request() { user }: RequestUser) {
     let userData;
     try {
@@ -48,7 +57,10 @@ export class UsersController {
     return returnable;
   }
 
-  @ApiResponse({ status: 201, description: 'Creates a new user account.' })
+  @ApiResponse({
+    status: 201,
+    description: 'Creates a new user account.',
+  })
   @ApiResponse({
     status: 400,
     description: 'Passwords must be identical.',
