@@ -6,7 +6,7 @@ import { User } from '../src/db/entities/user.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { repositoryMockFactory } from './mocks/repositoryMockFactory';
 import { JwtService } from '@nestjs/jwt';
-import JwtPayload from '../src/interface/jwtPayload.interface';
+import { JwtPayload } from '../src/types/jwtPayload.type';
 
 describe('AuthService', () => {
   const userRepoToken = getRepositoryToken(User);

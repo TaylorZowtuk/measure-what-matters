@@ -21,30 +21,34 @@ import { RequestUser } from '../types/requestUser.type';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  @ApiResponse({
+    status: 200,
+    description: 'Gets user data for currently authenticated user.',
+  })
+  @ApiResponse({ status: 400, description: 'User data not found.' })
+  @ApiResponse({ status: 401, description: 'User is not authenticated.' })
+  @ApiResponse({ status: 500, description: 'Unknown exception ocurred.' })
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Get('/')
   async getUserDetails(@Request() { user }: RequestUser) {
+    let userData;
     try {
-      const userData = await this.usersService.findOne(user.username);
-      if (!userData) {
-        throw new BadRequestException('User not found.');
-      }
-      const returnable = { ...userData };
-      delete returnable.password;
-      return returnable;
+      userData = await this.usersService.findOne(user.username);
     } catch (error) {
       throw new InternalServerErrorException(
         "We don't know what went wrong :(",
       );
     }
+    if (!userData) {
+      throw new BadRequestException('User not found.');
+    }
+    const returnable = { ...userData };
+    delete returnable.password;
+    return returnable;
   }
 
   @ApiResponse({ status: 201, description: 'Creates a new user account.' })
-  @ApiResponse({
-    status: 409,
-    description: 'Username is taken.',
-  })
   @ApiResponse({
     status: 400,
     description: 'Passwords must be identical.',
@@ -52,6 +56,10 @@ export class UsersController {
   @ApiResponse({
     status: 401,
     description: 'Cannot create a user if you are logged in.',
+  })
+  @ApiResponse({
+    status: 409,
+    description: 'Username is taken.',
   })
   @ApiResponse({
     status: 500,

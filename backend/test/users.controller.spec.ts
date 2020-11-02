@@ -39,22 +39,69 @@ describe('UsersController', () => {
     jest.restoreAllMocks();
   });
 
+  // Global test data
+  const userData = {
+    name: 'testName',
+    username: 'testUsername',
+    password: 'testPassword',
+  };
+
   it('should be defined', () => {
     expect(controller).toBeDefined();
     expect(service).toBeDefined();
   });
 
   describe('User details API', () => {
-    // TODO
+    const userEntity = {
+      userId: 2,
+      name: 't',
+      username: 't',
+      createdDate: new Date(),
+      updatedDate: new Date(),
+    } as User;
+    it('should call the findOne method with username of authenticated user', async () => {
+      const spy = jest
+        .spyOn(service, 'findOne')
+        .mockResolvedValueOnce(userEntity);
+
+      await controller.getUserDetails(mockUserLoggedIn);
+
+      expect(spy).toBeCalledTimes(1);
+      expect(spy).toBeCalledWith(mockUserLoggedIn.user.username);
+    });
+    it('should throw a BadRequestException if the user data does not exist', async () => {
+      jest.spyOn(service, 'findOne').mockResolvedValueOnce(null);
+      try {
+        await controller.getUserDetails(mockUserLoggedIn);
+        fail('Error was not thrown');
+      } catch (error) {
+        expect(error).toBeInstanceOf(BadRequestException);
+        expect(error.message).toBe('User not found.');
+      }
+    });
+
+    it('should throw a InternalServerErrorException if an error is thrown by the service', async () => {
+      jest.spyOn(service, 'findOne').mockRejectedValueOnce(QueryFailedError);
+
+      try {
+        await controller.getUserDetails(mockUserLoggedIn);
+      } catch (error) {
+        expect(error).toBeInstanceOf(InternalServerErrorException);
+        expect(error.message).toBe("We don't know what went wrong :(");
+      }
+    });
+
+    it('should return user data without a password if the user data exists', async () => {
+      jest.spyOn(service, 'findOne').mockResolvedValueOnce(userEntity);
+
+      const result = await controller.getUserDetails(mockUserLoggedIn);
+
+      expect(result).toMatchObject(userEntity);
+      expect(result).not.toHaveProperty('password');
+    });
   });
 
   describe('User creation API', () => {
-    const userData = {
-      name: 'testName',
-      username: 'testUsername',
-      password: 'testPassword',
-    };
-
     const validCreateUserRequest: CreateUserDTO = {
       name: userData.name,
       username: userData.username,
