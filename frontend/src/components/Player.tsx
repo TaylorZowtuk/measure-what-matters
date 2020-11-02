@@ -39,7 +39,7 @@ export const PlayerDraggable: React.FC<Player> = ({
     // If team is "theirs"
     return (
       <Button ref={drag} variant="contained">
-        Opposing Team
+        Opposition
       </Button>
     );
   }

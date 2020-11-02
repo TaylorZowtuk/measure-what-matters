@@ -2,7 +2,7 @@ import React from "react";
 import { DraggableTypes } from "../constants";
 import { useDrop } from "react-dnd";
 
-import Player, { createPlayerDraggable } from "./Player";
+import Player, { createPlayerDraggable, PlayerDraggable } from "./Player";
 
 type FieldProps = {
   getStartingLine: Function;
@@ -102,12 +102,21 @@ export function FieldTarget(props: FieldTargetProps) {
   });
 
   return (
-    <div ref={drop} id="Field">
+    // TODO: make field span the width of the screen
+    <div ref={drop} style={{ backgroundColor: "#0A872B" }} id="Field">
       {props.draggablePlayers.map((player, index) => (
         <div key={index}>{player}</div>
       ))}
       {/* Opposing team number is null*/}
-      {/* <Player identifier="Bad Guys" number={-1} team="theirs"/>  */}
+      <div>
+        <PlayerDraggable
+          first_name="Opposing" // Not used
+          last_name="Team" // Not used
+          num={-1} // Not used
+          team="theirs"
+          playerId={-1} // Not used
+        />
+      </div>
     </div>
   );
 }

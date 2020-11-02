@@ -149,26 +149,24 @@ class Recording extends React.Component<
     } else {
       return (
         <DndProvider backend={HTML5Backend}>
-          <div className="recording">
-            <h1>Recording</h1>
-            <Bench
-              matchId={Number(this.props.location.state.matchId)}
-              getStartingBench={this.provideStartingBench}
-              notifyOfSubs={this.setSubs}
-            ></Bench>
-            <Team name={this.team_name} score={this.state.goals_for} />
-            <Team name={this.opp_name} score={this.state.goals_against} />
-            <Field
-              getStartingLine={this.provideStartingLine}
-              incrementScore={this.incrementScore}
-              removeFromField={this.state.subField}
-              addToField={this.state.subBench}
-              resetSubs={this.setSubs}
-            />
-            <Link to="/dashboard">
-              <Button variant="contained">Dashboard</Button>
-            </Link>
-          </div>
+          <h1>Recording</h1>
+          <Bench
+            matchId={Number(this.props.location.state.matchId)}
+            getStartingBench={this.provideStartingBench}
+            notifyOfSubs={this.setSubs}
+          ></Bench>
+          <Team name={this.team_name} score={this.state.goals_for} />
+          <Team name={this.opp_name} score={this.state.goals_against} />
+          <Field
+            getStartingLine={this.provideStartingLine}
+            incrementScore={this.incrementScore}
+            removeFromField={this.state.subField}
+            addToField={this.state.subBench}
+            resetSubs={this.setSubs}
+          />
+          <Link to="/dashboard">
+            <Button variant="contained">Dashboard</Button>
+          </Link>
         </DndProvider>
       );
     }
