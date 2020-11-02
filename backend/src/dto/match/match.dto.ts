@@ -2,7 +2,8 @@ import { ApiProperty } from "@nestjs/swagger";
 
 export class MatchDTO {
 
-    matchId?: number;
+    @ApiProperty()
+    matchId: number;
 
     @ApiProperty()
     teamId : number;
