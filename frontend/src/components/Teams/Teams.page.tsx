@@ -4,6 +4,7 @@ import Button from "@material-ui/core/Button";
 import "./teams.css";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import authHeader from "../../services/auth.header";
 // import AuthService from "../../services/auth.service";
 
 interface teamState {
@@ -29,8 +30,10 @@ class Teams extends React.Component<{}, teamState> {
       teamList: []
     }
     // TODO: make request to retrieve team list
-    axios.get(`/teams`)
+    axios.get(`/teams`, { headers: authHeader() })
     .then(response => {
+      console.log("got teams");
+      console.log(response.data);
       let teams = response.data;
       let teamArray: Team[] = [];
 
@@ -51,6 +54,7 @@ class Teams extends React.Component<{}, teamState> {
     },
     (error) => {
       console.log("getting errors");
+      console.log(localStorage.getItem("user"));
     })
 
   //   this.state = {

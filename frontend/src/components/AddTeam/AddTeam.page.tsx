@@ -5,6 +5,7 @@ import Button from '@material-ui/core/Button';
 import Player from './Player';
 import { Link } from "react-router-dom";
 import axios from "axios";
+import authHeader from "../../services/auth.header";
 
 interface createTeamState {
     teamName: string;
@@ -107,7 +108,7 @@ class AddTeam extends React.Component<{}, createTeamState> {
             //     });
             // })
 
-            axios.post('/teams', {name: this.state.teamName})
+            axios.post('/teams', {name: this.state.teamName}, { headers: authHeader() })
             .then(response => {
                 console.log("team name pass");
                 if(response.data.teamId) {
@@ -144,6 +145,7 @@ class AddTeam extends React.Component<{}, createTeamState> {
             },
             (error) => {
                 console.log("team not created");
+                console.log(localStorage.getItem("user"));
             })
 
             
