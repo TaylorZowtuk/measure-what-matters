@@ -36,7 +36,7 @@ describe('UsersService', () => {
   });
 
   // Broken tests
-  describe('creates a User', () => {
+  describe('Creating a User', () => {
     const userData = {
       name: 'testName',
       username: 'testUsername',
@@ -75,6 +75,12 @@ describe('UsersService', () => {
       expect(result).toHaveProperty('userId');
       expect(result).toHaveProperty('username');
       expect(result).toHaveProperty('password');
+    });
+  });
+
+  describe('Editing a User', () => {
+    it('should do a thing', async () => {
+      // TODO
     });
   });
 });
