@@ -2,12 +2,13 @@ import { ApiProperty } from "@nestjs/swagger";
 
 export class LineupDTO {
 
-    lineupId?: number;
+    @ApiProperty()
+    lineupId : number;
+
+    @ApiProperty({ isArray: true, type: 'integer'})
+    lineup: number;
 
     @ApiProperty()
     matchId: number;
-
-    @ApiProperty({isArray: true, type: "integer"})
-    lineup: number[];
 
 }

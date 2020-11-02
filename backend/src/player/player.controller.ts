@@ -7,9 +7,9 @@ import { QueryFailedError } from 'typeorm';
 import { CreatePlayerDTO } from '../dto/player/createPlayer.dto';
 
 @ApiTags('Players')
-//@ApiBearerAuth()
-//@UseGuards(JwtAuthGuard)
-@Controller('player')
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
+@Controller('players')
 export class PlayerController {
   constructor(private readonly playerService: PlayerService) {}
 
@@ -17,12 +17,6 @@ export class PlayerController {
   @ApiResponse({ status: 201, description: 'Creates a new player' })
   async createPlayers(@Body() players: CreatePlayerDTO[]) {
     try{
-      for(let i = 0; i < players.length; i++){
-        if (!players[i].teamId){return new BadRequestException("At least one of the players inputted has an empty teamId");}
-        else if(!players[i].firstName){return new BadRequestException("At least one of the players inputted has an empty first name");}
-        else if(!players[i].lastName){return new BadRequestException("At least one of the players inputted has an empty first name");}
-        else if(!players[i].jerseyNum){return new BadRequestException("At least one of the players inputted has an empty jerseyNum");}
-      }
       return await this.playerService.savePlayer(players);
     }
     catch(error){
@@ -50,8 +44,8 @@ export class PlayerController {
   async getPlayersByTeamId(
     @Query('teamId') teamId: number,
   ){
-    if(!teamId){return new BadRequestException("No teamId entered");}
     try{
+      if(!teamId){return new BadRequestException("No teamId entered");}
       teamId = +teamId;
       return await this.playerService.getPlayersByTeamId(teamId);
     }

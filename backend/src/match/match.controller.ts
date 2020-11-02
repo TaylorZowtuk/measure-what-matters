@@ -8,8 +8,8 @@ import { QueryFailedError } from 'typeorm';
 import { CreateMatchDTO } from '../dto/match/createMatch.dto';
 
 @ApiTags('Matches')
-//@ApiBearerAuth()
-//@UseGuards(JwtAuthGuard)
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
 @Controller('match')
 export class MatchController {
   matchService: MatchService;
@@ -55,8 +55,8 @@ export class MatchController {
   async getMatchesByTeamId(
     @Query('teamId') teamId: number,
   ) {
-    if(!teamId){return new BadRequestException("No teamId entered");}
     try{
+      if(!teamId){return new BadRequestException("No teamId entered");}
       teamId = +teamId;
       return await this.matchService.getMatches(teamId);
     }

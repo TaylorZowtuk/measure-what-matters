@@ -7,8 +7,8 @@ import { PlayerDTO } from '../dto/player/player.dto';
 import { QueryFailedError } from 'typeorm';
 
 @ApiTags('Player Stats')
-//@ApiBearerAuth()
-//@UseGuards(JwtAuthGuard)
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
 @Controller('player-stats')
 export class PlayerStatsController {
   constructor(private readonly playerStatsService: PlayerStatsService) {}

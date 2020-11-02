@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Player } from '../db/entities/player.entity';
 import { PlayerDTO } from '../dto/player/player.dto';
@@ -20,9 +20,13 @@ export class PlayerService {
     * @param player - The new team player to be saved to database
     */
 
-    async savePlayer(players: CreatePlayerDTO[]) : Promise<Player[]> {
+    async savePlayer(players: CreatePlayerDTO[]) {
         const playersSaved: Player[] = [];
         for(let i=0; i<players.length; i++){
+            if (!players[i].teamId){return new BadRequestException("At least one of the players inputted has an empty teamId");}
+            else if(!players[i].firstName){return new BadRequestException("At least one of the players inputted has an empty first name");}
+            else if(!players[i].lastName){return new BadRequestException("At least one of the players inputted has an empty first name");}
+            else if(!players[i].jerseyNum){return new BadRequestException("At least one of the players inputted has an empty jerseyNum");}
             const player:Player = await this.playerRepo.save(players[i]);
             playersSaved.push(player);
         }

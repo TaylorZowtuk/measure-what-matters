@@ -8,6 +8,7 @@ import { TeamModule } from './team/team.module';
 import { MatchModule } from './match/match.module';
 import { PlayerModule } from './player/player.module';
 import { PlayerStatsModule } from './playerStats/playerStats.module';
+import { LineupModule } from './lineup/lineup.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { PlayerStatsModule } from './playerStats/playerStats.module';
     TeamModule,
     AuthModule,
     UsersModule,
+    LineupModule,
   ],
   controllers: [TeamController],
 })
