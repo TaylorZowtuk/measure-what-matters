@@ -51,12 +51,9 @@ describe('GoalController', () => {
   });
 
   it('should call goal service to create goal event', async () => {
-    const spy = jest
-      .spyOn(goalService, 'saveGoal')
-      .mockResolvedValue(goalDtos[1]);
-    const response = await controller.saveGoalEvent(goalDtos[1]);
+    const spy = jest.spyOn(goalService, 'saveGoal').mockResolvedValue();
+    await controller.saveGoalEvent(goalDtos[1]);
     expect(spy).toBeCalledWith(goalDtos[1]);
-    expect(response).toBe(goalDtos[1]);
   });
 
   it('should return bad request if query fails due not null constraint', async () => {
