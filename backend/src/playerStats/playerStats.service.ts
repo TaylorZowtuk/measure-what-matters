@@ -80,7 +80,7 @@ export class PlayerStatsService{
             const lastName = players[i].lastName;
             const jerseyNum = players[i].jerseyNum;
             const secondsPlayed = await this.getSecondsPlayed(players[i].playerId, matchId);
-            const player_time_DTO: PlayerTimeDTO = {playerId:playerId, teamId:teamId, firstName:firstName, lastName: lastName, jerseyNum:jerseyNum, secondsPlayed:secondsPlayed};
+            const player_time_DTO: PlayerTimeDTO = {playerId, teamId, firstName, lastName, jerseyNum, secondsPlayed};
         
             playerTimeDtos.push(player_time_DTO); 
         }

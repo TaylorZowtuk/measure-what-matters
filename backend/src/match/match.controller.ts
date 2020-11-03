@@ -1,4 +1,16 @@
-import { BadRequestException, Body, Controller, Get, InternalServerErrorException, Post, Query, UseGuards } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Get,
+  InternalServerErrorException,
+  ParseIntPipe,
+  Post,
+  Query,
+  UseGuards,
+  UsePipes,
+  ValidationPipe,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Match } from '../db/entities/match.entity';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -15,27 +27,29 @@ export class MatchController {
 
   @Post('start')
   @ApiResponse({ status: 201, description: 'Creates a new match' })
+  @ApiResponse({
+    status: 400,
+    description: 'Violates foreign key, or null value entered',
+  })
+  @ApiResponse({ status: 500, description: 'Unknown error occured' })
+  @UsePipes(ValidationPipe)
   async startMatch(@Body() match: CreateMatchDTO) {
-    
-    try{
-      if (!match.teamId){
-        throw new BadRequestException("TeamId cannot be null");
+    try {
+      if (!match.teamId) {
+        throw new BadRequestException('TeamId cannot be null');
       }
       return await this.matchService.saveMatch(match);
-    }
-
-    catch (error) {
-
-      if (error instanceof QueryFailedError){
-        if(error.message.includes("violates foreign key constraint")){
-          throw new BadRequestException("TeamId not in database");
+    } catch (error) {
+      if (error instanceof QueryFailedError) {
+        if (error.message.includes('violates foreign key constraint')) {
+          throw new BadRequestException('TeamId not in database');
+        } else if (error.message.includes('violates not-null constraint')) {
+          throw new BadRequestException('null value entered for parameter');
         }
-      }
-      else if(error.message.includes("violates not-null constraint")){
-        throw new BadRequestException("null value entered for parameter");
-      }
-      else{
-        throw new InternalServerErrorException("Unknown error");
+      } else if (error.message.includes('violates not-null constraint')) {
+        throw new BadRequestException('null value entered for parameter');
+      } else {
+        throw new InternalServerErrorException('Unknown error');
       }
     }
   }
@@ -47,21 +61,19 @@ export class MatchController {
     isArray: true,
     description: 'Returns a list of matches for the given teamId',
   })
-  async getMatchesByTeamId(
-    @Query('teamId') teamId: number,
-  ) {
-    try{
-      if(!teamId){throw new BadRequestException("No teamId entered");}
-      teamId = +teamId;
+  @ApiResponse({ status: 400, description: 'Invalid integer entered' })
+  @ApiResponse({ status: 500, description: 'Unknown error occured' })
+  async getMatchesByTeamId(@Query('teamId', ParseIntPipe) teamId: number) {
+    try {
       return await this.matchService.getMatches(teamId);
-    }
-    catch(error){
-      if (error instanceof QueryFailedError){
-        if(error.message.includes("invalid input syntax for type integer")){
-          throw new BadRequestException("Please enter a valid integer");
+    } catch (error) {
+      if (error instanceof QueryFailedError) {
+        if (error.message.includes('invalid input syntax for type integer')) {
+          throw new BadRequestException('Please enter a valid integer');
         }
+      } else {
+        throw new InternalServerErrorException('Unknown problem occured');
       }
-      else{ throw new InternalServerErrorException("Unknown problem occured");}
     }
   }
 }

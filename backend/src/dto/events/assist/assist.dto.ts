@@ -8,7 +8,7 @@ export class AssistDTO {
     @ApiProperty()
     matchId: number;
 
-    @ApiProperty({format: "int64"})
+    @ApiProperty()
     time: number;
 
     @ApiProperty()

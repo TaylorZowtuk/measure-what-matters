@@ -1,9 +1,9 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { Assist } from '../../db/entities/events/assist.entity';
-import { AssistDTO } from "../../dto/events/assist/assist.dto";
-import { CreateAssistDTO } from "../../dto/events/assist/createAssist.dto";
+import { AssistDTO } from '../../dto/events/assist/assist.dto';
+import { CreateAssistDTO } from '../../dto/events/assist/createAssist.dto';
 
 @Injectable()
 export class AssistService {
@@ -22,9 +22,6 @@ export class AssistService {
    * @param assist - the assist to be saved in database
    */
   async saveAssist(assist: CreateAssistDTO) {
-    if (!assist.matchId){return new BadRequestException("Request has empty matchId");}
-    if (!assist.playerId){return new BadRequestException("Request has empty playerId");}
-    if ((!assist.time) && (assist.time!==0)){return new BadRequestException("Request has empty time");}
     return this.assistRepo.save(assist);
   }
 
@@ -35,9 +32,9 @@ export class AssistService {
    *
    * @returns A promise of a list of assists
    */
-  async getAssistByPlayerId(playerId: number){
+  async getAssistByPlayerId(playerId: number) {
     const assists: Assist[] = await this.assistRepo.find({
-      where: { playerId:playerId},
+      where: { playerId: playerId },
     });
     return this.convertToDto(assists);
   }
@@ -49,9 +46,9 @@ export class AssistService {
    *
    * @returns A promise of a list of assists
    */
-  async getAssistByMatchId(matchId: number){
+  async getAssistByMatchId(matchId: number) {
     const assists: Assist[] = await this.assistRepo.find({
-      where: {matchId : matchId},
+      where: { matchId: matchId },
     });
     return this.convertToDto(assists);
   }
@@ -65,9 +62,9 @@ export class AssistService {
    * @returns A promise of a list of assists
    */
 
-  async getAssistByPlayerAndMatch(playerId:number, matchId:number){
+  async getAssistByPlayerAndMatch(playerId: number, matchId: number) {
     const assists: Assist[] = await this.assistRepo.find({
-      where: { matchId : matchId, playerId : playerId}
+      where: { matchId: matchId, playerId: playerId },
     });
     return this.convertToDto(assists);
   }
@@ -93,5 +90,4 @@ export class AssistService {
     });
     return assistDtoArray;
   }
-
 }
