@@ -23,14 +23,14 @@ export class LineupController {
         catch(error){
             if (error instanceof QueryFailedError){
               if(error.message.includes("violates foreign key constraint")){
-                return new BadRequestException("MatchId not in database");
+                throw new BadRequestException("MatchId not in database");
               }
             }
             else if(error.message.includes("violates not-null constraint")){
-              return new BadRequestException("null value entered for parameter");
+              throw new BadRequestException("null value entered for parameter");
             }
             else{
-              return new InternalServerErrorException("Unknown error");
+              throw new InternalServerErrorException("Unknown error");
             }
         }
     }
@@ -43,16 +43,16 @@ export class LineupController {
     })
     async getLineupByMatch(@Query('matchId') matchId: number){
         try{
-            return await this.lineupService.getLineupByMatch(matchId);
+            throw await this.lineupService.getLineupByMatch(matchId);
         }
         catch(error){
             if(error instanceof TypeError){
                 if(error.message.includes("Cannot read property")){
-                    return new BadRequestException("MatchId does not have assosciated lineup");
+                    throw new BadRequestException("MatchId does not have assosciated lineup");
                 }
             }
             else{
-                return new InternalServerErrorException("Unknown problem occured");
+                throw new InternalServerErrorException("Unknown problem occured");
             }
         }
     }

@@ -30,8 +30,15 @@ export class PlayerStatsController {
       return await this.playerStatsService.getPlayersTimes(matchId);
     }
     catch(error){
+      if(error instanceof TypeError){
+        if(error.message.includes("Cannot read property")){
+          throw new BadRequestException("matchId does not exist in database");
+        }
+      }
       return new InternalServerErrorException("Unknown error occured");
+      
     }
+  
   }
 
   @ApiResponse({
@@ -54,7 +61,11 @@ export class PlayerStatsController {
           return new BadRequestException("Please enter a valid integer for goalId");
         }
       }
-      else{
+      else if(error instanceof TypeError){
+        if(error.message.includes("Cannot read property")){
+          throw new BadRequestException("matchId does not exists in database");
+        }
+      } else{
         return new InternalServerErrorException("Unknown error occured");
       }
     }

@@ -38,7 +38,7 @@ export class MatchService {
     async getMatches(teamId : number) : Promise<MatchDTO[]> {
 
         const matches: Match[] = await this.matchRepo.find(
-            {where: {teamId : teamId}}
+            {where: {teamId}}
         )
         
 

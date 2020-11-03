@@ -9,25 +9,19 @@ import { AssistService } from './assist.service';
 @ApiTags('Assists')
 @Controller('event/assists')
 export class AssistController {
-  assistService: AssistService;
-
-  constructor(assistService: AssistService) {
-    this.assistService = assistService;
-  }
+  constructor(private readonly assistService: AssistService) {}
 
   @Post('/')
   @ApiResponse({ status: 201, description: 'Creates a new assist event' })
   async saveAssistEvent(@Body() assist: CreateAssistDTO) {
     try{
       return await this.assistService.saveAssist(assist);
-    }
-    catch(error){
+    } catch(error){
       if(error instanceof QueryFailedError){
         if(error.message.includes("violates foreign key constraint")){
           return new BadRequestException("MatchId or PlayerId invalid");
         }
-      }
-      else{
+      } else{
         return new InternalServerErrorException("Unknown error occured");
       }
     }

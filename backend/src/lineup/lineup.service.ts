@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { Lineup } from "../db/entities/lineup.entity";
@@ -20,8 +20,6 @@ export class LineupService{
     */
 
     async saveLineup(lineup: CreateLineupDTO) {
-        if(!lineup.lineup){return new BadRequestException("Null lineup entered");}
-        else if(!lineup.matchId){return new BadRequestException("Null matchId entered");}
         return await this.lineupRepo.save(lineup);
     }
 
@@ -34,7 +32,6 @@ export class LineupService{
     */
 
     async getLineupByMatch(matchId:number){
-        if(!matchId){return new BadRequestException("Null value for matchId entered")}
         const lineup = await this.lineupRepo.findOne({
             where: {matchId:matchId}
         });

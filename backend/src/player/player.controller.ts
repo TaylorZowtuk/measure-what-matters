@@ -18,17 +18,14 @@ export class PlayerController {
   async createPlayers(@Body() players: CreatePlayerDTO[]) {
     try{
       return await this.playerService.savePlayer(players);
-    }
-    catch(error){
+    } catch(error){
       if (error instanceof QueryFailedError){
         if(error.message.includes("violates foreign key constraint")){
           return new BadRequestException("TeamId not in database");
         }
-      }
-      else if(error.message.includes("violates not-null constraint")){
+      } else if(error.message.includes("violates not-null constraint")){
         return new BadRequestException("null value entered for parameter");
-      }
-      else{
+      } else{
         return new InternalServerErrorException("Unknown error");
       }
     }
@@ -48,14 +45,12 @@ export class PlayerController {
       if(!teamId){return new BadRequestException("No teamId entered");}
       teamId = +teamId;
       return await this.playerService.getPlayersByTeamId(teamId);
-    }
-    catch(error){
+    } catch(error){
       if (error instanceof QueryFailedError){
         if(error.message.includes("invalid input syntax for type integer")){
-          return new BadRequestException("Please enter a valid integer");
+          throw new BadRequestException("Please enter a valid integer");
         }
-      }
-      else{ return new InternalServerErrorException("Unknown problem occured")}
+      } else{ throw new InternalServerErrorException("Unknown problem occured")}
     }
   }
 }
