@@ -6,11 +6,12 @@ import {
   Body,
   Logger,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBasicAuth, ApiTags } from '@nestjs/swagger';
 import { LoginDTO } from '../dto/auth/login.dto';
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './local-auth.guard';
 
+@ApiBasicAuth()
 @ApiTags('Authentication')
 @Controller('auth')
 export class AuthController {

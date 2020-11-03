@@ -2,7 +2,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import JwtPayload from '../interface/jwtPayload.interface';
+import { JwtPayload } from '../types/jwtPayload.type';
 
 interface ValidationPayload {
   username: string;

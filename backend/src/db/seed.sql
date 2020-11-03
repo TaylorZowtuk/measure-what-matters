@@ -1,7 +1,7 @@
 INSERT INTO public.user ("userId", "username", "name", "password")
 VALUES (1, 't', 't','$2b$10$L.4Wzh5WMcUSnfhVQUZ2ZulXSLRGrT8v0dlA6KU86yzUKtJ.1SFni');
 
-INSERT INTO public.team ("teamId", "name", "userIdUserId")
+INSERT INTO public.team ("teamId", "name", "userId")
 VALUES (1, 'team', 1);
 
 INSERT INTO public.match ("teamIdTeamId", "time", "isHomeTeam")
