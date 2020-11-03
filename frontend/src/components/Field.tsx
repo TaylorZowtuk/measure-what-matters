@@ -95,11 +95,10 @@ type FieldTargetProps = {
 export function FieldTarget(props: FieldTargetProps) {
   const [, drop] = useDrop({
     accept: DraggableTypes.PLAYER,
-    drop: (item: any, monitor) =>
-      props.incrementScore(true, item.player, props.getLineup()),
-    // drop: (item, monitor) => {props.increment_score(     // TODO: increment correct teams score
-    //     (monitor.team == "ours") ? true : false
-    // )},
+    drop: (item: any, monitor) => {
+      const ourGoal: Boolean = item.player.team === "ours" ? true : false;
+      props.incrementScore(ourGoal, item.player, props.getLineup());
+    },
   });
 
   return (

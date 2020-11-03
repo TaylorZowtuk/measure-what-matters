@@ -107,27 +107,29 @@ class Recording extends React.Component<
 
   incrementScore = (
     goal_for: boolean,
-    scorer: Player,
-    lineup: Player[]
+    scorer: Player | undefined = undefined,
+    lineup: Player[] | undefined = undefined
   ): void => {
     if (goal_for) {
-      this.setState({ goals_for: this.state.goals_for + 1 });
-      let ids: number[] = [];
-      for (let i = 0; i < lineup.length; i++) {
-        ids.push(lineup[i].playerId);
+      if (scorer && lineup) {
+        this.setState({ goals_for: this.state.goals_for + 1 });
+        let ids: number[] = [];
+        for (let i = 0; i < lineup.length; i++) {
+          ids.push(lineup[i].playerId);
+        }
+        let goal: Goal = {
+          id: undefined,
+          matchId: Number(this.props.location.state.matchId),
+          time: Date.now(), // Epoch time in ms
+          playerId: scorer.playerId,
+          lineup: ids,
+        };
+        axios
+          .post(`/event/goals`, goal, { headers: authHeader() })
+          .then((res) => {
+            console.log(res); // TODO: catch error and handle if needed
+          });
       }
-      let goal: Goal = {
-        id: undefined,
-        matchId: Number(this.props.location.state.matchId),
-        time: Date.now(), // Epoch time in ms
-        playerId: scorer.playerId,
-        lineup: ids,
-      };
-      axios
-        .post(`/event/goals`, goal, { headers: authHeader() })
-        .then((res) => {
-          console.log(res); // TODO: catch error and handle if needed
-        });
     } else {
       this.setState({ goals_against: this.state.goals_against + 1 });
       // TODO: add backend call to add against goal
