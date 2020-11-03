@@ -13,6 +13,7 @@ import { TeamModule } from './team/team.module';
 import { MatchModule } from './match/match.module';
 import { PlayerModule } from './player/player.module';
 import { PlayerStatsModule } from './playerStats/playerStats.module';
+import { LineupModule } from './lineup/lineup.module';
 import { LoggerMiddleware } from './middleware/logger.middleware';
 
 @Module({
@@ -25,6 +26,7 @@ import { LoggerMiddleware } from './middleware/logger.middleware';
     TeamModule,
     AuthModule,
     UsersModule,
+    LineupModule,
   ],
   controllers: [TeamController],
 })

@@ -6,11 +6,7 @@ import { TeamDTO } from '../dto/team/team.dto';
 
 @Injectable()
 export class TeamService {
-  teamRepo: Repository<Team>;
-
-  constructor(@InjectRepository(Team) teamRepo: Repository<Team>) {
-    this.teamRepo = teamRepo;
-  }
+  constructor(@InjectRepository(Team) private readonly teamRepo: Repository<Team>){}
 
   /**
    * Creates a team in the database
