@@ -1,6 +1,7 @@
 import React from "react";
 import { DraggableTypes } from "../constants";
 import { useDrop } from "react-dnd";
+import { Container } from "react-bootstrap";
 
 import Player, { createPlayerDraggable, PlayerDraggable } from "./Player";
 
@@ -103,7 +104,7 @@ export function FieldTarget(props: FieldTargetProps) {
 
   return (
     // TODO: make field span the width of the screen
-    <div ref={drop} style={{ backgroundColor: "#0A872B" }} id="Field">
+    <Container ref={drop} style={{ backgroundColor: "#0A872B" }} id="Field">
       {props.draggablePlayers.map((player, index) => (
         <div key={index}>{player}</div>
       ))}
@@ -117,7 +118,7 @@ export function FieldTarget(props: FieldTargetProps) {
           playerId={-1} // Not used
         />
       </div>
-    </div>
+    </Container>
   );
 }
 
