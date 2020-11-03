@@ -61,7 +61,7 @@ describe('AuthService', () => {
     it('should call the user service to find the user by username', async () => {
       const { username, password } = userData;
 
-      const spy = jest.spyOn(userService, 'findOne');
+      const spy = jest.spyOn(userService, 'findOneForAuth');
 
       await service.validateUser(username, password);
 
@@ -74,7 +74,9 @@ describe('AuthService', () => {
       const userDataWithoutPass = { ...userCreatedData };
       delete userDataWithoutPass.password;
 
-      jest.spyOn(userService, 'findOne').mockResolvedValueOnce(userCreatedData);
+      jest
+        .spyOn(userService, 'findOneForAuth')
+        .mockResolvedValueOnce(userCreatedData);
 
       const result = await service.validateUser(username, password);
       expect(result).toMatchObject(userDataWithoutPass);
@@ -84,7 +86,9 @@ describe('AuthService', () => {
       const { username } = userData;
       const invalidPassword = 'Bad boi password';
 
-      jest.spyOn(userService, 'findOne').mockResolvedValueOnce(userCreatedData);
+      jest
+        .spyOn(userService, 'findOneForAuth')
+        .mockResolvedValueOnce(userCreatedData);
 
       const result = await service.validateUser(username, invalidPassword);
       expect(result).toBe(null);

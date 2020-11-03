@@ -4,7 +4,9 @@ import {
   ConflictException,
   Controller,
   Get,
+  HttpCode,
   InternalServerErrorException,
+  Logger,
   Post,
   Request,
 } from '@nestjs/common';
@@ -15,6 +17,8 @@ import { UseGuards, UnauthorizedException } from '@nestjs/common';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RequestUser } from '../types/requestUser.type';
+import { EditUserDTO } from '../dto/users/editUser.dto';
+import { User } from '../db/entities/user.entity';
 
 @ApiTags('Users')
 @Controller('users')
@@ -43,7 +47,7 @@ export class UsersController {
   async getUserDetails(@Request() { user }: RequestUser) {
     let userData;
     try {
-      userData = await this.usersService.findOne(user.username);
+      userData = await this.usersService.findOne(user.userId);
     } catch (error) {
       throw new InternalServerErrorException(
         "We don't know what went wrong :(",
@@ -52,9 +56,35 @@ export class UsersController {
     if (!userData) {
       throw new BadRequestException('User not found.');
     }
-    const returnable = { ...userData };
-    delete returnable.password;
-    return returnable;
+    return userData;
+  }
+
+  @ApiResponse({
+    status: 200,
+    description: 'User details updated successfully',
+  })
+  @ApiBearerAuth()
+  @HttpCode(200)
+  @UseGuards(JwtAuthGuard)
+  @Post('profile/edit')
+  async editUser(@Body() data: EditUserDTO, @Request() { user }: RequestUser) {
+    try {
+      return await this.usersService.update(
+        user.userId,
+        data.name,
+        data.teamId,
+      );
+    } catch (error) {
+      Logger.error(error);
+      if (error instanceof QueryFailedError) {
+        if (error.message.includes('violates foreign key constraint ')) {
+          throw new BadRequestException(
+            'TeamId must reference a team that already exists',
+          );
+        }
+      }
+      throw new InternalServerErrorException(error);
+    }
   }
 
   @ApiResponse({

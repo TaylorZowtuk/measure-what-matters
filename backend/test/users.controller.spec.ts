@@ -59,7 +59,7 @@ describe('UsersController', () => {
       createdDate: new Date(),
       updatedDate: new Date(),
     } as User;
-    it('should call the findOne method with username of authenticated user', async () => {
+    it('should call the findOne method with userId of authenticated user', async () => {
       const spy = jest
         .spyOn(service, 'findOne')
         .mockResolvedValueOnce(userEntity);
@@ -67,7 +67,7 @@ describe('UsersController', () => {
       await controller.getUserDetails(mockUserLoggedIn);
 
       expect(spy).toBeCalledTimes(1);
-      expect(spy).toBeCalledWith(mockUserLoggedIn.user.username);
+      expect(spy).toBeCalledWith(mockUserLoggedIn.user.userId);
     });
     it('should throw a BadRequestException if the user data does not exist', async () => {
       jest.spyOn(service, 'findOne').mockResolvedValueOnce(null);

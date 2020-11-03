@@ -4,6 +4,9 @@ VALUES (1, 't', 't','$2b$10$L.4Wzh5WMcUSnfhVQUZ2ZulXSLRGrT8v0dlA6KU86yzUKtJ.1SFn
 INSERT INTO public.team ("teamId", "name", "userId")
 VALUES (1, 'team', 1);
 
+INSERT INTO public.team ("teamId", "name", "userId")
+VALUES (22, 'team22', 1);
+
 INSERT INTO public.match ("teamIdTeamId", "time", "isHomeTeam")
 VALUES (1, 46544654, true);
 
