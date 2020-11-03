@@ -13,11 +13,8 @@ import { TeamModule } from './team/team.module';
 import { MatchModule } from './match/match.module';
 import { PlayerModule } from './player/player.module';
 import { PlayerStatsModule } from './playerStats/playerStats.module';
-<<<<<<< HEAD
 import { LineupModule } from './lineup/lineup.module';
-=======
 import { LoggerMiddleware } from './middleware/logger.middleware';
->>>>>>> be16948b62dfa79c7d74ebefa3d22ccfc64b3ebd
 
 @Module({
   imports: [

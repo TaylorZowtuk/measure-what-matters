@@ -3,7 +3,7 @@ import { ApiProperty } from "@nestjs/swagger";
 export class PlayerDTO {
 
     @ApiProperty()
-    playerId?: number;
+    playerId: number;
 
     @ApiProperty()
     teamId : number;
