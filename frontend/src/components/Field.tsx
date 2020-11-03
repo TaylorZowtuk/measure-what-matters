@@ -1,7 +1,7 @@
 import React from "react";
 import { DraggableTypes } from "../constants";
 import { useDrop } from "react-dnd";
-import { Container } from "react-bootstrap";
+import { Container, Row, Col } from "react-bootstrap";
 
 import Player, { createPlayerDraggable, PlayerDraggable } from "./Player";
 
@@ -102,21 +102,34 @@ export function FieldTarget(props: FieldTargetProps) {
   });
 
   return (
-    // TODO: make field span the width of the screen
+    // TODO: determine a way to avoid hard coding this table or present in a more clear manner
+    // prettier-ignore
     <Container ref={drop} style={{ backgroundColor: "#0A872B" }} id="Field">
-      {props.draggablePlayers.map((player, index) => (
-        <div key={index}>{player}</div>
-      ))}
-      {/* Opposing team number is null*/}
-      <div>
-        <PlayerDraggable
-          first_name="Opposing" // Not used
-          last_name="Team" // Not used
-          num={-1} // Not used
-          team="theirs"
-          playerId={-1} // Not used
-        />
-      </div>
+    {/* 0 */}
+            <Row>
+              {/* 0           1           2                                     3 */}
+              <Col></Col> <Col></Col> <Col>{props.draggablePlayers[3]}</Col> <Col></Col>
+            </Row>
+    {/* 1 */}
+            <Row>
+              {/* 0           1                                     2           3 */}
+              <Col></Col> <Col>{props.draggablePlayers[1]}</Col> <Col></Col> <Col></Col>
+            </Row>
+    {/* 2 */}
+            <Row>
+              {/* 0                                     1             2                                   3 */}
+              <Col>{props.draggablePlayers[0]}</Col> <Col></Col> <Col>{props.draggablePlayers[4]}</Col> <Col><PlayerDraggable first_name="Opposing" last_name="Team" num={-1} team="theirs" playerId={-1}/></Col>
+            </Row>
+    {/* 3 */}
+            <Row>
+              {/* 0           1                                     2           3 */}
+              <Col></Col> <Col>{props.draggablePlayers[2]}</Col> <Col></Col> <Col></Col>
+            </Row>
+    {/* 4 */}
+            <Row>
+              {/* 0           1           2                                     3 */}
+              <Col></Col> <Col></Col> <Col>{props.draggablePlayers[5]}</Col> <Col></Col>
+            </Row>
     </Container>
   );
 }
