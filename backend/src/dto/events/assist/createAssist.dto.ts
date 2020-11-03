@@ -7,7 +7,7 @@ export class CreateAssistDTO {
     @IsNotEmpty()
     matchId: number;
 
-    @ApiProperty({format: "int64"})
+    @ApiProperty()
     @IsNotEmpty()
     time: number;
 
