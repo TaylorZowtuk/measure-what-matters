@@ -11,6 +11,7 @@ import {
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { QueryFailedError } from 'typeorm';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { CreateTeamDTO } from '../dto/team/createTeam.dto';
 import { TeamDTO } from '../dto/team/team.dto';
 import { TeamService } from './team.service';
 
@@ -26,9 +27,25 @@ export class TeamController {
   }
 
   @Post('/')
-  async createTeam(@Body() team: TeamDTO, @Headers('userId') userId: number) {
+  @ApiResponse({
+    status: 201,
+    type: TeamDTO,
+    description: 'Returns the team that was created',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Request contains invalid data or team name is already taken.',
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Something went wrong.',
+  })
+  async createTeam(
+    @Body() team: CreateTeamDTO,
+    @Headers('userId') userId: number,
+  ) {
     try {
-      await this.teamService.saveTeam(team, userId);
+      return await this.teamService.saveTeam(team, userId);
     } catch (err) {
       if (err instanceof QueryFailedError) {
         if (err.message.includes('violates foreign key constraint')) {
