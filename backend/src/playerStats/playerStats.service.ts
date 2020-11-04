@@ -54,7 +54,7 @@ export class PlayerStatsService{
 
             // to be fixed, currently the end of the game does not update the time_off for the final substitution, we will fix for next sprint
             if(time_off == null){
-                time_off = time_on + 100;
+                time_off = time_on ;
             }
             timeOnField+=(time_off-time_on);
         }
