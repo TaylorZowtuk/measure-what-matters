@@ -65,7 +65,7 @@ class LineupComponent extends React.Component<any, LineupState> {
     }
     render() {
         return (
-            <div>
+            <div style={{backgroundColor:"whitesmoke", color:"black", borderRadius:"5px", marginBottom:"30px", padding:"15px"}}>
                 {/* {
                     this.props.playerList.map((player) => {
                         return(
@@ -73,6 +73,7 @@ class LineupComponent extends React.Component<any, LineupState> {
                         );
                     })
                 } */}
+                <h2 style={{padding:0, margin:0}}>Lineup for Goals</h2>
                 {
                     this.state.lineupList.forEach((team) => {
                         return(
