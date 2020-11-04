@@ -1,58 +1,71 @@
-import { MatchService } from "../src/match/match.service";
-import { Repository } from "typeorm";
-import { Match } from "../src/db/entities/match.entity";
-import { MatchDTO } from "../src/dto/match/match.dto";
-import { Test, TestingModule } from "@nestjs/testing";
-import { getRepositoryToken } from "@nestjs/typeorm";
-
-
-const matchDto: MatchDTO = {
-    matchId:1,
-    teamId:1,
-    time:1,
-    isHomeTeam: false
-
-};
-
-const match = new Match();
-
-match.matchId = 1;
-match.teamId = 1;
-match.time = 1;
-match.isHomeTeam = false;
-
-const matchDtos: MatchDTO[] = [matchDto];
-const matchEntities: Match[] = [match];
+import { Repository } from 'typeorm';
+import { getRepositoryToken } from '@nestjs/typeorm';
+import { Test, TestingModule } from '@nestjs/testing';
+import { MatchService } from '../src/match/match.service';
+import { Match } from '../src/db/entities/match.entity';
+import { CreateMatchDTO } from '../src/dto/match/createMatch.dto';
 
 describe('MatchService Test', () => {
-
     let matchService: MatchService;
     let matchRepository: Repository<Match>;
-
+  
     beforeEach(async () => {
-        const module: TestingModule = await Test.createTestingModule({
-            providers: [MatchService, {provide:'MatchRepository', useClass: Repository},
-            ],
-        }).compile();
-        
-        matchService = module.get<MatchService>(MatchService);
-        matchRepository = module.get<Repository<Match>>(getRepositoryToken(Match));
+      const module: TestingModule = await Test.createTestingModule({
+        providers: [
+          MatchService,
+          { provide: 'MatchRepository', useClass: Repository },
+        ],
+      }).compile();
+  
+      matchService = module.get<MatchService>(MatchService);
+      matchRepository = module.get<Repository<Match>>(
+        getRepositoryToken(Match),
+      );
     });
 
-    it('check if service defined', () =>{
-        expect(matchService).toBeDefined();
+    const createMatchDto: CreateMatchDTO = {
+        teamId : 1,
+        time : 100,
+        isHomeTeam : true,
+    }
+    
+    const match = new Match();
+
+    match.teamId = 1;
+    match.time = 100;
+    match.isHomeTeam = true;
+
+    const matchDtos: CreateMatchDTO[] = [createMatchDto, createMatchDto];
+    const matchEntities: Match[] = [match,match];
+  
+    it('check if service defined', () => {
+      expect(matchService).toBeDefined();
     });
 
-    it('should create a match and add to database', () => {
-        const spy = jest.spyOn(matchRepository, 'save');
-        matchService.saveMatch(matchDto);
-        expect(spy).toHaveBeenCalledTimes(1);
+    describe('Saving Matches', () => {
+
+     it('should call save 1 times', async () => {
+            const spy = jest.spyOn(matchRepository,'save').mockResolvedValue(match);
+            await matchService.saveMatch(createMatchDto);
+            expect(spy).toBeCalledTimes(1);
+        });
     });
 
-    it('should get matches with a specified team id', () => {
-        jest.spyOn(matchRepository, 'find').mockResolvedValue(matchEntities);
-        const matches = matchService.getMatches(match.teamId);
-        expect(matches).resolves.toBe(matchDtos);
+    describe('Getting Matches', () => {
+
+        it('matchRepository find method should be called using teamId', async() =>{
+            const teamId = 1;
+            const spy = jest.spyOn(matchRepository, 'find').mockResolvedValueOnce(matchEntities);
+
+            await matchService.getMatches(teamId);
+
+            expect(spy).toBeCalledTimes(1);
+            expect(spy).toBeCalledWith({where:{teamId}});
+        }); 
+
+
+
     });
+
 
 });

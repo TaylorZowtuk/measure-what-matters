@@ -1,10 +1,16 @@
 import { TestingModule, Test } from '@nestjs/testing';
 import { GoalDTO } from '../src/dto/events/goal.dto';
 import { GoalService } from '../src/event/goal/goal.service';
-import { Repository } from 'typeorm';
+import { QueryFailedError, Repository } from 'typeorm';
 import { GoalController } from '../src/event/goal/goal.controller';
-// import { getRepositoryToken } from '@nestjs/typeorm';
-// import { Goal } from 'src/db/entities/events/goal.entity';
+import { PlayerService } from '../src/player/player.service';
+import {
+  BadRequestException,
+  HttpStatus,
+  InternalServerErrorException,
+  Query,
+} from '@nestjs/common';
+import { InvalidLineupError } from '../src/exceptions/lineup.exception';
 
 const goalDtos: GoalDTO[] = [
   {
@@ -30,7 +36,9 @@ describe('GoalController', () => {
       controllers: [GoalController],
       providers: [
         GoalService,
+        PlayerService,
         { provide: 'GoalRepository', useClass: Repository },
+        { provide: 'PlayerRepository', useClass: Repository },
       ],
     }).compile();
 
@@ -42,28 +50,77 @@ describe('GoalController', () => {
     expect(controller).toBeDefined();
   });
 
-  it('should call goal service to create goal event', () => {
-    const goal: GoalDTO = new GoalDTO();
-    const spy = jest.spyOn(goalService, 'saveGoal').mockImplementation(() => {
-      return new Promise<void>(() => {
-        return;
-      });
-    });
-    controller.saveGoalEvent(goal);
-    expect(spy).toBeCalledWith(goal);
+  it('should call goal service to create goal event', async () => {
+    const spy = jest.spyOn(goalService, 'saveGoal').mockResolvedValue();
+    await controller.saveGoalEvent(goalDtos[1]);
+    expect(spy).toBeCalledWith(goalDtos[1]);
   });
 
-  it('should call goal service to get goals by player id', () => {
+  it('should return bad request if query fails due not null constraint', async () => {
+    const error: QueryFailedError = new QueryFailedError('', [], '');
+    error.message = 'violates not-null constraint';
+    jest.spyOn(goalService, 'saveGoal').mockRejectedValue(error);
+    await expect(controller.saveGoalEvent(goalDtos[0])).rejects.toThrow(
+      BadRequestException,
+    );
+  });
+
+  it('should return bad request if query fails due foreign key constraint', async () => {
+    const error: QueryFailedError = new QueryFailedError('', [], '');
+    error.message = 'violates foreign key constraint';
+    jest.spyOn(goalService, 'saveGoal').mockRejectedValue(error);
+    await expect(controller.saveGoalEvent(goalDtos[0])).rejects.toThrow(
+      BadRequestException,
+    );
+  });
+
+  it('should return bad request if query fails due to invalid lineup', async () => {
+    const error: InvalidLineupError = new InvalidLineupError(
+      goalDtos[0].lineup,
+    );
+    error.message = 'violates foreign key constraint';
+    jest.spyOn(goalService, 'saveGoal').mockRejectedValue(error);
+    await expect(controller.saveGoalEvent(goalDtos[0])).rejects.toThrow(
+      BadRequestException,
+    );
+  });
+
+  it('should return internal server err for any other error', async () => {
+    const error = new Error();
+    jest.spyOn(goalService, 'saveGoal').mockRejectedValue(error);
+    await expect(controller.saveGoalEvent(goalDtos[0])).rejects.toThrow(
+      InternalServerErrorException,
+    );
+  });
+
+  it('should call goal service to get goals by player id', async () => {
     const playerId = 1;
-    jest.spyOn(goalService, 'getGoalsByPlayerId').mockResolvedValue(goalDtos);
-    const response = controller.getGoalByPlayer(playerId);
-    expect(response).resolves.toBe(goalDtos);
+    const spy = jest
+      .spyOn(goalService, 'getGoalsByPlayerId')
+      .mockResolvedValue(goalDtos);
+    const response = await controller.getGoals(playerId);
+    expect(spy).toBeCalledWith(playerId);
+    expect(response).toBe(goalDtos);
   });
 
-  it('should call goal service to get goals by match id', () => {
+  it('should call goal service to get goals by match id', async () => {
     const matchId = 1;
-    jest.spyOn(goalService, 'getGoalsByMatchId').mockResolvedValue(goalDtos);
-    const response = controller.getGoalByMatch(matchId);
-    expect(response).resolves.toBe(goalDtos);
+    const spy = jest
+      .spyOn(goalService, 'getGoalsByMatchId')
+      .mockResolvedValue(goalDtos);
+    const response = await controller.getGoals(null, matchId);
+    expect(spy).toBeCalledWith(matchId);
+    expect(response).toBe(goalDtos);
+  });
+
+  it('should call goal service to get goals by player and match id', async () => {
+    const matchId = 1;
+    const playerId = 1;
+    const spy = jest
+      .spyOn(goalService, 'getGoalsForPlayerInMatch')
+      .mockResolvedValue(goalDtos);
+    const response = await controller.getGoals(playerId, matchId);
+    expect(spy).toBeCalledWith(playerId, matchId);
+    expect(response).toBe(goalDtos);
   });
 });

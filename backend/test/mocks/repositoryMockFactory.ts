@@ -1,6 +1,7 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
+/* eslint-disable */
 import { Repository } from 'typeorm';
 import { MockType } from './mockType';
+
 // @ts-ignore
 export const repositoryMockFactory: () => MockType<Repository<any>> = jest.fn(
   () => ({
