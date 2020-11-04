@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import Button from "@material-ui/core/Button";
 import TimeOnField from "./reports/TimeOnField";
+import LineupComponent from "./LineupGoal/LineupComponent";
 
 const Dashboard = () => (
   <div className="dashboard">
@@ -26,6 +27,8 @@ const Dashboard = () => (
 
     {/* Reports */}
     <TimeOnField />
+    <br></br>
+    <LineupComponent></LineupComponent>
   </div>
 );
 
