@@ -5,7 +5,7 @@ import { DropTargetMonitor, useDrop } from "react-dnd";
 import { Theme, createStyles, makeStyles } from "@material-ui/core/styles";
 import GridList from "@material-ui/core/GridList";
 import GridListTile from "@material-ui/core/GridListTile";
-import Button from "@material-ui/core/Button";
+import { Button } from "react-bootstrap";
 
 import authHeader from "../services/auth.header";
 import axios from "axios";
@@ -194,7 +194,7 @@ export function OpenBench(props: OpenBenchProps) {
           <GridListTile key={player.num}>
             <Button
               key={player.num}
-              variant="contained"
+              variant="dark"
               onClick={() => props.substitute(player.num)}
             >
               {player.num} {player.first_name} {player.last_name}

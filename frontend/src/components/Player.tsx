@@ -31,14 +31,14 @@ export const PlayerDraggable: React.FC<Player> = ({
 
   if (team === "ours") {
     return (
-      <Button ref={drag} variant="secondary">
+      <Button ref={drag} variant="dark">
         {num} {first_name} {last_name}
       </Button>
     );
   } else {
     // If team is "theirs"
     return (
-      <Button ref={drag} variant="secondary">
+      <Button ref={drag} variant="danger">
         Opposition
       </Button>
     );
