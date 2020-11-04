@@ -160,6 +160,10 @@ const Login = () => {
         >
           Log in
         </Button>
+        <br />
+        <p style={{ fontSize: "12pt" }}>
+          <a href="/signup">Sign up here</a>
+        </p>
       </div>
       <p></p>
     </div>

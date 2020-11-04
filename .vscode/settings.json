@@ -1,0 +1,9 @@
+{
+  "cSpell.words": [
+    "postgres",
+    "prebuild",
+    "stackoverflow",
+    "typeorm"
+  ],
+  "typescript.preferences.importModuleSpecifier": "relative"
+}

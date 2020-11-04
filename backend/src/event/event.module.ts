@@ -6,11 +6,16 @@ import { GoalService } from 'src/event/goal/goal.service';
 import { SubstitutionController } from './substitution/substitution.controller';
 import { SubstitutionService } from './substitution/substitution.service';
 import { Substitution } from '../db/entities/events/substitution.entity';
+import { PlayerService } from '../player/player.service';
+import { Player } from '../db/entities/player.entity';
+import { AssistController } from './assist/assist.controller';
+import { AssistService } from './assist/assist.service';
+import { Assist } from '../db/entities/events/assist.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Goal, Substitution])],
-  controllers: [GoalController, SubstitutionController],
-  providers: [GoalService, SubstitutionService],
-  exports: [GoalService, SubstitutionService],
+  imports: [TypeOrmModule.forFeature([Goal, Substitution, Player, Assist])],
+  controllers: [GoalController, SubstitutionController, AssistController],
+  providers: [GoalService, SubstitutionService, PlayerService, AssistService],
+  exports: [GoalService, SubstitutionService, PlayerService, AssistService],
 })
 export class EventModule {}
