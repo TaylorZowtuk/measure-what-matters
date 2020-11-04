@@ -54,7 +54,6 @@ class Recording extends React.Component<
       `/players/teamId?teamId=${this.props.location.state.matchId}`,
       { headers: authHeader() }
     );
-    console.log("Get roster response:", res.data);
     // TODO: handle error
     let players: Player[] = [];
     for (let i = 0; i < res.data.length; i++) {
@@ -89,7 +88,6 @@ class Recording extends React.Component<
       .then((res) => {
         console.log("Post starting lineup response:", res); // TODO: catch error and handle if needed
       });
-    console.log("Starting:", starting);
     return starting;
   };
 
@@ -107,14 +105,14 @@ class Recording extends React.Component<
   incrementScore = (
     goal_for: boolean,
     scorer: Player | undefined = undefined,
-    lineup: Player[] | undefined = undefined
+    lineup: any[] | undefined = undefined
   ): void => {
     if (goal_for) {
       if (scorer && lineup) {
         this.setState({ goals_for: this.state.goals_for + 1 });
         let ids: number[] = [];
         for (let i = 0; i < lineup.length; i++) {
-          ids.push(lineup[i].playerId);
+          ids.push(lineup[i].props.playerId);
         }
         let goal: Goal = {
           matchId: Number(this.props.location.state.matchId),

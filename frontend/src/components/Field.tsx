@@ -25,11 +25,9 @@ class Field extends React.Component<
     this.state = {
       onField: createPlayerDraggable(this.props.getStartingLine().slice(0, 6)),
     };
-    console.log("on field constructor", this.state.onField);
   }
 
   getOnField = (): Player[] => {
-    console.log("On field is:", this.state.onField);
     return this.state.onField;
   };
 
@@ -43,9 +41,7 @@ class Field extends React.Component<
 
       this.setState((state) => {
         var onFieldCopy: any[] = cloneDeep(this.state.onField);
-        console.log(onFieldCopy);
         onFieldCopy.splice(lastRemovedIndex, 0, playerDraggable);
-        console.log(onFieldCopy);
         return { onField: onFieldCopy };
       });
     }

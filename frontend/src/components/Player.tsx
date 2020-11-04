@@ -59,6 +59,7 @@ export function createPlayerDraggable(players: Player[]): any[] {
       />
     );
   }
+
   return playerDraggables;
 }
 
