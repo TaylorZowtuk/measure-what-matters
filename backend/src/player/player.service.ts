@@ -3,16 +3,13 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Player } from '../db/entities/player.entity';
 import { PlayerDTO } from '../dto/player/player.dto';
 import { Repository } from 'typeorm';
-import { PlayerArrayDTO } from '../dto/player/playerArray.dto';
+import { CreatePlayerDTO } from '../dto/player/createPlayer.dto';
 
 @Injectable()
 export class PlayerService {
-    playerRepo: Repository<any>;
-
-    constructor(@InjectRepository(Player)
-    playerRepo: Repository<Player>) {
-        this.playerRepo = playerRepo
-    }
+    constructor(
+        @InjectRepository(Player) private readonly playerRepo: Repository<Player>,
+      ) {}
 
     /**
     * Saves a newly created player to the DB.
@@ -20,15 +17,14 @@ export class PlayerService {
     * @param player - The new team player to be saved to database
     */
 
-    async savePlayer(players: PlayerArrayDTO) : Promise<Player[]> {
-        const playersSaved: Player[] = [];
-        for(let i=0; i<players.playerArray.length; i++){
-            const player:Player = await this.playerRepo.save(players.playerArray[i]);
-            playersSaved.push(player);
+    async savePlayer(players: CreatePlayerDTO[]) {
+        const playerPromises = [];
+        for(let i=0; i<players.length; i++){
+            playerPromises.push(this.playerRepo.save(players[i]));
         }
+        const playersSaved = await Promise.all(playerPromises);
         
-        return playersSaved;
-        
+        return playersSaved;  
     }
 
     /**
@@ -81,7 +77,8 @@ export class PlayerService {
           const playerDto: PlayerDTO = {
             playerId: element.playerId,
             teamId: element.teamId.teamId,
-            name: element.name,
+            firstName: element.firstName,
+            lastName: element.lastName,
             jerseyNum: element.jerseyNum,
           };
           playerDtos.push(playerDto);

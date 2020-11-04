@@ -1,10 +1,10 @@
-import React from 'react';
-import './Lineup.css';
+import React from "react";
+import "./Lineup.css";
 import axios from "axios";
 import authHeader from "../../services/auth.header";
 
 interface Lineup {
-    playerList: {name: string}[]
+  playerList: { name: string }[];
 }
 
 interface LineupState {
