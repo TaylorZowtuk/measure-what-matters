@@ -4,17 +4,25 @@ import { TeamDTO } from '../src/dto/team/team.dto';
 import { TeamService } from '../src/team/team.service';
 import { Repository } from 'typeorm';
 import { getRepositoryToken } from '@nestjs/typeorm';
+import { CreateTeamDTO } from '../src/dto/team/createTeam.dto';
 
 describe('TeamService', () => {
   let service: TeamService;
   let teamRepository: Repository<Team>;
 
   const userId = 1;
+  const teamId = 1;
+  const teamName = 'teamName';
 
   const team = new Team();
-  team.name = 'teamName';
-  team.teamId = 1;
+  team.name = teamName;
+  team.teamId = teamId;
   team.userId = userId;
+
+  const teamDto: TeamDTO = {
+    teamId: teamId,
+    name: teamName,
+  };
 
   const teamEntities: Team[] = [team];
 
@@ -35,21 +43,19 @@ describe('TeamService', () => {
   });
 
   it('should add team to db', async () => {
-    const teamDto: TeamDTO = {
-      name: 'teamName',
+    const createTeamDto: CreateTeamDTO = {
+      name: teamName,
       userId: userId,
     };
     const spy = jest
       .spyOn(teamRepository, 'save')
       .mockResolvedValue(teamEntities[0]);
-    await service.saveTeam(teamDto, userId);
-    expect(spy).toBeCalledWith(teamDto);
+    const res = await service.saveTeam(createTeamDto, userId);
+    expect(spy).toBeCalledWith(createTeamDto);
+    expect(res).toEqual(teamDto);
   });
 
   it('should get teams with specified user id', async () => {
-    const teamDto: TeamDTO = {
-      name: 'teamName',
-    };
     jest.spyOn(teamRepository, 'find').mockResolvedValue(teamEntities);
     const teams = await service.getTeamsByUserId(userId);
     expect(teams).toEqual([teamDto]);

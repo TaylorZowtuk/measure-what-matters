@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Team } from '../db/entities/team.entity';
+import { CreateTeamDTO } from '../dto/team/createTeam.dto';
 import { TeamDTO } from '../dto/team/team.dto';
 
 @Injectable()
@@ -13,9 +14,10 @@ export class TeamService {
    *
    * @param team - The team to create
    */
-  async saveTeam(team: TeamDTO, userId: number) {
+  async saveTeam(team: CreateTeamDTO, userId: number) {
     team.userId = userId;
-    await this.teamRepo.save(team);
+    const createdTeam: Team = await this.teamRepo.save(team);
+    return this.convertToDto([createdTeam])[0];
   }
 
   /**
@@ -43,6 +45,7 @@ export class TeamService {
     const teamDtos: TeamDTO[] = [];
     teams.forEach(teamEntity => {
       const teamDto: TeamDTO = {
+        teamId: teamEntity.teamId,
         name: teamEntity.name,
       };
       teamDtos.push(teamDto);
