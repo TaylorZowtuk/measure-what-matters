@@ -1,7 +1,7 @@
 import React from "react";
 import { useDrag } from "react-dnd";
 import { DraggableTypes } from "../constants";
-import Button from "@material-ui/core/Button";
+import { Button } from "react-bootstrap";
 
 type Player = {
   first_name: string;
@@ -31,14 +31,14 @@ export const PlayerDraggable: React.FC<Player> = ({
 
   if (team === "ours") {
     return (
-      <Button ref={drag} variant="contained">
+      <Button ref={drag} variant="secondary">
         {num} {first_name} {last_name}
       </Button>
     );
   } else {
     // If team is "theirs"
     return (
-      <Button ref={drag} variant="contained">
+      <Button ref={drag} variant="secondary">
         Opposition
       </Button>
     );
