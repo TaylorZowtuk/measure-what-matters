@@ -25,9 +25,11 @@ class Field extends React.Component<
     this.state = {
       onField: createPlayerDraggable(this.props.getStartingLine().slice(0, 6)),
     };
+    console.log("on field constructor", this.state.onField);
   }
 
   getOnField = (): Player[] => {
+    console.log("On field is:", this.state.onField);
     return this.state.onField;
   };
 

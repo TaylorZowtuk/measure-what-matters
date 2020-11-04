@@ -51,19 +51,16 @@ class Recording extends React.Component<
 
   getRoster = async (): Promise<Player[]> => {
     const res = await axios.get(
-      `/player/teamId?teamId=${this.props.location.state.matchId}`,
+      `/players/teamId?teamId=${this.props.location.state.matchId}`,
       { headers: authHeader() }
     );
     console.log("Get roster response:", res.data);
     // TODO: handle error
     let players: Player[] = [];
     for (let i = 0; i < res.data.length; i++) {
-      let first: string = res.data[i].name.split(/[ ,]+/, 2)[0];
-      let last: string = res.data[i].name.split(/[ ,]+/, 2)[1];
-      console.log(first, last);
       let player: Player = {
-        first_name: first,
-        last_name: last,
+        first_name: res.data[i].firstName,
+        last_name: res.data[i].lastName,
         num: res.data[i].jerseyNum,
         team: "ours",
         playerId: res.data[i].playerId,
@@ -75,6 +72,7 @@ class Recording extends React.Component<
 
   provideStartingLine = (): Player[] => {
     let starting: Player[] = this.state.roster.slice(0, 6); // First 6 players of roster are the starting lineup
+
     let lineupSubs: any[] = [];
     for (let i = 0; i < starting.length; i++) {
       let sub: StartingPlayer = {
@@ -91,6 +89,7 @@ class Recording extends React.Component<
       .then((res) => {
         console.log("Post starting lineup response:", res); // TODO: catch error and handle if needed
       });
+    console.log("Starting:", starting);
     return starting;
   };
 
@@ -118,7 +117,6 @@ class Recording extends React.Component<
           ids.push(lineup[i].playerId);
         }
         let goal: Goal = {
-          id: undefined,
           matchId: Number(this.props.location.state.matchId),
           time: Date.now(), // Epoch time in ms
           playerId: scorer.playerId,
