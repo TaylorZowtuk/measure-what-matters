@@ -2,6 +2,7 @@ import React from "react";
 import { DraggableTypes } from "../constants";
 import { useDrop } from "react-dnd";
 import { Container, Row, Col } from "react-bootstrap";
+import { cloneDeep } from "lodash";
 
 import Player, { createPlayerDraggable, PlayerDraggable } from "./Player";
 
@@ -30,48 +31,58 @@ class Field extends React.Component<
     return this.state.onField;
   };
 
-  addToField = (player: Player | undefined): void => {
+  addToField = (player: Player | undefined, lastRemovedIndex: number): void => {
+    console.log(player, lastRemovedIndex);
     if (player === undefined) {
       console.log("Error: player to add to field was undefined");
     } else {
       let ret_arr: any = createPlayerDraggable([player]);
       let playerDraggable = ret_arr[0];
+
       this.setState((state) => {
-        const onField = state.onField.concat(playerDraggable);
-        return { onField: onField };
+        var onFieldCopy: any[] = cloneDeep(this.state.onField);
+        console.log(onFieldCopy);
+        onFieldCopy.splice(lastRemovedIndex, 0, playerDraggable);
+        console.log(onFieldCopy);
+        return { onField: onFieldCopy };
       });
     }
   };
 
-  removeFromField = (player: Player | undefined): void => {
+  removeFromField = async (player: Player | undefined): Promise<number> => {
+    var index = -1;
     if (player === undefined) {
       console.log("Error: player to add to field was undefined");
     } else {
-      var array = [...this.state.onField];
-      var index = array.findIndex(
+      var onFieldCopy = [...this.state.onField];
+      index = onFieldCopy.findIndex(
         (playerDraggable) => playerDraggable.props.num === player.num
       );
       if (index !== -1) {
-        array.splice(index, 1);
-        this.setState({ onField: array });
+        onFieldCopy.splice(index, 1);
+        await this.setState({ onField: onFieldCopy });
       } else {
         console.log("Error: no element in onField had num of", player.num);
       }
     }
+    return index;
   };
 
-  substitute = (): void => {
-    this.removeFromField(this.props.removeFromField);
-    this.addToField(this.props.addToField);
+  substitute = async (): Promise<void> => {
+    var lastRemovedIndex = await this.removeFromField(
+      this.props.removeFromField
+    );
+    this.addToField(this.props.addToField, lastRemovedIndex);
     this.props.resetSubs(undefined, undefined); // Reset subs
   };
 
-  componentDidUpdate(prevProps: any, _prevState: any) {
+  async componentDidUpdate(prevProps: any, _prevState: any) {
     if (
+      prevProps !== this.props &&
       this.props.removeFromField !== undefined &&
       this.props.addToField !== undefined
     ) {
-      this.substitute();
+      await this.substitute();
     }
   }
 
