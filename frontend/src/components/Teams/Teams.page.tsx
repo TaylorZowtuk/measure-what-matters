@@ -1,9 +1,8 @@
 import React from "react";
 import TeamComponent from "../TeamComponent/TeamComponent";
 import Button from "@material-ui/core/Button";
-import "./teams.css";
 import { Link } from "react-router-dom";
-// import axios from "axios";
+import { Container, Row, Col } from "react-bootstrap";
 
 interface teamState {
   teamList: Team[];
@@ -76,15 +75,17 @@ class Teams extends React.Component<{}, teamState> {
 
   public render() {
     return (
-      <div className="container">
+      <Container>
         <h3>Your Teams</h3>
         {this.state.teamList.map((team) => {
           return (
-            <div className="teamList" key={team.teamId.toString()}>
-              <p>{team.teamName}</p>
-              <TeamComponent playerList={team.playerList}></TeamComponent>
-              {/* <Button variant="contained">Edit Team</Button> */}
-            </div>
+            <Row key={team.teamId.toString()}>
+              <Col>
+                {team.teamName}
+                <TeamComponent playerList={team.playerList}></TeamComponent>
+                {/* <Button variant="contained">Edit Team</Button> */}
+              </Col>
+            </Row>
           );
         })}
         <Link to="/create-team">
@@ -96,7 +97,7 @@ class Teams extends React.Component<{}, teamState> {
         <Link to="/dashboard">
           <Button variant="contained">Dashboard</Button>
         </Link>
-      </div>
+      </Container>
     );
   }
 }

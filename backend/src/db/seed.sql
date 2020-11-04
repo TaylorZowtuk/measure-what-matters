@@ -40,6 +40,43 @@ VALUES (10, 1, 'Sabah', 'Preece', 10);
 INSERT INTO public.player ("playerId", "teamIdTeamId", "firstName", "lastName", "jerseyNum")
 VALUES (11, 1, 'Mohammad', 'Enriquez', 11);
 
+INSERT INTO public.player ("playerId", "teamIdTeamId", "firstName", "lastName", "jerseyNum")
+VALUES (12, 1, 'Johnny', 'Depp', 12);
+
+INSERT INTO public.player ("playerId", "teamIdTeamId", "firstName", "lastName", "jerseyNum")
+VALUES (13, 1, 'Keira', ' Knightley', 13);
+
+INSERT INTO public.player ("playerId", "teamIdTeamId", "firstName", "lastName", "jerseyNum")
+VALUES (14, 1, 'Orlando', 'Bloom', 14);
+
+INSERT INTO public.player ("playerId", "teamIdTeamId", "firstName", "lastName", "jerseyNum")
+VALUES (15, 1, 'Morgan', ' Freeman', 15);
+
+INSERT INTO public.player ("playerId", "teamIdTeamId", "firstName", "lastName", "jerseyNum")
+VALUES (16, 1, 'Leonardo', ' DiCaprio', 16);
+
+INSERT INTO public.player ("playerId", "teamIdTeamId", "firstName", "lastName", "jerseyNum")
+VALUES (17, 1, 'Robert', 'De Niro', 17);
+
+INSERT INTO public.player ("playerId", "teamIdTeamId", "firstName", "lastName", "jerseyNum")
+VALUES (18, 1, 'Brad', 'Pitt', 18);
+
+INSERT INTO public.player ("playerId", "teamIdTeamId", "firstName", "lastName", "jerseyNum")
+VALUES (19, 1, 'Michael', 'Caine', 19);
+
+INSERT INTO public.player ("playerId", "teamIdTeamId", "firstName", "lastName", "jerseyNum")
+VALUES (20, 1, 'Matt', 'Damon', 20);
+
+INSERT INTO public.player ("playerId", "teamIdTeamId", "firstName", "lastName", "jerseyNum")
+VALUES (21, 1, 'Tom', 'Hanks', 21);
+
+INSERT INTO public.player ("playerId", "teamIdTeamId", "firstName", "lastName", "jerseyNum")
+VALUES (22, 1, 'Christian', 'Bale', 22);
+
+INSERT INTO public.player ("playerId", "teamIdTeamId", "firstName", "lastName", "jerseyNum")
+VALUES (23, 1, 'Al', 'Pacino', 23);
+
+
 
 
 

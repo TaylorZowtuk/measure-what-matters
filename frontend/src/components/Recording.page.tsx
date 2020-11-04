@@ -51,19 +51,15 @@ class Recording extends React.Component<
 
   getRoster = async (): Promise<Player[]> => {
     const res = await axios.get(
-      `/player/teamId?teamId=${this.props.location.state.matchId}`,
+      `/players/teamId?teamId=${this.props.location.state.matchId}`,
       { headers: authHeader() }
     );
-    console.log("Get roster response:", res.data);
     // TODO: handle error
     let players: Player[] = [];
     for (let i = 0; i < res.data.length; i++) {
-      let first: string = res.data[i].name.split(/[ ,]+/, 2)[0];
-      let last: string = res.data[i].name.split(/[ ,]+/, 2)[1];
-      console.log(first, last);
       let player: Player = {
-        first_name: first,
-        last_name: last,
+        first_name: res.data[i].firstName,
+        last_name: res.data[i].lastName,
         num: res.data[i].jerseyNum,
         team: "ours",
         playerId: res.data[i].playerId,
@@ -75,6 +71,7 @@ class Recording extends React.Component<
 
   provideStartingLine = (): Player[] => {
     let starting: Player[] = this.state.roster.slice(0, 6); // First 6 players of roster are the starting lineup
+
     let lineupSubs: any[] = [];
     for (let i = 0; i < starting.length; i++) {
       let sub: StartingPlayer = {
@@ -107,27 +104,28 @@ class Recording extends React.Component<
 
   incrementScore = (
     goal_for: boolean,
-    scorer: Player,
-    lineup: Player[]
+    scorer: Player | undefined = undefined,
+    lineup: any[] | undefined = undefined
   ): void => {
     if (goal_for) {
-      this.setState({ goals_for: this.state.goals_for + 1 });
-      let ids: number[] = [];
-      for (let i = 0; i < lineup.length; i++) {
-        ids.push(lineup[i].playerId);
+      if (scorer && lineup) {
+        this.setState({ goals_for: this.state.goals_for + 1 });
+        let ids: number[] = [];
+        for (let i = 0; i < lineup.length; i++) {
+          ids.push(lineup[i].props.playerId);
+        }
+        let goal: Goal = {
+          matchId: Number(this.props.location.state.matchId),
+          time: Date.now(), // Epoch time in ms
+          playerId: scorer.playerId,
+          lineup: ids,
+        };
+        axios
+          .post(`/event/goals`, goal, { headers: authHeader() })
+          .then((res) => {
+            console.log(res); // TODO: catch error and handle if needed
+          });
       }
-      let goal: Goal = {
-        id: undefined,
-        matchId: Number(this.props.location.state.matchId),
-        time: Date.now(), // Epoch time in ms
-        playerId: scorer.playerId,
-        lineup: ids,
-      };
-      axios
-        .post(`/event/goals`, goal, { headers: authHeader() })
-        .then((res) => {
-          console.log(res); // TODO: catch error and handle if needed
-        });
     } else {
       this.setState({ goals_against: this.state.goals_against + 1 });
       // TODO: add backend call to add against goal
@@ -149,26 +147,24 @@ class Recording extends React.Component<
     } else {
       return (
         <DndProvider backend={HTML5Backend}>
-          <div className="recording">
-            <h1>Recording</h1>
-            <Bench
-              matchId={Number(this.props.location.state.matchId)}
-              getStartingBench={this.provideStartingBench}
-              notifyOfSubs={this.setSubs}
-            ></Bench>
-            <Team name={this.team_name} score={this.state.goals_for} />
-            <Team name={this.opp_name} score={this.state.goals_against} />
-            <Field
-              getStartingLine={this.provideStartingLine}
-              incrementScore={this.incrementScore}
-              removeFromField={this.state.subField}
-              addToField={this.state.subBench}
-              resetSubs={this.setSubs}
-            />
-            <Link to="/dashboard">
-              <Button variant="contained">Dashboard</Button>
-            </Link>
-          </div>
+          <h1>Recording</h1>
+          <Bench
+            matchId={Number(this.props.location.state.matchId)}
+            getStartingBench={this.provideStartingBench}
+            notifyOfSubs={this.setSubs}
+          ></Bench>
+          <Team name={this.team_name} score={this.state.goals_for} />
+          <Team name={this.opp_name} score={this.state.goals_against} />
+          <Field
+            getStartingLine={this.provideStartingLine}
+            incrementScore={this.incrementScore}
+            removeFromField={this.state.subField}
+            addToField={this.state.subBench}
+            resetSubs={this.setSubs}
+          />
+          <Link to="/dashboard">
+            <Button variant="contained">Dashboard</Button>
+          </Link>
         </DndProvider>
       );
     }

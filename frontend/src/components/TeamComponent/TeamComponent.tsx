@@ -17,11 +17,9 @@ class TeamComponent extends React.Component<teamProps> {
       <div className="team">
         {this.props.playerList.map((player: Player) => {
           return (
-            <div className="player" key={player.playerId.toString()}>
-              <h3>
-                {player.name} {player.number}
-              </h3>
-            </div>
+            <h3>
+              {player.name} {player.number}
+            </h3>
           );
         })}
       </div>
