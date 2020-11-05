@@ -14,6 +14,7 @@ interface LineupState {
 
 interface teamLineup {
     team: string,
+    teamId: number,
     matchList: {
         date: string,
         goalList: {
@@ -30,6 +31,7 @@ const someData: LineupState = {
     lineupList: [
         {
             team: "blue team",
+            teamId: 10,
             matchList: [
                 {
                     date: "2020-10-31",
@@ -64,10 +66,10 @@ class LineupComponent extends React.Component<any, LineupState> {
                             for (let m = 0; m < goalRes.data.length; m++) {
                                 tempGoalList.push({ lineup: goalRes.data[m].lineup });
                             }
-                            tempMatchList.push({ date: matchRes.data[j].createdDate, goalList: tempGoalList });
+                            tempMatchList.push({ date: matchRes.data[j].matchId, goalList: tempGoalList });
                         }
                     }
-                    tempTeamList.push({ team: res.data[i].name, matchList: tempMatchList });
+                    tempTeamList.push({ team: res.data[i].name, teamId: res.data[i].teamId, matchList: tempMatchList });
                 }
             }
             return tempTeamList;
@@ -98,14 +100,14 @@ class LineupComponent extends React.Component<any, LineupState> {
                 {
                     this.state.lineupList.map((team) => {
                         return(
-                            <div>
+                            <div key={team.teamId}>
                                 <h3>{team.team}</h3>
                                 <ul>
                                     {team.matchList.map(match => {
                                         return(
                                             match.goalList.map(goal => {
                                                 const lineup = goal.lineup.join(" ");
-                                                return <li style={{textAlign:"left", listStyle:"none"}}>{match.date} {lineup}</li>
+                                                return <li style={{textAlign:"left", listStyle:"none"}}>match {match.date}: {lineup}</li>
                                             })
                                         )
                                     })}
