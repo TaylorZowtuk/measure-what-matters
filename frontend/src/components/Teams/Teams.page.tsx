@@ -1,11 +1,11 @@
 import React from "react";
 import TeamComponent from "../TeamComponent/TeamComponent";
 import Button from "@material-ui/core/Button";
-import "./teams.css";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import authHeader from "../../services/auth.header";
 // import AuthService from "../../services/auth.service";
+import { Container, Row, Col } from "react-bootstrap";
 
 interface teamState {
   teamList: Team[];
@@ -14,11 +14,14 @@ interface teamState {
 interface Team {
   teamName: string;
   playerList: Player[];
+  teamId: number;
 }
 
 interface Player {
-  name: string;
+  firstName: string;
+  lastName: string;
   number: number;
+  playerId: number;
 }
 
 // const currentUser = AuthService.getCurrentUser();
@@ -38,17 +41,19 @@ class Teams extends React.Component<{}, teamState> {
       let teamArray: Team[] = [];
 
       teams.forEach((element: any) => {
-        axios.get(`/player/teamId?teamId=${element.teamId}`)
+        axios.get(`/players/teamId?teamId=${element.teamId}`, { headers: authHeader() })
         .then(response => {
           let players: Array<Player> = [];
-          response.data.playerArray.forEach((player: any) => {
-            players.push({name: player.name, number: player.jerseyNum});
-          });
-          teamArray.push({teamName: element.name, playerList: players});
+          if(response.data) 
+            {response.data.forEach((player: any) => {
+              players.push({firstName: player.firstName, lastName: player.lastName, number: player.jerseyNum, playerId: player.playerId});
+            });}
+          teamArray.push({teamName: element.name, playerList: players, teamId: element.teamId});
           this.setState({teamList: teamArray});
         },
         (error) => {
           console.log("getting errors");
+          console.log(error);
         });
       });
     },
@@ -99,16 +104,18 @@ class Teams extends React.Component<{}, teamState> {
 
   public render() {
     return (
-      <div className="container">
+      <Container>
         <h3>Your Teams</h3>
         {
         this.state.teamList.map((team) => {
           return (
-            <div className="teamList">
-              <p>{team.teamName}</p>
-              <TeamComponent playerList={team.playerList}></TeamComponent>
-              {/* <Button variant="contained">Edit Team</Button> */}
-            </div>
+            <Row key={team.teamId.toString()}>
+              <Col>
+                {team.teamName}
+                <TeamComponent playerList={team.playerList}></TeamComponent>
+                {/* <Button variant="contained">Edit Team</Button> */}
+              </Col>
+            </Row>
           );
         })
         }
@@ -121,7 +128,7 @@ class Teams extends React.Component<{}, teamState> {
         <Link to="/dashboard">
           <Button variant="contained">Dashboard</Button>
         </Link>
-      </div>
+      </Container>
     );
   }
 }

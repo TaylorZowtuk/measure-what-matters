@@ -9,7 +9,10 @@ export class PlayerTimeDTO {
     teamId : number;
 
     @ApiProperty()
-    name : string;
+    firstName : string;
+
+    @ApiProperty()
+    lastName : string;
 
     @ApiProperty()
     jerseyNum : number;
