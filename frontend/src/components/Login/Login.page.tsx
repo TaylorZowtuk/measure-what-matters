@@ -1,15 +1,10 @@
 import React from "react";
-// import clsx from 'clsx';
 import Button from "@material-ui/core/Button";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import FormControl from "@material-ui/core/FormControl";
 import OutlinedInput from "@material-ui/core/OutlinedInput";
 import InputLabel from "@material-ui/core/InputLabel";
-// import InputAdornment from '@material-ui/core/InputAdornment';
-// import IconButton from '@material-ui/core/IconButton';
-// import Visibility from '@material-ui/icons/Visibility';
-// import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import AuthService from "../../services/auth.service";
 import { useHistory } from "react-router-dom";
 
@@ -43,6 +38,7 @@ interface LoginState {
   email: string;
   password: string;
   showPassword: boolean;
+  errorMessage: string;
 }
 
 const Login = () => {
@@ -52,6 +48,7 @@ const Login = () => {
     email: "",
     password: "",
     showPassword: false,
+    errorMessage: ""
   });
 
   const handleChange = (prop: keyof LoginState) => (
@@ -60,55 +57,28 @@ const Login = () => {
     setCurrentState({ ...currentState, [prop]: event.target.value });
   };
 
-  // const handleClickShowPassword = () => {
-  //     setValues({ ...values, showPassword: !values.showPassword });
-  // };
-
-  // const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
-  //     event.preventDefault();
-  // };
-
   const history = useHistory();
 
   const handleLogin = (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
-    // TODO: call to backend
-    // if(this.state.username && this.state.password){
-    //     const user = {
-    //         username: this.state.email,
-    //         password: this.state.password
-    //     }
-
-    //     event.preventDefault();
-    //     fetch('/auth/login', {
-    //         method: 'POST',
-    //         body: JSON.stringify(user),
-    //         headers: {
-    //             'Content-Type': 'application/json'
-    //         },})
-    //         .then(r => r.json())
-    //         .then(token => {
-
-    //         });
-    // }
-
     event.preventDefault();
+
+    // reset error message
+    setCurrentState({ ...currentState, errorMessage: "" });
+    
     if (currentState.email && currentState.password) {
       AuthService.login(currentState.email, currentState.password).then(
         () => {
           history.push("/dashboard");
         },
         (error) => {
-          // const resMessage =
-          //     (error.response &&
-          //     error.response.data &&
-          //     error.response.data.message) ||
-          //     error.message ||
-          //     error.toString();
-          console.log("invalid credential");
+          setCurrentState({ ...currentState, errorMessage: "Wrong username or password."});
         }
       );
+    }
+    else {
+      setCurrentState({ ...currentState, errorMessage: "Please enter username and password."});
     }
   };
 
@@ -116,6 +86,7 @@ const Login = () => {
     <div className="login">
       <h1>Login</h1>
       <div className={classes.root}>
+        <p style={{color: 'crimson', fontSize: 14, width: '30ch', marginLeft: 'auto', marginRight: 'auto'}}>{currentState.errorMessage}</p>
         <TextField
           label="Username"
           id="outlined-margin-dense"
@@ -137,17 +108,6 @@ const Login = () => {
             onChange={handleChange("password")}
             margin="dense"
             color="secondary"
-            // endAdornment={
-            //     <InputAdornment position="end">
-            //         <IconButton
-            //             aria-label="toggle password visibility"
-            //             onClick={handleClickShowPassword}
-            //             onMouseDown={handleMouseDownPassword}
-            //             edge="end"
-            //         >
-            //         </IconButton>
-            //     </InputAdornment>
-            // }
             labelWidth={70}
           />
         </FormControl>
