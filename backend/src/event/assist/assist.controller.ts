@@ -4,20 +4,23 @@ import {
   Controller,
   Get,
   InternalServerErrorException,
-  ParseIntPipe,
   Post,
   Query,
+  UseGuards,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
-import { ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { QueryFailedError } from 'typeorm';
+import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
 import { AssistDTO } from '../../dto/events/assist/assist.dto';
 import { CreateAssistDTO } from '../../dto/events/assist/createAssist.dto';
 import { AssistService } from './assist.service';
 
 @ApiTags('Assists')
 @Controller('event/assists')
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
 export class AssistController {
   constructor(private readonly assistService: AssistService) {}
 
