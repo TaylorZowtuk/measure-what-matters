@@ -30,7 +30,7 @@ export class AssistController {
     status: 400,
     description: 'Violates foreign key, or null value entered',
   })
-  @ApiResponse({ status: 500, description: 'Unknown error occured' })
+  @ApiResponse({ status: 500, description: 'Unknown error occurred' })
   @UsePipes(ValidationPipe)
   async saveAssistEvent(@Body() assist: CreateAssistDTO) {
     try {
@@ -43,7 +43,7 @@ export class AssistController {
           throw new BadRequestException('null value entered for parameter');
         }
       } else {
-        throw new InternalServerErrorException('Unknown error occured');
+        throw new InternalServerErrorException('Unknown error occurred');
       }
     }
   }
@@ -57,7 +57,7 @@ export class AssistController {
       'Returns array of assists for the specified player and/or match',
   })
   @ApiResponse({ status: 400, description: 'Both playerId and matchId null' })
-  @ApiResponse({ status: 500, description: 'Unknown error occured' })
+  @ApiResponse({ status: 500, description: 'Unknown error occurred' })
   @ApiQuery({
     name: 'playerId',
     required: false,
