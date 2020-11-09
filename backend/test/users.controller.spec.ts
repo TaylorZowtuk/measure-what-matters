@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { QueryFailedError } from 'typeorm';
 import { ConflictException, UnauthorizedException } from '@nestjs/common';
-import { mockUserLoggedIn, mockUserNotLoggedIn } from './mocks/mockUserLoggin';
+import { mockUserLoggedIn, mockUserNotLoggedIn } from './mocks/mockUserLogin';
 
 describe('UsersController', () => {
   let controller: UsersController;
