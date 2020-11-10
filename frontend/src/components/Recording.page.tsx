@@ -3,6 +3,7 @@ import { StaticContext } from "react-router";
 import { Link, RouteComponentProps } from "react-router-dom";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
+import { TouchBackend } from "react-dnd-touch-backend";
 import axios from "axios";
 
 import Button from "@material-ui/core/Button";
@@ -140,13 +141,26 @@ class Recording extends React.Component<
     }
   }
 
+  deviceSupportsTouch(): boolean {
+    // Dont catch laptops with touch
+    try {
+      document.createEvent("TouchEvent");
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
   render() {
+    // Determine if this is a mobile/tablet device in order to set appropriate dragndrop provider
+    const useTouch = this.deviceSupportsTouch();
+
     // If fetch request hasnt returned yet
     if (!this.state.roster.length) {
       return <h1>Loading...</h1>;
     } else {
       return (
-        <DndProvider backend={HTML5Backend}>
+        <DndProvider backend={useTouch ? TouchBackend : HTML5Backend}>
           <h1>Recording</h1>
           <Bench
             matchId={Number(this.props.location.state.matchId)}
