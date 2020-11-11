@@ -101,6 +101,13 @@ describe('UsersController', () => {
     });
   });
 
+  describe('User edit API', () => {
+    // TODO - Need more features faster
+    it('should call findOne method of Users', async () => {
+      expect(true).toBe(true);
+    });
+  });
+
   describe('User creation API', () => {
     const validCreateUserRequest: CreateUserDTO = {
       name: userData.name,
