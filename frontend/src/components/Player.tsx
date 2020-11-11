@@ -11,13 +11,13 @@ type Player = {
   playerId: number; // Unique player id from the db
 };
 
-type Possesion = {
-  hasPossesion: boolean; // Whether or not the the player has possesion of the ball
+type Possession = {
+  hasPossession: boolean; // Whether or not the the player has possession of the ball
 };
 
 type DraggableProps = {
   player: Player;
-  possesion: Possesion;
+  possession: Possession;
 };
 
 export const PlayerDraggable = (props: DraggableProps) => {
@@ -33,10 +33,10 @@ export const PlayerDraggable = (props: DraggableProps) => {
     item: { type: DraggableTypes.PLAYER, player },
   });
 
-  console.log(props.possesion.hasPossesion);
+  console.log(props.possession.hasPossession);
 
   if (player.team === "ours") {
-    if (props.possesion.hasPossesion) {
+    if (props.possession.hasPossession) {
       return (
         <Button ref={drag} variant="outline-dark">
           {player.num} {player.firstName} {player.lastName}
@@ -51,7 +51,7 @@ export const PlayerDraggable = (props: DraggableProps) => {
     }
   } else {
     // If team is "theirs"
-    if (props.possesion.hasPossesion) {
+    if (props.possession.hasPossession) {
       return (
         <Button ref={drag} variant="outline-danger">
           Opposition
@@ -67,6 +67,17 @@ export const PlayerDraggable = (props: DraggableProps) => {
   }
 };
 
+function changePossession(
+  hasPossession: boolean,
+  notifyOfPossessionChange: Function
+) {
+  if (!hasPossession) {
+    // TODO: call api
+
+    notifyOfPossessionChange();
+  } // Else dont do anything
+}
+
 export function createPlayerDraggable(players: Player[]): any[] {
   let playerDraggables: any[] = [];
   // For each Player in the players array, create a PlayerDraggable jsx element
@@ -78,12 +89,12 @@ export function createPlayerDraggable(players: Player[]): any[] {
       team: players[i].team,
       playerId: players[i].playerId,
     };
-    const possesion: Possesion = {
-      hasPossesion: false,
+    const possession: Possession = {
+      hasPossession: false,
     };
 
     playerDraggables.push(
-      <PlayerDraggable player={player} possesion={possesion} />
+      <PlayerDraggable player={player} possession={possession} />
     );
   }
 
