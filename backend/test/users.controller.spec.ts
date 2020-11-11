@@ -101,6 +101,10 @@ describe('UsersController', () => {
     });
   });
 
+  describe('User edit API', () => {
+    // TODO - Need more features faster
+  });
+
   describe('User creation API', () => {
     const validCreateUserRequest: CreateUserDTO = {
       name: userData.name,
