@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class OppositionPossessionDTO {
+export class RemovePossessionDTO {
   @ApiProperty()
   possessionEventId: number;
 }
