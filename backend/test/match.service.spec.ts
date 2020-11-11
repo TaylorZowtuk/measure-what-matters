@@ -21,6 +21,7 @@ describe('MatchService Test', () => {
     matchRepository = module.get<Repository<Match>>(getRepositoryToken(Match));
   });
 
+  // TODO, check these tests. They were passing locally and failing in the pipeline. Fixed the type errors now.
   const createMatchDto: CreateMatchDTO = {
     teamId: 1,
     startTime: 100,
