@@ -7,12 +7,14 @@ import {
   Headers,
   Post,
   UseGuards,
+  Request,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { QueryFailedError } from 'typeorm';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { CreateTeamDTO } from '../dto/team/createTeam.dto';
 import { TeamDTO } from '../dto/team/team.dto';
+import { RequestUser } from '../types/requestUser.type';
 import { TeamService } from './team.service';
 
 @Controller('teams')
@@ -42,10 +44,10 @@ export class TeamController {
   })
   async createTeam(
     @Body() team: CreateTeamDTO,
-    @Headers('userId') userId: number,
+    @Request() { user }: RequestUser,
   ) {
     try {
-      return await this.teamService.saveTeam(team, userId);
+      return await this.teamService.saveTeam(team, user.userId);
     } catch (err) {
       if (err instanceof QueryFailedError) {
         if (err.message.includes('violates foreign key constraint')) {

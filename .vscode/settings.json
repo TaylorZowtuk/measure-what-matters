@@ -3,7 +3,8 @@
     "postgres",
     "prebuild",
     "stackoverflow",
-    "typeorm"
+    "typeorm",
+    "Dtos"
   ],
   "typescript.preferences.importModuleSpecifier": "relative"
 }
