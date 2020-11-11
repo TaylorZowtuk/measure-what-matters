@@ -127,7 +127,7 @@ export function FieldTarget(props: FieldTargetProps) {
     {/* 2 */}
             <Row>
               {/* 0                                     1             2                                   3 */}
-              <Col>{props.draggablePlayers[0]}</Col> <Col></Col> <Col>{props.draggablePlayers[4]}</Col> <Col><PlayerDraggable first_name="Opposing" last_name="Team" num={-1} team="theirs" playerId={-1}/></Col>
+              <Col>{props.draggablePlayers[0]}</Col> <Col></Col> <Col>{props.draggablePlayers[4]}</Col> <Col><PlayerDraggable firstName="Opposing" lastName="Team" num={-1} team="theirs" playerId={-1}/></Col>
             </Row>
     {/* 3 */}
             <Row>

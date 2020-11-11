@@ -4,23 +4,23 @@ import { DraggableTypes } from "../constants";
 import { Button } from "react-bootstrap";
 
 type Player = {
-  first_name: string;
-  last_name: string;
+  firstName: string;
+  lastName: string;
   num: number; // Jersey number
   team: string;
   playerId: number; // Unique player id from the db
 };
 
 export const PlayerDraggable: React.FC<Player> = ({
-  first_name,
-  last_name,
+  firstName,
+  lastName,
   num,
   team,
   playerId,
 }) => {
   const player: Player = {
-    first_name: first_name,
-    last_name: last_name,
+    firstName: firstName,
+    lastName: lastName,
     num: num,
     team: team,
     playerId: playerId,
@@ -32,7 +32,7 @@ export const PlayerDraggable: React.FC<Player> = ({
   if (team === "ours") {
     return (
       <Button ref={drag} variant="dark">
-        {num} {first_name} {last_name}
+        {num} {firstName} {lastName}
       </Button>
     );
   } else {
@@ -51,8 +51,8 @@ export function createPlayerDraggable(players: Player[]): any[] {
   for (var i = 0; i < players.length; i++) {
     playerDraggables.push(
       <PlayerDraggable
-        first_name={players[i].first_name}
-        last_name={players[i].last_name}
+        firstName={players[i].firstName}
+        lastName={players[i].lastName}
         num={players[i].num}
         team="ours"
         playerId={players[i].playerId}

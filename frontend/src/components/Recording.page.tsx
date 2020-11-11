@@ -59,8 +59,8 @@ class Recording extends React.Component<
     let players: Player[] = [];
     for (let i = 0; i < res.data.length; i++) {
       let player: Player = {
-        first_name: res.data[i].firstName,
-        last_name: res.data[i].lastName,
+        firstName: res.data[i].firstName,
+        lastName: res.data[i].lastName,
         num: res.data[i].jerseyNum,
         team: "ours",
         playerId: res.data[i].playerId,

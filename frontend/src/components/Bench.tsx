@@ -200,7 +200,7 @@ export function OpenBench(props: OpenBenchProps) {
               variant="dark"
               onClick={() => props.substitute(player.num)}
             >
-              {player.num} {player.first_name} {player.last_name}
+              {player.num} {player.firstName} {player.lastName}
             </Button>
           </GridListTile>
         ))}
