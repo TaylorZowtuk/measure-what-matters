@@ -113,7 +113,7 @@ class Recording extends React.Component<
         this.setState({ goals_for: this.state.goals_for + 1 });
         let ids: number[] = [];
         for (let i = 0; i < lineup.length; i++) {
-          ids.push(lineup[i].props.playerId);
+          ids.push(lineup[i].props.player.playerId);
         }
         let goal: Goal = {
           matchId: Number(this.props.location.state.matchId),

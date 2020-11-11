@@ -33,8 +33,6 @@ export const PlayerDraggable = (props: DraggableProps) => {
     item: { type: DraggableTypes.PLAYER, player },
   });
 
-  console.log(props.possession.hasPossession);
-
   if (player.team === "ours") {
     if (props.possession.hasPossession) {
       return (
@@ -69,16 +67,20 @@ export const PlayerDraggable = (props: DraggableProps) => {
 
 function changePossession(
   hasPossession: boolean,
+  playerId: number,
   notifyOfPossessionChange: Function
 ) {
   if (!hasPossession) {
     // TODO: call api
 
-    notifyOfPossessionChange();
+    notifyOfPossessionChange(playerId);
   } // Else dont do anything
 }
 
-export function createPlayerDraggable(players: Player[]): any[] {
+export function createPlayerDraggable(
+  players: Player[],
+  hasPossession: boolean = false
+): any[] {
   let playerDraggables: any[] = [];
   // For each Player in the players array, create a PlayerDraggable jsx element
   for (var i = 0; i < players.length; i++) {
@@ -90,7 +92,7 @@ export function createPlayerDraggable(players: Player[]): any[] {
       playerId: players[i].playerId,
     };
     const possession: Possession = {
-      hasPossession: false,
+      hasPossession: hasPossession,
     };
 
     playerDraggables.push(

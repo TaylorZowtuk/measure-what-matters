@@ -48,12 +48,12 @@ class Field extends React.Component<
     };
   }
 
-  getOnField = (): Player[] => {
-    return this.state.onField;
+  getOnField = (): any[] => {
+    // Return all the PlayerDraggables on the field except the opposition
+    return this.state.onField.slice(0, -1);
   };
 
   addToField = (player: Player | undefined, lastRemovedIndex: number): void => {
-    console.log(player, lastRemovedIndex);
     if (player === undefined) {
       console.log("Error: player to add to field was undefined");
     } else {
@@ -75,7 +75,7 @@ class Field extends React.Component<
     } else {
       var onFieldCopy = [...this.state.onField];
       index = onFieldCopy.findIndex(
-        (playerDraggable) => playerDraggable.props.num === player.num
+        (playerDraggable) => playerDraggable.props.player.num === player.num
       );
       if (index !== -1) {
         onFieldCopy.splice(index, 1);
@@ -93,6 +93,18 @@ class Field extends React.Component<
     );
     this.addToField(this.props.addToField, lastRemovedIndex);
     this.props.resetSubs(undefined, undefined); // Reset subs
+  };
+
+  changePossession = (playerId: number): void => {
+    // Find the player on the field with playerId
+    let onFieldCopy = [...this.state.onField];
+    let index = onFieldCopy.findIndex(
+      (playerDraggable) => playerDraggable.props.playerId === playerId
+    );
+    // Remove the possesion from the last player with possesion
+
+    // Replace the PlayerDraggable of that player with a new PlayerDraggable
+    // that indicates they have ball possesion
   };
 
   async componentDidUpdate(prevProps: any, _prevState: any) {
