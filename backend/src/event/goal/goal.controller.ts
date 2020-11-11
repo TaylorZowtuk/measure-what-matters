@@ -31,6 +31,14 @@ export class GoalController {
     status: 201,
     description: 'Creates a new goal event',
   })
+  @ApiResponse({
+    status: 400,
+    description: 'The request body contains an invalid field',
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Something went wrong',
+  })
   async saveGoalEvent(@Body() goal: GoalDTO) {
     try {
       await this.goalService.saveGoal(goal);
@@ -61,6 +69,10 @@ export class GoalController {
     type: GoalDTO,
     isArray: true,
     description: 'Returns array of goals for the specified player',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'The request has a missing or invalid query param',
   })
   @ApiQuery({
     name: 'playerId',

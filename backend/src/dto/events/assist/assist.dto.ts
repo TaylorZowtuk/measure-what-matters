@@ -1,17 +1,18 @@
 import { ApiProperty } from "@nestjs/swagger";
 
-export class MatchDTO {
+export class AssistDTO {
+    
+    @ApiProperty()
+    id?: number;
 
     @ApiProperty()
     matchId: number;
 
     @ApiProperty()
-    teamId : number;
-
-    @ApiProperty({format: "int64"})
-    time : number;
+    time: number;
 
     @ApiProperty()
-    isHomeTeam : boolean;
+    playerId: number;
 
 }
+

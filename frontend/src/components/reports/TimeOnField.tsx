@@ -30,7 +30,8 @@ interface FormattedData {
 type PlayerTimeDTO = {
   playerId: number;
   teamId: number;
-  name: string;
+  firstName: string;
+  lastName: string;
   jerseyNum: number;
   secondsPlayed: number;
 };
@@ -79,9 +80,14 @@ async function fetchRows(debug = false): Promise<FormattedData[]> {
   let rows: FormattedData[] = [];
   for (let i = 0; i < res.data.length; i++) {
     let player: PlayerTimeDTO = res.data[i];
-    let first: string = player.name.split(/[ ,]+/, 2)[0];
-    let last: string = player.name.split(/[ ,]+/, 2)[1];
-    rows.push(createData(first, last, player.jerseyNum, player.secondsPlayed));
+    rows.push(
+      createData(
+        player.firstName,
+        player.lastName,
+        player.jerseyNum,
+        player.secondsPlayed
+      )
+    );
   }
 
   return rows;

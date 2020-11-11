@@ -54,7 +54,7 @@ export class PlayerStatsService{
 
             // to be fixed, currently the end of the game does not update the time_off for the final substitution, we will fix for next sprint
             if(time_off == null){
-                time_off = time_on + 100;
+                time_off = time_on ;
             }
             timeOnField+=(time_off-time_on);
         }
@@ -76,10 +76,11 @@ export class PlayerStatsService{
         for(let i=0; i<players.length;i++){
 
             const playerId = players[i].playerId;
-            const name = players[i].name;
+            const firstName = players[i].firstName;
+            const lastName = players[i].lastName;
             const jerseyNum = players[i].jerseyNum;
             const secondsPlayed = await this.getSecondsPlayed(players[i].playerId, matchId);
-            const player_time_DTO: PlayerTimeDTO = {playerId:playerId, teamId:teamId, name:name, jerseyNum:jerseyNum, secondsPlayed:secondsPlayed};
+            const player_time_DTO: PlayerTimeDTO = {playerId, teamId, firstName, lastName, jerseyNum, secondsPlayed};
         
             playerTimeDtos.push(player_time_DTO); 
         }
@@ -95,7 +96,7 @@ export class PlayerStatsService{
     * @returns the DTO array of players on the field during the time of the goal
     */
 
-    async getPlayersOnForGoal(goalId: number) : Promise<PlayerDTO[]> {
+    async getPlayersOnForGoal(goalId: number) {
         const players: Player[] = [];
 
         const query1 = this.goalRepo.createQueryBuilder('goal');
@@ -128,7 +129,8 @@ export class PlayerStatsService{
           const playerDto: PlayerDTO = {
             playerId: element.playerId,
             teamId: element.teamId.teamId,
-            name: element.name,
+            firstName: element.firstName,
+            lastName: element.lastName,
             jerseyNum: element.jerseyNum,
           };
           playerDtos.push(playerDto);
