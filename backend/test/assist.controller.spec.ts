@@ -2,7 +2,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { Assist } from '../src/db/entities/events/assist.entity';
 import { AssistController } from '../src/event/assist/assist.controller';
 import { AssistService } from '../src/event/assist/assist.service';
-import { PlayerService } from '../src/player/player.service';
 import { QueryFailedError, Repository } from 'typeorm';
 import { CreateAssistDTO } from '../src/dto/events/assist/createAssist.dto';
 import {
@@ -32,9 +31,7 @@ describe('AssistController tests', () => {
       controllers: [AssistController],
       providers: [
         AssistService,
-        PlayerService,
         { provide: 'AssistRepository', useClass: Repository },
-        { provide: 'PlayerRepository', useClass: Repository },
       ],
     }).compile();
 
