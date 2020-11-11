@@ -22,8 +22,29 @@ class Field extends React.Component<
 > {
   constructor(props: FieldProps) {
     super(props);
+
+    // Create the element that will represent the opposing team on the field
+    const oppositionPlayer: Player = {
+      firstName: "Opposing",
+      lastName: "Team",
+      num: -1,
+      team: "theirs",
+      playerId: -1,
+    };
+    const oppositionDraggable: typeof PlayerDraggable = createPlayerDraggable([
+      oppositionPlayer,
+    ])[0];
+
+    // Create elements representing our starting line
+    let initialPlayersOnField = createPlayerDraggable(
+      this.props.getStartingLine().slice(0, 6)
+    );
+    // Add the opposition
+    initialPlayersOnField.push(oppositionDraggable);
+
     this.state = {
-      onField: createPlayerDraggable(this.props.getStartingLine().slice(0, 6)),
+      // Index 0 is goalie; 1 & 2 are defence; 3, 4, & 5 are forwards; 6 is opposition
+      onField: initialPlayersOnField,
     };
   }
 
@@ -127,7 +148,7 @@ export function FieldTarget(props: FieldTargetProps) {
     {/* 2 */}
             <Row>
               {/* 0                                     1             2                                   3 */}
-              <Col>{props.draggablePlayers[0]}</Col> <Col></Col> <Col>{props.draggablePlayers[4]}</Col> <Col><PlayerDraggable firstName="Opposing" lastName="Team" num={-1} team="theirs" playerId={-1}/></Col>
+              <Col>{props.draggablePlayers[0]}</Col> <Col></Col> <Col>{props.draggablePlayers[4]}</Col> <Col>{props.draggablePlayers[6]}</Col>
             </Row>
     {/* 3 */}
             <Row>

@@ -11,37 +11,59 @@ type Player = {
   playerId: number; // Unique player id from the db
 };
 
-export const PlayerDraggable: React.FC<Player> = ({
-  firstName,
-  lastName,
-  num,
-  team,
-  playerId,
-}) => {
+type Possesion = {
+  hasPossesion: boolean; // Whether or not the the player has possesion of the ball
+};
+
+type DraggableProps = {
+  player: Player;
+  possesion: Possesion;
+};
+
+export const PlayerDraggable = (props: DraggableProps) => {
   const player: Player = {
-    firstName: firstName,
-    lastName: lastName,
-    num: num,
-    team: team,
-    playerId: playerId,
+    firstName: props.player.firstName,
+    lastName: props.player.lastName,
+    num: props.player.num,
+    team: props.player.team,
+    playerId: props.player.playerId,
   };
+
   const [, drag] = useDrag({
     item: { type: DraggableTypes.PLAYER, player },
   });
 
-  if (team === "ours") {
-    return (
-      <Button ref={drag} variant="dark">
-        {num} {firstName} {lastName}
-      </Button>
-    );
+  console.log(props.possesion.hasPossesion);
+
+  if (player.team === "ours") {
+    if (props.possesion.hasPossesion) {
+      return (
+        <Button ref={drag} variant="outline-dark">
+          {player.num} {player.firstName} {player.lastName}
+        </Button>
+      );
+    } else {
+      return (
+        <Button ref={drag} variant="dark">
+          {player.num} {player.firstName} {player.lastName}
+        </Button>
+      );
+    }
   } else {
     // If team is "theirs"
-    return (
-      <Button ref={drag} variant="danger">
-        Opposition
-      </Button>
-    );
+    if (props.possesion.hasPossesion) {
+      return (
+        <Button ref={drag} variant="outline-danger">
+          Opposition
+        </Button>
+      );
+    } else {
+      return (
+        // Because we dont need to allow the opposition to make shift changes,
+        // only allow opposing team to be dragged when they have the ball
+        <Button variant="danger">Opposition</Button>
+      );
+    }
   }
 };
 
@@ -49,14 +71,19 @@ export function createPlayerDraggable(players: Player[]): any[] {
   let playerDraggables: any[] = [];
   // For each Player in the players array, create a PlayerDraggable jsx element
   for (var i = 0; i < players.length; i++) {
+    const player: Player = {
+      firstName: players[i].firstName,
+      lastName: players[i].lastName,
+      num: players[i].num,
+      team: players[i].team,
+      playerId: players[i].playerId,
+    };
+    const possesion: Possesion = {
+      hasPossesion: false,
+    };
+
     playerDraggables.push(
-      <PlayerDraggable
-        firstName={players[i].firstName}
-        lastName={players[i].lastName}
-        num={players[i].num}
-        team="ours"
-        playerId={players[i].playerId}
-      />
+      <PlayerDraggable player={player} possesion={possesion} />
     );
   }
 
