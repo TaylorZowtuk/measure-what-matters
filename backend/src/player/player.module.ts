@@ -5,9 +5,8 @@ import { PlayerController } from './player.controller';
 import { PlayerService } from './player.service';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([Player])],
-    controllers: [PlayerController],
-    providers: [PlayerService],
-    exports: [PlayerService],
+  imports: [TypeOrmModule.forFeature([Player])],
+  controllers: [PlayerController],
+  providers: [PlayerService],
 })
-export class PlayerModule { }
+export class PlayerModule {}

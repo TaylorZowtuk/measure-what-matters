@@ -38,7 +38,10 @@ export class Possession extends BaseEntity implements IEvent {
     { eager: true, nullable: true },
   )
   @JoinColumn({ name: 'playerId' })
-  playerId: Player;
+  playerId: number;
+
+  @Column({ type: 'bool', default: false })
+  archived: boolean;
 
   @CreateDateColumn()
   createdDate: Date;

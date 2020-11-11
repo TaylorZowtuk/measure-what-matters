@@ -13,9 +13,12 @@ import { AssistService } from './assist/assist.service';
 import { Assist } from '../db/entities/events/assist.entity';
 import { PossessionService } from './possession/possession.service';
 import { PossessionController } from './possession/possession.controller';
+import { Possession } from '../db/entities/events/possession.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Goal, Substitution, Player, Assist])],
+  imports: [
+    TypeOrmModule.forFeature([Goal, Substitution, Player, Assist, Possession]),
+  ],
   controllers: [
     GoalController,
     SubstitutionController,
@@ -23,13 +26,6 @@ import { PossessionController } from './possession/possession.controller';
     PossessionController,
   ],
   providers: [
-    GoalService,
-    SubstitutionService,
-    PlayerService,
-    AssistService,
-    PossessionService,
-  ],
-  exports: [
     GoalService,
     SubstitutionService,
     PlayerService,

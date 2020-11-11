@@ -5,9 +5,8 @@ import { LineupService } from './lineup.service';
 import { LineupController } from './lineup.controller';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([Lineup])],
-    controllers: [LineupController],
-    providers: [LineupService],
-    exports: [LineupService],
+  imports: [TypeOrmModule.forFeature([Lineup])],
+  controllers: [LineupController],
+  providers: [LineupService],
 })
-export class LineupModule { }
+export class LineupModule {}
