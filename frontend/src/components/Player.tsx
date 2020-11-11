@@ -13,6 +13,7 @@ type Player = {
 
 type Possession = {
   hasPossession: boolean; // Whether or not the the player has possession of the ball
+  notifyOfPossessionChange: Function; // A callback to notify Field of possession change
 };
 
 type DraggableProps = {
@@ -42,7 +43,16 @@ export const PlayerDraggable = (props: DraggableProps) => {
       );
     } else {
       return (
-        <Button ref={drag} variant="dark">
+        <Button
+          ref={drag}
+          variant="dark"
+          onClick={() =>
+            changePossession(
+              player.playerId,
+              props.possession.notifyOfPossessionChange
+            )
+          }
+        >
           {player.num} {player.firstName} {player.lastName}
         </Button>
       );
@@ -59,27 +69,35 @@ export const PlayerDraggable = (props: DraggableProps) => {
       return (
         // Because we dont need to allow the opposition to make shift changes,
         // only allow opposing team to be dragged when they have the ball
-        <Button variant="danger">Opposition</Button>
+        <Button
+          variant="danger"
+          onClick={() =>
+            changePossession(
+              player.playerId,
+              props.possession.notifyOfPossessionChange
+            )
+          }
+        >
+          Opposition
+        </Button>
       );
     }
   }
 };
 
 function changePossession(
-  hasPossession: boolean,
   playerId: number,
   notifyOfPossessionChange: Function
 ) {
-  if (!hasPossession) {
-    // TODO: call api
+  // TODO: call api
 
-    notifyOfPossessionChange(playerId);
-  } // Else dont do anything
+  notifyOfPossessionChange(playerId);
 }
 
-export function createPlayerDraggable(
+// Create a group of PlayerDraggable JSX Elements and default to non having possession
+export function createPlayerDraggables(
   players: Player[],
-  hasPossession: boolean = false
+  notifyOfPossessionChange: Function
 ): any[] {
   let playerDraggables: any[] = [];
   // For each Player in the players array, create a PlayerDraggable jsx element
@@ -92,7 +110,8 @@ export function createPlayerDraggable(
       playerId: players[i].playerId,
     };
     const possession: Possession = {
-      hasPossession: hasPossession,
+      hasPossession: false, // No player created has possession
+      notifyOfPossessionChange: notifyOfPossessionChange,
     };
 
     playerDraggables.push(
@@ -101,6 +120,19 @@ export function createPlayerDraggable(
   }
 
   return playerDraggables;
+}
+
+// Create a single PlayerDraggable JSX Element
+export function createPlayerDraggable(
+  player: Player,
+  hasPossession: boolean,
+  notifyOfPossessionChange: Function
+): any {
+  const possession: Possession = {
+    hasPossession: hasPossession,
+    notifyOfPossessionChange: notifyOfPossessionChange,
+  };
+  return <PlayerDraggable player={player} possession={possession} />;
 }
 
 export default Player;

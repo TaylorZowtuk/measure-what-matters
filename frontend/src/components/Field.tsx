@@ -4,7 +4,11 @@ import { useDrop } from "react-dnd";
 import { Container, Row, Col } from "react-bootstrap";
 import { cloneDeep } from "lodash";
 
-import Player, { createPlayerDraggable, PlayerDraggable } from "./Player";
+import Player, {
+  createPlayerDraggable,
+  createPlayerDraggables,
+  PlayerDraggable,
+} from "./Player";
 
 type FieldProps = {
   getStartingLine: Function;
@@ -18,6 +22,7 @@ class Field extends React.Component<
   FieldProps,
   {
     onField: any[]; // Array of draggablePlayer jsx elements
+    playerIndexWithPossession: number; // The index into onField of the player who currently has possession of the ball
   }
 > {
   constructor(props: FieldProps) {
@@ -31,13 +36,16 @@ class Field extends React.Component<
       team: "theirs",
       playerId: -1,
     };
-    const oppositionDraggable: typeof PlayerDraggable = createPlayerDraggable([
+    const oppositionDraggable = createPlayerDraggable(
       oppositionPlayer,
-    ])[0];
+      false,
+      this.changePossession
+    );
 
     // Create elements representing our starting line
-    let initialPlayersOnField = createPlayerDraggable(
-      this.props.getStartingLine().slice(0, 6)
+    let initialPlayersOnField = createPlayerDraggables(
+      this.props.getStartingLine().slice(0, 6),
+      this.changePossession
     );
     // Add the opposition
     initialPlayersOnField.push(oppositionDraggable);
@@ -45,6 +53,7 @@ class Field extends React.Component<
     this.state = {
       // Index 0 is goalie; 1 & 2 are defence; 3, 4, & 5 are forwards; 6 is opposition
       onField: initialPlayersOnField,
+      playerIndexWithPossession: Number.NEGATIVE_INFINITY,
     };
   }
 
@@ -57,8 +66,11 @@ class Field extends React.Component<
     if (player === undefined) {
       console.log("Error: player to add to field was undefined");
     } else {
-      let ret_arr: any = createPlayerDraggable([player]);
-      let playerDraggable = ret_arr[0];
+      let playerDraggable: any = createPlayerDraggable(
+        player,
+        false,
+        this.changePossession
+      );
 
       this.setState((state) => {
         var onFieldCopy: any[] = cloneDeep(this.state.onField);
@@ -96,15 +108,35 @@ class Field extends React.Component<
   };
 
   changePossession = (playerId: number): void => {
-    // Find the player on the field with playerId
     let onFieldCopy = [...this.state.onField];
-    let index = onFieldCopy.findIndex(
-      (playerDraggable) => playerDraggable.props.playerId === playerId
-    );
+
     // Remove the possesion from the last player with possesion
+    if (this.state.playerIndexWithPossession !== Number.NEGATIVE_INFINITY) {
+      // If the ball wasnt in neutral possession
+      let playerDragWithoutPossession = createPlayerDraggable(
+        onFieldCopy[this.state.playerIndexWithPossession].props.player,
+        false,
+        this.changePossession
+      );
+      onFieldCopy[
+        this.state.playerIndexWithPossession
+      ] = playerDragWithoutPossession;
+    }
+
+    // Find the player on the field with playerId
+    let index = onFieldCopy.findIndex(
+      (playerDraggable) => playerDraggable.props.player.playerId === playerId
+    );
 
     // Replace the PlayerDraggable of that player with a new PlayerDraggable
     // that indicates they have ball possesion
+    let playerDragWithPossession = createPlayerDraggable(
+      onFieldCopy[index].props.player,
+      true,
+      this.changePossession
+    );
+    onFieldCopy[index] = playerDragWithPossession;
+    this.setState({ onField: onFieldCopy, playerIndexWithPossession: index });
   };
 
   async componentDidUpdate(prevProps: any, _prevState: any) {
