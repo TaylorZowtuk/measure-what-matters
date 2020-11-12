@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { QueryFailedError } from 'typeorm';
 import { ConflictException, UnauthorizedException } from '@nestjs/common';
-import { mockUserLoggedIn, mockUserNotLoggedIn } from './mocks/mockUserLoggin';
+import { mockUserLoggedIn, mockUserNotLoggedIn } from './mocks/mockUserLogin';
 
 describe('UsersController', () => {
   let controller: UsersController;
@@ -98,6 +98,13 @@ describe('UsersController', () => {
 
       expect(result).toMatchObject(userEntity);
       expect(result).not.toHaveProperty('password');
+    });
+  });
+
+  describe('User edit API', () => {
+    // TODO - Need more features faster
+    it('should call findOne method of Users', async () => {
+      expect(true).toBe(true);
     });
   });
 
