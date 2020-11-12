@@ -2,6 +2,9 @@ import React from "react";
 import { useDrag } from "react-dnd";
 import { DraggableTypes } from "../constants";
 import { Button } from "react-bootstrap";
+import axios from "axios";
+import authHeader from "../services/auth.header";
+import { MatchIdContext } from "./Recording.page";
 
 type Player = {
   firstName: string;
@@ -14,6 +17,18 @@ type Player = {
 type Possession = {
   hasPossession: boolean; // Whether or not the the player has possession of the ball
   notifyOfPossessionChange: Function; // A callback to notify Field of possession change
+};
+
+// API DTO's
+type OppositionPossessionDTO = {
+  matchId: number;
+  time: number;
+};
+
+type PlayerPossessionDTO = {
+  matchId: number;
+  time: number;
+  playerId: number;
 };
 
 type DraggableProps = {
@@ -43,18 +58,23 @@ export const PlayerDraggable = (props: DraggableProps) => {
       );
     } else {
       return (
-        <Button
-          ref={drag}
-          variant="dark"
-          onClick={() =>
-            changePossession(
-              player.playerId,
-              props.possession.notifyOfPossessionChange
-            )
-          }
-        >
-          {player.num} {player.firstName} {player.lastName}
-        </Button>
+        <MatchIdContext.Consumer>
+          {(matchId) => (
+            <Button
+              ref={drag}
+              variant="dark"
+              onClick={() =>
+                changePossession(
+                  player.playerId,
+                  props.possession.notifyOfPossessionChange,
+                  matchId
+                )
+              }
+            >
+              {player.num} {player.firstName} {player.lastName}
+            </Button>
+          )}
+        </MatchIdContext.Consumer>
       );
     }
   } else {
@@ -69,17 +89,22 @@ export const PlayerDraggable = (props: DraggableProps) => {
       return (
         // Because we dont need to allow the opposition to make shift changes,
         // only allow opposing team to be dragged when they have the ball
-        <Button
-          variant="danger"
-          onClick={() =>
-            changePossession(
-              player.playerId,
-              props.possession.notifyOfPossessionChange
-            )
-          }
-        >
-          Opposition
-        </Button>
+        <MatchIdContext.Consumer>
+          {(matchId) => (
+            <Button
+              variant="danger"
+              onClick={() =>
+                changePossession(
+                  player.playerId,
+                  props.possession.notifyOfPossessionChange,
+                  matchId
+                )
+              }
+            >
+              Opposition
+            </Button>
+          )}
+        </MatchIdContext.Consumer>
       );
     }
   }
@@ -87,9 +112,35 @@ export const PlayerDraggable = (props: DraggableProps) => {
 
 function changePossession(
   playerId: number,
-  notifyOfPossessionChange: Function
+  notifyOfPossessionChange: Function,
+  matchId: number
 ) {
-  // TODO: call api
+  if (playerId === -1) {
+    let possessionEvent: OppositionPossessionDTO = {
+      matchId: matchId,
+      time: Date.now() % 10000, // TODO: switch to game time
+    };
+    axios
+      .post(`/event/possession/opposition`, possessionEvent, {
+        headers: authHeader(),
+      })
+      .then((res) => {
+        console.log("Post opposition possession response:", res); // TODO: catch error and handle if needed
+      });
+  } else {
+    let possessionEvent: PlayerPossessionDTO = {
+      matchId: matchId,
+      time: Date.now() % 10000, // TODO: switch to game time
+      playerId: playerId,
+    };
+    axios
+      .post(`/event/possession/player`, possessionEvent, {
+        headers: authHeader(),
+      })
+      .then((res) => {
+        console.log("Post player possession response:", res); // TODO: catch error and handle if needed
+      });
+  }
 
   notifyOfPossessionChange(playerId);
 }

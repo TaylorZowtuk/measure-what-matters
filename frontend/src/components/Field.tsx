@@ -7,7 +7,6 @@ import { cloneDeep } from "lodash";
 import Player, {
   createPlayerDraggable,
   createPlayerDraggables,
-  PlayerDraggable,
 } from "./Player";
 
 type FieldProps = {

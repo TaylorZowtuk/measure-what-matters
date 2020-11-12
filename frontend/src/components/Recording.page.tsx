@@ -13,6 +13,9 @@ import Field from "./Field";
 import Player from "./Player";
 import authHeader from "../services/auth.header";
 
+// Provide MatchId to each recording component which requires it through context
+export const MatchIdContext: React.Context<number> = React.createContext(0);
+
 type Goal = {
   id?: number;
   matchId: number;
@@ -85,7 +88,9 @@ class Recording extends React.Component<
       lineupSubs.push(sub);
     }
     axios
-      .post(`/event/substitutions/startingLineup`, lineupSubs)
+      .post(`/event/substitutions/startingLineup`, lineupSubs, {
+        headers: authHeader(),
+      })
       .then((res) => {
         console.log("Post starting lineup response:", res); // TODO: catch error and handle if needed
       });
@@ -161,24 +166,28 @@ class Recording extends React.Component<
     } else {
       return (
         <DndProvider backend={useTouch ? TouchBackend : HTML5Backend}>
-          <h1>Recording</h1>
-          <Bench
-            matchId={Number(this.props.location.state.matchId)}
-            getStartingBench={this.provideStartingBench}
-            notifyOfSubs={this.setSubs}
-          ></Bench>
-          <Team name={this.team_name} score={this.state.goals_for} />
-          <Team name={this.opp_name} score={this.state.goals_against} />
-          <Field
-            getStartingLine={this.provideStartingLine}
-            incrementScore={this.incrementScore}
-            removeFromField={this.state.subField}
-            addToField={this.state.subBench}
-            resetSubs={this.setSubs}
-          />
-          <Link to="/dashboard">
-            <Button variant="contained">Dashboard</Button>
-          </Link>
+          <MatchIdContext.Provider
+            value={Number(this.props.location.state.matchId)}
+          >
+            <h1>Recording</h1>
+            <Bench
+              matchId={Number(this.props.location.state.matchId)}
+              getStartingBench={this.provideStartingBench}
+              notifyOfSubs={this.setSubs}
+            ></Bench>
+            <Team name={this.team_name} score={this.state.goals_for} />
+            <Team name={this.opp_name} score={this.state.goals_against} />
+            <Field
+              getStartingLine={this.provideStartingLine}
+              incrementScore={this.incrementScore}
+              removeFromField={this.state.subField}
+              addToField={this.state.subBench}
+              resetSubs={this.setSubs}
+            />
+            <Link to="/dashboard">
+              <Button variant="contained">Dashboard</Button>
+            </Link>
+          </MatchIdContext.Provider>
         </DndProvider>
       );
     }
