@@ -4,20 +4,23 @@ import {
   Controller,
   Get,
   InternalServerErrorException,
-  ParseIntPipe,
   Post,
   Query,
+  UseGuards,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
-import { ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { QueryFailedError } from 'typeorm';
+import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
 import { AssistDTO } from '../../dto/events/assist/assist.dto';
 import { CreateAssistDTO } from '../../dto/events/assist/createAssist.dto';
 import { AssistService } from './assist.service';
 
 @ApiTags('Assists')
 @Controller('event/assists')
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
 export class AssistController {
   constructor(private readonly assistService: AssistService) {}
 
@@ -27,7 +30,7 @@ export class AssistController {
     status: 400,
     description: 'Violates foreign key, or null value entered',
   })
-  @ApiResponse({ status: 500, description: 'Unknown error occured' })
+  @ApiResponse({ status: 500, description: 'Unknown error occurred' })
   @UsePipes(ValidationPipe)
   async saveAssistEvent(@Body() assist: CreateAssistDTO) {
     try {
@@ -40,7 +43,7 @@ export class AssistController {
           throw new BadRequestException('null value entered for parameter');
         }
       } else {
-        throw new InternalServerErrorException('Unknown error occured');
+        throw new InternalServerErrorException('Unknown error occurred');
       }
     }
   }
@@ -54,7 +57,7 @@ export class AssistController {
       'Returns array of assists for the specified player and/or match',
   })
   @ApiResponse({ status: 400, description: 'Both playerId and matchId null' })
-  @ApiResponse({ status: 500, description: 'Unknown error occured' })
+  @ApiResponse({ status: 500, description: 'Unknown error occurred' })
   @ApiQuery({
     name: 'playerId',
     required: false,

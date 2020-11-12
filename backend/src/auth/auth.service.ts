@@ -12,7 +12,7 @@ export class AuthService {
   ) {}
 
   async validateUser(username: string, pass: string): Promise<any> {
-    const user = await this.usersService.findOne(username);
+    const user = await this.usersService.findOneForAuth(username);
     if (user && (await compare(pass, user.password))) {
       const userWithoutPass = { ...user };
       delete userWithoutPass.password; // strip off password
