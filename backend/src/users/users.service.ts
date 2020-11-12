@@ -9,6 +9,7 @@ export class UsersService {
     @InjectRepository(User) private readonly userRepository: Repository<User>,
   ) {}
 
+  // Create
   async create(name: string, username: string, password: string) {
     const newUser = this.userRepository.create({
       name,
@@ -21,7 +22,22 @@ export class UsersService {
     return copyWithoutPass;
   }
 
-  findOne(username: string): Promise<User> {
+  // Read
+  findOneForAuth(username: string): Promise<User> {
     return this.userRepository.findOne({ username });
+  }
+
+  async findOne(userId: number): Promise<any> {
+    const user = await this.userRepository.findOneOrFail({ userId });
+    const userWithoutPass = { ...user };
+    delete userWithoutPass.password;
+    return userWithoutPass;
+  }
+
+  // Update
+  async update(userId: number, name: string, teamId: number) {
+    const user = await this.findOne(userId);
+    const updatedUser = { ...user, name, teamId };
+    return this.userRepository.save(updatedUser);
   }
 }

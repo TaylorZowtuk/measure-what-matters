@@ -17,6 +17,7 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { PlayerService } from './player.service';
 import { QueryFailedError } from 'typeorm';
 import { CreatePlayerDTO } from '../dto/player/createPlayer.dto';
+import { ApiBody } from '@nestjs/swagger';
 
 @ApiTags('Players')
 @ApiBearerAuth()
@@ -32,6 +33,10 @@ export class PlayerController {
     description: 'TeamId not in database or null value entered for parameter',
   })
   @ApiResponse({ status: 500, description: 'Unknown error occured' })
+  @ApiBody({
+    type: CreatePlayerDTO,
+    isArray: true,
+  })
   @UsePipes(ValidationPipe)
   async createPlayers(@Body() players: CreatePlayerDTO[]) {
     try {
