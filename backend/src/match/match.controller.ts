@@ -17,6 +17,8 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { MatchService } from './match.service';
 import { QueryFailedError } from 'typeorm';
 import { CreateMatchDTO } from '../dto/match/createMatch.dto';
+import { HalfTimeDTO } from '../dto/match/halfTime.dto';
+import { FullTimeDTO } from '../dto/match/fullTime.dto';
 
 @ApiTags('Matches')
 @ApiBearerAuth()
@@ -75,5 +77,23 @@ export class MatchController {
         throw new InternalServerErrorException('Unknown problem occured');
       }
     }
+  }
+
+  @Post('/halftime')
+  @ApiResponse({
+    status: 201,
+    description: 'Adds halftime to match entity',
+  })
+  async updateHalfTimeMatch(@Body() matchHalfTime: HalfTimeDTO) {
+    return await this.matchService.addHalfTime(matchHalfTime);
+  }
+
+  @Post('/fulltime')
+  @ApiResponse({
+    status: 201,
+    description: 'Adds fulltime to match entity',
+  })
+  async updateFullTimeMatch(@Body() matchFullTime: FullTimeDTO) {
+    return await this.matchService.addFullTime(matchFullTime);
   }
 }

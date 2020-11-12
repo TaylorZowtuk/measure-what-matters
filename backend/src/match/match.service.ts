@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Match } from '../db/entities/match.entity';
 import { MatchDTO } from '../dto/match/match.dto';
+import { HalfTimeDTO } from '../dto/match/halfTime.dto';
+import { FullTimeDTO } from '../dto/match/fullTime.dto';
 import { Repository } from 'typeorm';
 import { CreateMatchDTO } from '../dto/match/createMatch.dto';
 
@@ -42,6 +44,18 @@ export class MatchService {
     return this.convertToDto(matches);
   }
 
+  async addHalfTime(matchHalfTime: HalfTimeDTO): Promise<MatchDTO> {
+    const match = await this.matchRepo.findOne(matchHalfTime.matchId);
+    const matchUpdate = { ...match, halfTime: matchHalfTime.halfTime };
+    return this.matchRepo.save(matchUpdate);
+  }
+
+  async addFullTime(matchFullTime: FullTimeDTO): Promise<MatchDTO> {
+    const match = await this.matchRepo.findOne(matchFullTime.matchId);
+    const matchUpdate = { ...match, fullTime: matchFullTime.fullTime };
+    return this.matchRepo.save(matchUpdate);
+  }
+
   /**
    * Converts a list of match entities to a list of match dtos
    *
@@ -58,6 +72,8 @@ export class MatchService {
         teamId: element.teamId.teamId,
         startTime: element.startTime,
         isHomeTeam: element.isHomeTeam,
+        halfTime: element.halfTime,
+        fullTime: element.fullTime,
       };
       matchDtos.push(matchDto);
     });
