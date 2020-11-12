@@ -171,7 +171,6 @@ class Recording extends React.Component<
           >
             <h1>Recording</h1>
             <Bench
-              matchId={Number(this.props.location.state.matchId)}
               getStartingBench={this.provideStartingBench}
               notifyOfSubs={this.setSubs}
             ></Bench>
