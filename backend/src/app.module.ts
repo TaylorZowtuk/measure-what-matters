@@ -28,7 +28,6 @@ import { LoggerMiddleware } from './middleware/logger.middleware';
     UsersModule,
     LineupModule,
   ],
-  controllers: [TeamController],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

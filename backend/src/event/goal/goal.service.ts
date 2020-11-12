@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Goal } from '../../db/entities/events/goal.entity';
 import { GoalDTO } from '../../dto/events/goal.dto';
