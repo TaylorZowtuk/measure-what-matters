@@ -12,7 +12,7 @@ interface Props {
   handleCancel(): void;
   title?: string;
   subtitle?: string;
-  children: any;
+  children?: any;
   confirmationButtonText: string;
   denyButtonText: string;
 }
