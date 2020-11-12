@@ -12,6 +12,7 @@ import Bench, { StartingPlayer } from "./Bench";
 import Field from "./Field";
 import Player from "./Player";
 import authHeader from "../services/auth.header";
+import CircularBuffer from "../util/circular-buffer";
 
 // Provide MatchId to each recording component which requires it through context
 export const MatchIdContext: React.Context<number> = React.createContext(0);
@@ -22,6 +23,12 @@ type Goal = {
   time: number;
   playerId: number;
   lineup: number[];
+};
+
+type CreateAssistDTO = {
+  matchId: number;
+  time: number;
+  playerId: number;
 };
 
 type RecordingProps = {
@@ -111,31 +118,67 @@ class Recording extends React.Component<
   incrementScore = (
     goal_for: boolean,
     scorer: Player | undefined = undefined,
+    previousPossessions: CircularBuffer<number>,
     lineup: any[] | undefined = undefined
   ): void => {
+    console.log(previousPossessions);
     if (goal_for) {
+      // Our goal
       if (scorer && lineup) {
+        // Update our score
         this.setState({ goals_for: this.state.goals_for + 1 });
+
+        // Gather the player ids of all of our players on the field
         let ids: number[] = [];
         for (let i = 0; i < lineup.length; i++) {
           ids.push(lineup[i].props.player.playerId);
         }
+        // Create a GoalDTO object
         let goal: Goal = {
           matchId: Number(this.props.location.state.matchId),
           time: Date.now(), // Epoch time in ms
           playerId: scorer.playerId,
           lineup: ids,
         };
+
+        // Using the previousPossessions, automatically register an assist
+        if (previousPossessions.size() >= 2) {
+          // There was an assist
+          // For indoor soccer, we only record one assister
+          let assisterId: number | null = previousPossessions.dequeue();
+          // We check size > 2 so should never be null
+          if (assisterId) {
+            let assist: CreateAssistDTO = {
+              matchId: Number(this.props.location.state.matchId),
+              time: Date.now(),
+              playerId: assisterId,
+            };
+            axios
+              .post(`/event/assists`, assist, { headers: authHeader() })
+              .then((res) => {
+                console.log("Post assist response:", res); // TODO: catch error and handle if needed
+              });
+          }
+        }
+
+        // Post the the goal endpoint
         axios
           .post(`/event/goals`, goal, { headers: authHeader() })
           .then((res) => {
-            console.log(res); // TODO: catch error and handle if needed
+            console.log("Post goal response:", res); // TODO: catch error and handle if needed
           });
+
+        // Post to the assists endpoint
       }
     } else {
+      // Opposing teams goal
+      // Update their score
       this.setState({ goals_against: this.state.goals_against + 1 });
       // TODO: add backend call to add against goal
     }
+
+    // On any goal, reset the previous possessions queue
+    previousPossessions.clear();
   };
 
   componentDidMount() {

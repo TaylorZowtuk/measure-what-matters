@@ -3,6 +3,7 @@ import { DraggableTypes } from "../constants";
 import { useDrop } from "react-dnd";
 import { Container, Row, Col } from "react-bootstrap";
 import { cloneDeep } from "lodash";
+import { CircularBuffer } from "../util/circular-buffer";
 
 import Player, {
   createPlayerDraggable,
@@ -55,6 +56,9 @@ class Field extends React.Component<
       playerIndexWithPossession: Number.NEGATIVE_INFINITY,
     };
   }
+
+  // A circular buffer which contains playerId's of players to last touch the ball
+  previousPossessions = new CircularBuffer<number>(2); // Can only have one assist
 
   getOnField = (): any[] => {
     // Return all the PlayerDraggables on the field except the opposition
@@ -136,6 +140,7 @@ class Field extends React.Component<
     );
     onFieldCopy[index] = playerDragWithPossession;
     this.setState({ onField: onFieldCopy, playerIndexWithPossession: index });
+    this.previousPossessions.enqueue(playerId);
   };
 
   async componentDidUpdate(prevProps: any, _prevState: any) {
@@ -151,8 +156,9 @@ class Field extends React.Component<
   render() {
     return (
       <FieldTarget
-        draggablePlayers={this.state.onField}
         incrementScore={this.props.incrementScore}
+        draggablePlayers={this.state.onField}
+        previousPossessions={this.previousPossessions}
         getLineup={this.getOnField}
       />
     );
@@ -160,8 +166,9 @@ class Field extends React.Component<
 }
 
 type FieldTargetProps = {
-  draggablePlayers: any[];
   incrementScore: Function;
+  draggablePlayers: any[];
+  previousPossessions: CircularBuffer<number>;
   getLineup: Function;
 };
 
@@ -170,7 +177,12 @@ export function FieldTarget(props: FieldTargetProps) {
     accept: DraggableTypes.PLAYER,
     drop: (item: any, monitor) => {
       const ourGoal: Boolean = item.player.team === "ours" ? true : false;
-      props.incrementScore(ourGoal, item.player, props.getLineup());
+      props.incrementScore(
+        ourGoal,
+        item.player,
+        props.previousPossessions,
+        props.getLineup()
+      );
     },
   });
 
