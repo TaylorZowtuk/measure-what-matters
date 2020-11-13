@@ -121,7 +121,6 @@ class Recording extends React.Component<
     previousPossessions: CircularBuffer<number>,
     lineup: any[] | undefined = undefined
   ): void => {
-    console.log(previousPossessions);
     if (goal_for) {
       // Our goal
       if (scorer && lineup) {
@@ -147,7 +146,8 @@ class Recording extends React.Component<
           // For indoor soccer, we only record one assister
           let assisterId: number | null = previousPossessions.dequeue();
           // We check size > 2 so should never be null
-          if (assisterId) {
+          if (assisterId && assisterId != -1) {
+            // The last possession wasnt the opposition
             let assist: CreateAssistDTO = {
               matchId: Number(this.props.location.state.matchId),
               time: Date.now(),
