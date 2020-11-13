@@ -2,6 +2,8 @@ import React from "react";
 import { Link } from "react-router-dom";
 import Button from "@material-ui/core/Button";
 import TimeOnField from "./reports/TimeOnField";
+import CircularStatic from "./reports/Possession";
+import { Col, Container, Row } from "react-bootstrap";
 
 const Dashboard = () => (
   <div className="dashboard">
@@ -25,7 +27,18 @@ const Dashboard = () => (
     </Link>
 
     {/* Reports */}
-    <TimeOnField />
+    <Container style={{ backgroundColor: "#282c34" }}>
+      <Row>
+        <Col>
+          <CircularStatic />
+        </Col>
+      </Row>
+      <Row>
+        <Col>
+          <TimeOnField />
+        </Col>
+      </Row>
+    </Container>
   </div>
 );
 
