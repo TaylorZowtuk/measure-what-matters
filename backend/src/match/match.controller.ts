@@ -22,8 +22,8 @@ import { HalfTimeDTO } from '../dto/match/halfTime.dto';
 import { FullTimeDTO } from '../dto/match/fullTime.dto';
 
 @ApiTags('Matches')
-//@ApiBearerAuth()
-//@UseGuards(JwtAuthGuard)
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
 @Controller('match')
 export class MatchController {
   constructor(private readonly matchService: MatchService) {}

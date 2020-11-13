@@ -25,8 +25,6 @@ export class MatchService {
    */
 
   async saveMatch(match: CreateMatchDTO): Promise<Match> {
-    //let matchDTO = new MatchDTO;
-    //matchDTO = {teamId:match.teamId,time:match.time,isHomeTeam:match.isHomeTeam}
     return this.matchRepo.save(match);
   }
 
