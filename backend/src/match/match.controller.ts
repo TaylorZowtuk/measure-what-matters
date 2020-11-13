@@ -4,6 +4,7 @@ import {
   Controller,
   Get,
   InternalServerErrorException,
+  NotFoundException,
   ParseIntPipe,
   Post,
   Query,
@@ -21,8 +22,8 @@ import { HalfTimeDTO } from '../dto/match/halfTime.dto';
 import { FullTimeDTO } from '../dto/match/fullTime.dto';
 
 @ApiTags('Matches')
-@ApiBearerAuth()
-@UseGuards(JwtAuthGuard)
+//@ApiBearerAuth()
+//@UseGuards(JwtAuthGuard)
 @Controller('match')
 export class MatchController {
   constructor(private readonly matchService: MatchService) {}
@@ -84,16 +85,73 @@ export class MatchController {
     status: 201,
     description: 'Adds halftime to match entity',
   })
+  @ApiResponse({
+    status: 400,
+    description: 'Both fields should  be integers',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'MatchId requested for is not in database',
+  })
   async updateHalfTimeMatch(@Body() matchHalfTime: HalfTimeDTO) {
-    return await this.matchService.addHalfTime(matchHalfTime);
+    try {
+      return await this.matchService.addHalfTime(matchHalfTime);
+    } catch (error) {
+      if (error.message.includes('Could not find any entity')) {
+        throw new NotFoundException('Match does not exist in database');
+      } else if (error instanceof QueryFailedError) {
+        if (error.message.includes('invalid input syntax for type integer')) {
+          throw new BadRequestException(
+            'Invalid parameter entered, both fields should be integers',
+          );
+        }
+      } else if (
+        error.message.includes('Halftime cannot be a negative value')
+      ) {
+        throw error;
+      } else {
+        throw new InternalServerErrorException('Unknown error occured');
+      }
+    }
   }
 
-  @Post('/fulltime')
+  @Post('/fullTime')
   @ApiResponse({
     status: 201,
     description: 'Adds fulltime to match entity',
   })
+  @ApiResponse({
+    status: 400,
+    description: 'Both fields should  be integers',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Fulltime cannot be smaller than halftime',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'MatchId requested for is not in database',
+  })
   async updateFullTimeMatch(@Body() matchFullTime: FullTimeDTO) {
-    return await this.matchService.addFullTime(matchFullTime);
+    try {
+      return await this.matchService.addFullTime(matchFullTime);
+    } catch (error) {
+      if (error.message.includes('Could not find any entity')) {
+        throw new NotFoundException('Match does not exist in database');
+      } else if (error instanceof QueryFailedError) {
+        if (error.message.includes('invalid input syntax for type integer')) {
+          throw new BadRequestException(
+            'Invalid parameter entered, both fields should be integers',
+          );
+        }
+      } else if (
+        error.message.includes('Fulltime cannot be smaller than halftime') ||
+        error.message.includes('Fulltime cannot be a negative value')
+      ) {
+        throw error;
+      } else {
+        throw new InternalServerErrorException('Unknown error occured');
+      }
+    }
   }
 }

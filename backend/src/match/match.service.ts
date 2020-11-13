@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Match } from '../db/entities/match.entity';
 import { MatchDTO } from '../dto/match/match.dto';
@@ -44,14 +44,43 @@ export class MatchService {
     return this.convertToDto(matches);
   }
 
+  /**
+   * Sets the timer time that halftime occured
+   *
+   * @param matchHalfTime DTO containing matchId and halfTime on timer
+   *
+   * @returns A promise of the match DTO of the newly updated match
+   */
+
   async addHalfTime(matchHalfTime: HalfTimeDTO): Promise<MatchDTO> {
-    const match = await this.matchRepo.findOne(matchHalfTime.matchId);
+    const match = await this.matchRepo.findOneOrFail({
+      where: { matchId: matchHalfTime.matchId },
+    });
+    if (matchHalfTime.halfTime < 0) {
+      throw new BadRequestException('Halftime cannot be a negative value');
+    }
     const matchUpdate = { ...match, halfTime: matchHalfTime.halfTime };
     return this.matchRepo.save(matchUpdate);
   }
 
+  /**
+   * Sets the timer time that fulltime occured
+   *
+   * @param matchHalfTime DTO containing matchId and fullTime on timer
+   *
+   * @returns A promise of the match DTO of the newly updated match
+   */
+
   async addFullTime(matchFullTime: FullTimeDTO): Promise<MatchDTO> {
-    const match = await this.matchRepo.findOne(matchFullTime.matchId);
+    const match = await this.matchRepo.findOneOrFail({
+      where: { matchId: matchFullTime.matchId },
+    });
+    if (matchFullTime.fullTime < match.halfTime) {
+      throw new BadRequestException('Fulltime cannot be smaller than halftime');
+    }
+    if (matchFullTime.fullTime < 0) {
+      throw new BadRequestException('Fulltime cannot be a negative value');
+    }
     const matchUpdate = { ...match, fullTime: matchFullTime.fullTime };
     return this.matchRepo.save(matchUpdate);
   }
