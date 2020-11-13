@@ -2,6 +2,7 @@ import React from "react";
 import authHeader from "../../services/auth.header";
 import axios from "axios";
 import {
+  Button,
   IconButton,
   Paper,
   Table,
@@ -14,8 +15,10 @@ import {
 } from "@material-ui/core";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
+import PersonAddIcon from "@material-ui/icons/PersonAdd";
 import CSS from "csstype";
 import CustomDialog from "../CustomDialog";
+import { ThemeConsumer } from "react-bootstrap/esm/ThemeProvider";
 
 interface Player {
   playerId: number;
@@ -32,6 +35,7 @@ interface State {
   editDialogOpen: boolean;
   deleteDialogOpen: boolean;
   playerToAction: Player;
+  action: Actions;
 }
 
 const tableStyling: CSS.Properties = {
@@ -49,8 +53,10 @@ const defaultPlayer: Player = {
 };
 
 enum Actions {
-  edit,
-  delete,
+  None,
+  Edit,
+  Delete,
+  Add,
 }
 
 class Roster extends React.Component<Props, State> {
@@ -61,6 +67,7 @@ class Roster extends React.Component<Props, State> {
       editDialogOpen: false,
       deleteDialogOpen: false,
       playerToAction: defaultPlayer,
+      action: Actions.None,
     };
   }
 
@@ -76,10 +83,18 @@ class Roster extends React.Component<Props, State> {
   }
 
   handleActionClicked(player: Player, action: Actions) {
-    if (action === Actions.edit) {
-      this.setState({ editDialogOpen: true, playerToAction: player });
-    } else if (action === Actions.delete) {
-      this.setState({ deleteDialogOpen: true, playerToAction: player });
+    if (action === Actions.Edit || action === Actions.Add) {
+      this.setState({
+        editDialogOpen: true,
+        playerToAction: player,
+        action: action,
+      });
+    } else if (action === Actions.Delete) {
+      this.setState({
+        deleteDialogOpen: true,
+        playerToAction: player,
+        action: action,
+      });
     }
   }
 
@@ -91,19 +106,28 @@ class Roster extends React.Component<Props, State> {
     });
   };
 
+  getTitle(action: Actions) {
+    return `${Actions[action.valueOf()]} Player`;
+  }
+
   handleEditConfirmation = () => {
     const ind = this.state.players.findIndex(
       (player) => player.playerId === this.state.playerToAction.playerId
     );
+    const editedPlayers = this.state.players;
+
     if (ind > -1) {
-      const editedPlayers = this.state.players;
       editedPlayers[ind] = this.state.playerToAction;
       this.setState({
         players: editedPlayers,
-        editDialogOpen: false,
-        playerToAction: defaultPlayer,
+      });
+    } else if (this.state.playerToAction.jerseyNum !== -1) {
+      editedPlayers.push(this.state.playerToAction);
+      this.setState({
+        players: editedPlayers,
       });
     }
+    this.setStateDefaults();
   };
 
   handleDeleteConfirmation = () => {
@@ -117,17 +141,27 @@ class Roster extends React.Component<Props, State> {
       console.log(editedPlayers);
       this.setState({
         players: editedPlayers,
-        deleteDialogOpen: false,
-        playerToAction: defaultPlayer,
       });
       console.log(this.state);
     }
+    this.setStateDefaults();
   };
+
+  setStateDefaults() {
+    this.setState({
+      editDialogOpen: false,
+      deleteDialogOpen: false,
+      playerToAction: defaultPlayer,
+      action: Actions.None,
+    });
+  }
 
   editDialogContents(player: Player): JSX.Element {
     return (
       <div>
         <TextField
+          fullWidth
+          autoFocus
           defaultValue={player.firstName}
           label="First Name"
           onChange={(e: any) => {
@@ -139,6 +173,8 @@ class Roster extends React.Component<Props, State> {
           }}
         ></TextField>
         <TextField
+          fullWidth
+          style={{ marginTop: "30px" }}
           defaultValue={player.lastName}
           label="Last Name"
           onChange={(e: any) => {
@@ -152,7 +188,9 @@ class Roster extends React.Component<Props, State> {
           }}
         ></TextField>
         <TextField
-          defaultValue={player.jerseyNum}
+          fullWidth
+          style={{ marginTop: "30px", marginBottom: "30px" }}
+          defaultValue={player.jerseyNum === -1 ? "" : player.jerseyNum}
           label="Jersey Number"
           onChange={(e: any) => {
             const player = this.state.playerToAction;
@@ -177,7 +215,21 @@ class Roster extends React.Component<Props, State> {
                 <TableCell>Last Name</TableCell>
                 <TableCell>Jersey Number</TableCell>
                 <TableCell></TableCell>
-                <TableCell></TableCell>
+                <TableCell>
+                  <Button
+                    variant="contained"
+                    color="default"
+                    endIcon={<PersonAddIcon />}
+                    onClick={() => {
+                      this.handleActionClicked(
+                        { ...defaultPlayer },
+                        Actions.Add
+                      );
+                    }}
+                  >
+                    Add Player
+                  </Button>
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -189,7 +241,7 @@ class Roster extends React.Component<Props, State> {
                   <TableCell>
                     <IconButton
                       onClick={() => {
-                        this.handleActionClicked({ ...player }, Actions.edit);
+                        this.handleActionClicked({ ...player }, Actions.Edit);
                       }}
                     >
                       <EditIcon />
@@ -198,7 +250,7 @@ class Roster extends React.Component<Props, State> {
                   <TableCell>
                     <IconButton
                       onClick={() => {
-                        this.handleActionClicked({ ...player }, Actions.delete);
+                        this.handleActionClicked({ ...player }, Actions.Delete);
                       }}
                     >
                       <DeleteIcon />
@@ -213,7 +265,7 @@ class Roster extends React.Component<Props, State> {
           isOpen={this.state.editDialogOpen}
           handleConfirmation={this.handleEditConfirmation}
           handleCancel={this.handleCancel}
-          subtitle="Edit the player"
+          title={this.getTitle(this.state.action)}
           confirmationButtonText="Save"
           denyButtonText="Cancel"
           children={this.editDialogContents(this.state.playerToAction)}
@@ -222,7 +274,8 @@ class Roster extends React.Component<Props, State> {
           isOpen={this.state.deleteDialogOpen}
           handleConfirmation={this.handleDeleteConfirmation}
           handleCancel={this.handleCancel}
-          subtitle={`Delete the player ${this.state.playerToAction.firstName} ${this.state.playerToAction.lastName}?`}
+          title={this.getTitle(this.state.action)}
+          subtitle={`Are you sure you want to delete the player ${this.state.playerToAction.firstName} ${this.state.playerToAction.lastName}?`}
           confirmationButtonText="Delete"
           denyButtonText="Cancel"
         ></CustomDialog>
