@@ -11,6 +11,9 @@ import {
   Delete,
   Query,
   ParseIntPipe,
+  UsePipes,
+  ValidationPipe,
+  NotFoundException,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { QueryFailedError } from 'typeorm';
@@ -80,5 +83,33 @@ export class TeamController {
   })
   async getTeamsByUserId(@Headers('userId') userId: number) {
     return await this.teamService.getTeamsByUserId(userId);
+  }
+
+  @Post('/edit')
+  @ApiResponse({
+    status: 200,
+    description: 'Update team name',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Problems with request input',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Team does not exist in database',
+  })
+  @UsePipes(ValidationPipe)
+  async upDateTeamName(@Body() updateTeam: TeamDTO) {
+    try {
+      return await this.teamService.updateTeamName(updateTeam);
+    } catch (error) {
+      if (error.message.includes('Could not find any entity')) {
+        throw new NotFoundException(
+          'Team with teamId does not exist in database',
+        );
+      } else {
+        throw new InternalServerErrorException('Unknown error occured');
+      }
+    }
   }
 }

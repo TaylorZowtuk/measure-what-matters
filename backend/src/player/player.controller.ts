@@ -11,6 +11,7 @@ import {
   ValidationPipe,
   ParseIntPipe,
   Delete,
+  NotFoundException,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { PlayerDTO } from '../dto/player/player.dto';
@@ -19,6 +20,7 @@ import { PlayerService } from './player.service';
 import { QueryFailedError } from 'typeorm';
 import { CreatePlayerDTO } from '../dto/player/createPlayer.dto';
 import { ApiBody } from '@nestjs/swagger';
+import { UpdatePlayerDTO } from 'src/dto/player/updatePlayer.dto';
 
 @ApiTags('Players')
 @ApiBearerAuth()
@@ -104,6 +106,34 @@ export class PlayerController {
     } catch (error) {
       if (error.message.includes('not found')) {
         throw error;
+      } else {
+        throw new InternalServerErrorException('Unknown error occured');
+      }
+    }
+  }
+
+  @Post('/edit')
+  @ApiResponse({
+    status: 200,
+    description: 'Update player entity',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Problems with request input',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Player does not exist in database',
+  })
+  @UsePipes(ValidationPipe)
+  async updatePlayer(@Body() updatePlayer: UpdatePlayerDTO) {
+    try {
+      return await this.playerService.updatePlayer(updatePlayer);
+    } catch (error) {
+      if (error.message.includes('Could not find any entity')) {
+        throw new NotFoundException(
+          'Player with playerId does not exist in database',
+        );
       } else {
         throw new InternalServerErrorException('Unknown error occured');
       }

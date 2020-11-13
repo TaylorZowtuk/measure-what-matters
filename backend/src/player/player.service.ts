@@ -4,6 +4,7 @@ import { Player } from '../db/entities/player.entity';
 import { PlayerDTO } from '../dto/player/player.dto';
 import { Repository } from 'typeorm';
 import { CreatePlayerDTO } from '../dto/player/createPlayer.dto';
+import { UpdatePlayerDTO } from 'src/dto/player/updatePlayer.dto';
 
 @Injectable()
 export class PlayerService {
@@ -78,6 +79,24 @@ export class PlayerService {
         'Player with playerId ' + playerId + ' not found',
       );
     }
+  }
+
+  /**
+   * Updates a player object
+   *
+   * @param updatePlayer - object containing player update
+   *
+   * @returns updated player
+   */
+
+  async updatePlayer(updatePlayer: UpdatePlayerDTO): Promise<Player> {
+    const player = await this.playerRepo.findOneOrFail({
+      where: { playerId: updatePlayer.playerId },
+    });
+    player.firstName = updatePlayer.firstName;
+    player.lastName = updatePlayer.lastName;
+    player.jerseyNum = updatePlayer.jerseyNum;
+    return await this.playerRepo.save(player);
   }
 
   /**
