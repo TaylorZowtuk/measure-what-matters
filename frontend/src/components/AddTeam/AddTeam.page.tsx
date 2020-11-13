@@ -146,11 +146,7 @@ class AddTeam extends React.Component<{}, createTeamState> {
                 });
                 console.log(playerArray);
                 axios
-                  .post(
-                    "/players",
-                    { playerArray: playerArray },
-                    { headers: authHeader() }
-                  )
+                  .post("/players", playerArray, { headers: authHeader() })
                   .then(
                     (response) => {
                       console.log("team added successfully");
