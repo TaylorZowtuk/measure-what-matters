@@ -20,7 +20,7 @@ import { PlayerService } from './player.service';
 import { QueryFailedError } from 'typeorm';
 import { CreatePlayerDTO } from '../dto/player/createPlayer.dto';
 import { ApiBody } from '@nestjs/swagger';
-import { UpdatePlayerDTO } from 'src/dto/player/updatePlayer.dto';
+import { UpdatePlayerDTO } from '../dto/player/updatePlayer.dto';
 
 @ApiTags('Players')
 @ApiBearerAuth()
