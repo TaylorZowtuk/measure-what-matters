@@ -46,37 +46,38 @@ function CircularProgressWithLabel(
   );
 }
 
-export default function CircularStatic() {
-  // TODO: create function to get values
-  // TODO: mock data
-  // TODO: connect to backend
-  const [progress, setProgress] = React.useState(10);
+function fetchTimes(debug = true): number[] {
+  if (debug) {
+    // Return 3 hardcoded values
+    return [68, 32, 50];
+  }
 
-  React.useEffect(() => {
-    const timer = setInterval(() => {
-      setProgress((prevProgress) =>
-        prevProgress >= 100 ? 10 : prevProgress + 10
-      );
-    }, 800);
-    return () => {
-      clearInterval(timer);
-    };
-  }, []);
+  // TODO: connect to backend
+  return [68, 32, 50];
+}
+
+export default function CircularStatic() {
+  let times: number[] = fetchTimes();
+  while (times.length < 3) {
+    // If there was a problem with fetch, then display 0's
+    times.push(0);
+  }
 
   return (
     <Container>
+      <h4>Possession Time</h4>
       <Row>
         <Col>
-          <h5>First Half Possession</h5>
-          <CircularProgressWithLabel value={progress} />
+          <h5>First Half</h5>
+          <CircularProgressWithLabel value={times[0]} />
         </Col>
         <Col>
-          <h5>Second Half Possession</h5>
-          <CircularProgressWithLabel value={progress} />
+          <h5>Second Half</h5>
+          <CircularProgressWithLabel value={times[1]} />
         </Col>
         <Col>
-          <h5>Overall Possession</h5>
-          <CircularProgressWithLabel value={progress} />
+          <h5>Overall</h5>
+          <CircularProgressWithLabel value={times[2]} />
         </Col>
       </Row>
     </Container>
