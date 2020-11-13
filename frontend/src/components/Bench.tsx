@@ -64,16 +64,16 @@ class Bench extends React.Component<
     });
   };
 
-  removeFromBench = (removeNum: number): Player | undefined => {
+  removeFromBench = (removeId: number): Player | undefined => {
     // Remove the player (first instance) from onBench whose number is num
     var array = [...this.state.onBench];
-    var index = array.findIndex((player) => player.num === removeNum);
+    var index = array.findIndex((player) => player.playerId === removeId);
     if (index !== -1) {
       let p = array.splice(index, 1)[0];
       this.setState({ onBench: array }); // Remove the player and return it
       return p;
     } else {
-      console.log("Error: no element in onBench had num of", removeNum);
+      console.log("Error: no element in onBench had num of", removeId);
       return undefined;
     }
   };
@@ -90,14 +90,14 @@ class Bench extends React.Component<
     this.setState({ substituteFor: undefined });
   };
 
-  substitute = (num: number, matchId: number): void => {
+  substitute = (playerId: number, matchId: number): void => {
     if (this.state.substituteFor === undefined) {
       console.log("Error: substituteFor is undefined");
       return;
     }
     let sub: Substitution = {
       playerIdIn: this.state.onBench[
-        this.state.onBench.findIndex((player) => player.num === num)
+        this.state.onBench.findIndex((player) => player.playerId === playerId)
       ].playerId, // Player who is coming onto field
       playerIdOut: this.state.substituteFor.playerId, // Player who is leaving field
       matchId: matchId,
@@ -108,7 +108,7 @@ class Bench extends React.Component<
       .then((res) => {
         console.log("Post sub response:", res); // TODO: catch error and handle if needed
       });
-    let moveToField = this.removeFromBench(num); // Remove player from bench
+    let moveToField = this.removeFromBench(playerId); // Remove player from bench
     this.addToBench(this.state.substituteFor); // Add player from field to bench
     this.props.notifyOfSubs(this.state.substituteFor, moveToField); // Notify field of a substitution
     this.clearSubstituteFor();
@@ -194,13 +194,13 @@ export function OpenBench(props: OpenBenchProps) {
     <div className={classes.root}>
       <GridList className={classes.gridList} cols={10} cellHeight={"auto"}>
         {props.players.map((player: Player) => (
-          <GridListTile key={player.num}>
+          <GridListTile key={player.playerId}>
             <MatchIdContext.Consumer>
               {(matchId) => (
                 <Button
-                  key={player.num}
+                  key={player.playerId}
                   variant="dark"
-                  onClick={() => props.substitute(player.num, matchId)}
+                  onClick={() => props.substitute(player.playerId, matchId)}
                 >
                   {player.num} {player.firstName} {player.lastName}
                 </Button>

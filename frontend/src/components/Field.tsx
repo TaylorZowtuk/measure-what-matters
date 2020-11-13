@@ -90,7 +90,8 @@ class Field extends React.Component<
     } else {
       var onFieldCopy = [...this.state.onField];
       index = onFieldCopy.findIndex(
-        (playerDraggable) => playerDraggable.props.player.num === player.num
+        (playerDraggable) =>
+          playerDraggable.props.player.playerId === player.playerId
       );
       if (index !== -1) {
         // If the player had the ball, call resetPlayerWithPossession but dont reset previous possessions
@@ -99,7 +100,7 @@ class Field extends React.Component<
         onFieldCopy.splice(index, 1);
         await this.setState({ onField: onFieldCopy });
       } else {
-        console.log("Error: no element in onField had num of", player.num);
+        console.log("Error: no element in onField had num of", player.playerId);
       }
     }
     return index;
