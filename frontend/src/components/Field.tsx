@@ -86,14 +86,16 @@ class Field extends React.Component<
   removeFromField = async (player: Player | undefined): Promise<number> => {
     var index = -1;
     if (player === undefined) {
-      console.log("Error: player to add to field was undefined");
+      console.log("Error: player to remove from field was undefined");
     } else {
       var onFieldCopy = [...this.state.onField];
       index = onFieldCopy.findIndex(
         (playerDraggable) => playerDraggable.props.player.num === player.num
       );
       if (index !== -1) {
-        // TODO: if player had the ball, call resetPlayerWithPossession
+        // If the player had the ball, call resetPlayerWithPossession but dont reset previous possessions
+        if (index === this.state.playerIndexWithPossession)
+          this.resetPlayerWithPossession();
         onFieldCopy.splice(index, 1);
         await this.setState({ onField: onFieldCopy });
       } else {
