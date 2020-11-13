@@ -93,6 +93,7 @@ class Field extends React.Component<
         (playerDraggable) => playerDraggable.props.player.num === player.num
       );
       if (index !== -1) {
+        // TODO: if player had the ball, call resetPlayerWithPossession
         onFieldCopy.splice(index, 1);
         await this.setState({ onField: onFieldCopy });
       } else {
@@ -126,21 +127,31 @@ class Field extends React.Component<
       ] = playerDragWithoutPossession;
     }
 
-    // Find the player on the field with playerId
-    let index = onFieldCopy.findIndex(
-      (playerDraggable) => playerDraggable.props.player.playerId === playerId
-    );
+    let index = Number.NEGATIVE_INFINITY;
+    if (playerId !== Number.NEGATIVE_INFINITY) {
+      // Find the player on the field with playerId
+      index = onFieldCopy.findIndex(
+        (playerDraggable) => playerDraggable.props.player.playerId === playerId
+      );
 
-    // Replace the PlayerDraggable of that player with a new PlayerDraggable
-    // that indicates they have ball possesion
-    let playerDragWithPossession = createPlayerDraggable(
-      onFieldCopy[index].props.player,
-      true,
-      this.changePossession
-    );
-    onFieldCopy[index] = playerDragWithPossession;
+      // Replace the PlayerDraggable of that player with a new PlayerDraggable
+      // that indicates they have ball possesion
+      let playerDragWithPossession = createPlayerDraggable(
+        onFieldCopy[index].props.player,
+        true,
+        this.changePossession
+      );
+      onFieldCopy[index] = playerDragWithPossession;
+      this.previousPossessions.enqueue(playerId);
+    }
+    // Update players on field and player with possession
     this.setState({ onField: onFieldCopy, playerIndexWithPossession: index });
-    this.previousPossessions.enqueue(playerId);
+  };
+
+  resetPlayerWithPossession = (): void => {
+    this.changePossession(Number.NEGATIVE_INFINITY);
+
+    // TODO: post to neutral ball endpoint
   };
 
   async componentDidUpdate(prevProps: any, _prevState: any) {
@@ -159,6 +170,7 @@ class Field extends React.Component<
         incrementScore={this.props.incrementScore}
         draggablePlayers={this.state.onField}
         previousPossessions={this.previousPossessions}
+        resetPlayerWithPossession={this.resetPlayerWithPossession}
         getLineup={this.getOnField}
       />
     );
@@ -169,6 +181,7 @@ type FieldTargetProps = {
   incrementScore: Function;
   draggablePlayers: any[];
   previousPossessions: CircularBuffer<number>;
+  resetPlayerWithPossession: Function;
   getLineup: Function;
 };
 
@@ -176,13 +189,17 @@ export function FieldTarget(props: FieldTargetProps) {
   const [, drop] = useDrop({
     accept: DraggableTypes.PLAYER,
     drop: (item: any, monitor) => {
-      const ourGoal: Boolean = item.player.team === "ours" ? true : false;
-      props.incrementScore(
-        ourGoal,
-        item.player,
-        props.previousPossessions,
-        props.getLineup()
-      );
+      if (item.player.playerId === props.previousPossessions.peekBack()) {
+        // Only allow the player who currently has the ball to 'shoot'
+        props.resetPlayerWithPossession();
+        const ourGoal: Boolean = item.player.team === "ours" ? true : false;
+        props.incrementScore(
+          ourGoal,
+          item.player,
+          props.previousPossessions,
+          props.getLineup()
+        );
+      }
     },
   });
 
