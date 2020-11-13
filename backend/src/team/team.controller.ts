@@ -8,6 +8,9 @@ import {
   Post,
   UseGuards,
   Request,
+  Delete,
+  Query,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { QueryFailedError } from 'typeorm';

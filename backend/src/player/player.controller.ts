@@ -10,6 +10,7 @@ import {
   UsePipes,
   ValidationPipe,
   ParseIntPipe,
+  Delete,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { PlayerDTO } from '../dto/player/player.dto';
@@ -63,7 +64,9 @@ export class PlayerController {
   })
   @ApiResponse({ status: 400, description: 'Invalid integer entered' })
   @ApiResponse({ status: 500, description: 'Unknown error occured' })
-  async getPlayersByTeamId(@Query('teamId', ParseIntPipe) teamId: number) {
+  async getPlayersByTeamId(
+    @Query('teamId', ParseIntPipe) teamId: number,
+  ): Promise<PlayerDTO[]> {
     try {
       return await this.playerService.getPlayersByTeamId(teamId);
     } catch (error) {
@@ -73,6 +76,36 @@ export class PlayerController {
         }
       } else {
         throw new InternalServerErrorException('Unknown problem occured');
+      }
+    }
+  }
+  @Delete('/delete')
+  @ApiResponse({
+    status: 200,
+    description: 'Player entity removed successfully',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Not a number, number expected',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Player does not exist in database',
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Unknown error occured',
+  })
+  async delete(
+    @Query('playerId', ParseIntPipe) playerId: number,
+  ): Promise<void> {
+    try {
+      return await this.playerService.removePlayerById(playerId);
+    } catch (error) {
+      if (error.message.includes('not found')) {
+        throw error;
+      } else {
+        throw new InternalServerErrorException('Unknown error occured');
       }
     }
   }

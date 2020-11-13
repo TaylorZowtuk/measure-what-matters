@@ -13,15 +13,17 @@ describe('MatchController', () => {
 
   const createMatchDto: CreateMatchDTO = {
     teamId: 1,
-    startTime: 100,
+    startTime: 0,
     isHomeTeam: true,
   };
 
   const returnMatchDto: MatchDTO = {
     matchId: 1,
     teamId: 1,
-    startTime: 100,
+    startTime: 0,
     isHomeTeam: true,
+    halfTime: 600,
+    fullTime: 1200,
   };
 
   const match = new Match();

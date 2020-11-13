@@ -29,6 +29,12 @@ export class Match extends BaseEntity {
   @Column()
   isHomeTeam: boolean;
 
+  @Column({ nullable: true })
+  halfTime: number;
+
+  @Column({ nullable: true })
+  fullTime: number;
+
   @CreateDateColumn()
   createdDate: Date;
 
