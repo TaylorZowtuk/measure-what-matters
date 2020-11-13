@@ -51,6 +51,8 @@ export class PlayerController {
         }
       } else if (error.message.includes('violates not-null constraint')) {
         return new BadRequestException('null value entered for parameter');
+      } else if (error.message.includes('violates unique constraint')) {
+        throw new BadRequestException('The jerseyNumber is already taken');
       } else {
         return new InternalServerErrorException('Unknown error');
       }
@@ -134,6 +136,8 @@ export class PlayerController {
         throw new NotFoundException(
           'Player with playerId does not exist in database',
         );
+      } else if (error.message.includes('violates unique constraint')) {
+        throw new BadRequestException('The jerseyNumber is already taken');
       } else {
         throw new InternalServerErrorException('Unknown error occured');
       }

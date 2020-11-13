@@ -107,6 +107,8 @@ export class TeamController {
         throw new NotFoundException(
           'Team with teamId does not exist in database',
         );
+      } else if (error.message.includes('violates unique constraint')) {
+        throw new BadRequestException('The team name is already taken');
       } else {
         throw new InternalServerErrorException('Unknown error occured');
       }
