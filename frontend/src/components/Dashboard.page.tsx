@@ -3,8 +3,8 @@ import { Link } from "react-router-dom";
 import Button from "@material-ui/core/Button";
 import TimeOnField from "./reports/TimeOnField";
 import { Col, Container, Row } from "react-bootstrap";
-import Touches from "./reports/Touches";
 import PossessionCircular from "./reports/Possession";
+import TouchesBar from "./reports/Touches";
 
 const Dashboard = () => (
   <div className="dashboard">
@@ -36,7 +36,7 @@ const Dashboard = () => (
       </Row>
       <Row>
         <Col>
-          <Touches />
+          <TouchesBar />
         </Col>
       </Row>
       <Row>
