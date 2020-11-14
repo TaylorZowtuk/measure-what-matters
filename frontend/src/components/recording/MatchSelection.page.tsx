@@ -225,6 +225,43 @@ function sortUpcoming(matches: MatchAndTeam[]): MatchAndTeam[] {
   });
 }
 
+function getImagePath(weekday: string) {
+  let calendarImgPath;
+  switch (
+    weekday // Set the calendar icon according to the start time weekday
+  ) {
+    case "Monday": {
+      calendarImgPath = require("../../static/imgs/icons8-monday-100.png");
+      break;
+    }
+    case "Tuesday": {
+      calendarImgPath = require("../../static/imgs/icons8-tuesday-100.png");
+      break;
+    }
+    case "Wednesday": {
+      calendarImgPath = require("../../static/imgs/icons8-wednesday-100.png");
+      break;
+    }
+    case "Thursday": {
+      calendarImgPath = require("../../static/imgs/icons8-thursday-100.png");
+      break;
+    }
+    case "Friday": {
+      calendarImgPath = require("../../static/imgs/icons8-friday-100.png");
+      break;
+    }
+    case "Saturday": {
+      calendarImgPath = require("../../static/imgs/icons8-saturday-100.png");
+      break;
+    }
+    case "Sunday": {
+      calendarImgPath = require("../../static/imgs/icons8-sunday-100.png");
+      break;
+    }
+  }
+  return calendarImgPath;
+}
+
 const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
@@ -265,44 +302,13 @@ export function AlignItemsList() {
           const weekday: string = date.toLocaleString("en-us", {
             weekday: "long",
           });
-          let calendarImgPath;
-          switch (
-            weekday // Set the calendar icon according to the start time weekday
-          ) {
-            case "Monday": {
-              calendarImgPath = require("../../static/imgs/icons8-monday-100.png");
-              break;
-            }
-            case "Tuesday": {
-              calendarImgPath = require("../../static/imgs/icons8-tuesday-100.png");
-              break;
-            }
-            case "Wednesday": {
-              calendarImgPath = require("../../static/imgs/icons8-wednesday-100.png");
-              break;
-            }
-            case "Thursday": {
-              calendarImgPath = require("../../static/imgs/icons8-thursday-100.png");
-              break;
-            }
-            case "Friday": {
-              calendarImgPath = require("../../static/imgs/icons8-friday-100.png");
-              break;
-            }
-            case "Saturday": {
-              calendarImgPath = require("../../static/imgs/icons8-saturday-100.png");
-              break;
-            }
-            case "Sunday": {
-              calendarImgPath = require("../../static/imgs/icons8-sunday-100.png");
-              break;
-            }
-          }
+          const calendarImgPath = getImagePath(weekday);
           return (
             <>
               <ListItem
                 alignItems="flex-start"
                 onClick={(event) => handleListItemClick(event, index)}
+                key={index}
               >
                 <ListItemAvatar>
                   <Avatar
