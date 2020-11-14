@@ -36,7 +36,14 @@ export class ShotService {
     return this.convertToDto(shots);
   }
 
-  //TODO get shot summary by MatchId
+  /**
+   * Returns a summary of shots and shots on target for each team for a match
+   *
+   * @param matchId match we are looking for
+   *
+   * @returns DTO holding shots and shots on target for each team
+   */
+
   async getTeamShotsSummaryByMatch(matchId: number) {
     const shots: ShotDTO[] = await this.getShotsByMatchId(matchId);
     let ourShots = 0,
