@@ -129,6 +129,7 @@ export class PlayerService {
         'Jersey number ' + notUnique + ' is already taken',
       );
     }
+    player.teamId = updatePlayer.teamId;
     player.firstName = updatePlayer.firstName;
     player.lastName = updatePlayer.lastName;
     player.jerseyNum = updatePlayer.jerseyNum;
