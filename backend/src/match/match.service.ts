@@ -25,7 +25,7 @@ export class MatchService {
    */
 
   async saveMatch(match: CreateMatchDTO): Promise<Match> {
-    return await this.matchRepo.save(match);
+    return this.matchRepo.save(match);
   }
 
   /**
@@ -39,7 +39,7 @@ export class MatchService {
   async getMatches(teamId: number): Promise<MatchDTO[]> {
     const matches: Match[] = await this.matchRepo.find({ where: { teamId } });
 
-    return await this.convertToDto(matches);
+    return this.convertToDto(matches);
   }
 
   /**
@@ -58,7 +58,7 @@ export class MatchService {
       throw new BadRequestException('Halftime cannot be a negative value');
     }
     const matchUpdate = { ...match, halfTime: matchHalfTime.halfTime };
-    return await this.matchRepo.save(matchUpdate);
+    return this.matchRepo.save(matchUpdate);
   }
 
   /**
@@ -80,7 +80,7 @@ export class MatchService {
       throw new BadRequestException('Fulltime cannot be a negative value');
     }
     const matchUpdate = { ...match, fullTime: matchFullTime.fullTime };
-    return await this.matchRepo.save(matchUpdate);
+    return this.matchRepo.save(matchUpdate);
   }
 
   /**
