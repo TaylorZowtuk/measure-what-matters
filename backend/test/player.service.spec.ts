@@ -3,7 +3,6 @@ import { Repository } from 'typeorm';
 import { Player } from '../src/db/entities/player.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Test, TestingModule } from '@nestjs/testing';
-import { CreatePlayerDTO } from 'src/dto/player/createPlayer.dto';
 
 describe('PlayerService Test', () => {
   let playerService: PlayerService;
@@ -23,12 +22,12 @@ describe('PlayerService Test', () => {
     );
   });
 
-  const createPlayerDto: CreatePlayerDTO = {
-    teamId: 1,
-    firstName: 'firstName',
-    lastName: 'lastName',
-    jerseyNum: 1,
-  };
+  // const createPlayerDto: CreatePlayerDTO = {
+  //   teamId: 1,
+  //   firstName: 'firstName',
+  //   lastName: 'lastName',
+  //   jerseyNum: 1,
+  // };
 
   const player = new Player();
 
@@ -38,7 +37,7 @@ describe('PlayerService Test', () => {
   player.lastName = 'lastName';
   player.jerseyNum = 1;
 
-  const playerDtos: CreatePlayerDTO[] = [createPlayerDto, createPlayerDto];
+  // const playerDtos: CreatePlayerDTO[] = [createPlayerDto, createPlayerDto];
   const playerEntities: Player[] = [player, player];
 
   it('check if service defined', () => {
