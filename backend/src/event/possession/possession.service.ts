@@ -10,6 +10,11 @@ export class PossessionService {
     private readonly possessionRepo: Repository<Possession>,
   ) {}
 
+  // create a neutral possession event
+  public async createNeutralEvent(matchId: number, time: number) {
+    return this.possessionRepo.save({ matchId, time, neutral: true });
+  }
+
   // create a player possession event
   public async createPlayerEvent(
     matchId: number,
@@ -20,12 +25,13 @@ export class PossessionService {
       matchId,
       time,
       playerId,
+      neutral: false,
     });
   }
 
   // create an opposition possession event
   public async createOppositionEvent(matchId: number, time: number) {
-    return this.possessionRepo.save({ matchId, time });
+    return this.possessionRepo.save({ matchId, time, neutral: false });
   }
 
   // remove a possession event by ID
