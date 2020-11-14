@@ -9,7 +9,15 @@ const Dashboard = () => (
     <br></br>
 
     {/* Navigation */}
-    <Link to="/lineup">
+    <Link
+      to={{
+        pathname: "/lineup",
+        state: {
+          matchId: 1,
+          teamId: 1,
+        },
+      }}
+    >
       <Button variant="contained">Recording</Button>
     </Link>
     <Link to="/teams">

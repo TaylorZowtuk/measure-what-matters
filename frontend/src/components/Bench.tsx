@@ -9,7 +9,8 @@ import { Button } from "react-bootstrap";
 
 import authHeader from "../services/auth.header";
 import axios from "axios";
-import Player from "./interfaces/player";
+
+import Player from "./Player";
 import { MatchIdContext } from "./Recording.page";
 
 export type StartingPlayer = {
@@ -143,7 +144,7 @@ function BenchTarget(props: BenchTargetProps) {
   const [, drop] = useDrop({
     accept: DraggableTypes.PLAYER,
     drop: (item: any, _monitor: DropTargetMonitor) => {
-      if (item.player.teamId === "ours") {
+      if (item.player.teamId !== -1) {
         // Only allow our players to be dropped on bench
         props.toggleIsExpanded();
         props.setSubstituteFor(item.player);

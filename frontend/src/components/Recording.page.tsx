@@ -10,10 +10,10 @@ import Button from "@material-ui/core/Button";
 import Team from "./Team";
 import Bench, { StartingPlayer } from "./Bench";
 import Field from "./Field";
-import authHeader from "../services/auth.header";
-import RecordingProps from "./interfaces/props/recording-props";
-import CircularBuffer from "../util/circular-buffer";
 import Player from "./interfaces/player";
+import authHeader from "../services/auth.header";
+import CircularBuffer from "../util/circular-buffer";
+import RecordingProps from "./interfaces/props/recording-props";
 
 // Provide MatchId to each recording component which requires it through context
 export const MatchIdContext: React.Context<number> = React.createContext(0);
@@ -39,7 +39,7 @@ class Recording extends React.Component<
     goals_for: number;
     subField: Player | undefined; // Player to remove from field
     subBench: Player | undefined; // Player to add to field from bench
-    roster: Player[]; // List of Players in this game for our team
+    lineup: Player[]; // List of Players in this game for our team
   }
 > {
   team_name: string = "Blue Blazers";
@@ -52,32 +52,12 @@ class Recording extends React.Component<
       goals_against: 0,
       subField: undefined,
       subBench: undefined,
-      roster: [],
+      lineup: this.props.location.state.startingLineup,
     };
   }
 
-  getRoster = async (): Promise<Player[]> => {
-    const res = await axios.get(
-      `/players/teamId?teamId=${this.props.location.state.matchId}`,
-      { headers: authHeader() }
-    );
-    // TODO: handle error
-    let players: Player[] = [];
-    for (let i = 0; i < res.data.length; i++) {
-      let player: Player = {
-        firstName: res.data[i].firstName,
-        lastName: res.data[i].lastName,
-        jerseyNum: res.data[i].jerseyNum,
-        teamId: "ours",
-        playerId: res.data[i].playerId,
-      };
-      players.push(player);
-    }
-    return players;
-  };
-
   provideStartingLine = (): Player[] => {
-    let starting: Player[] = this.state.roster.slice(0, 6); // First 6 players of roster are the starting lineup
+    let starting: Player[] = this.state.lineup.slice(0, 6); // First 6 players of lineup are the starting lineup
 
     let lineupSubs: any[] = [];
     for (let i = 0; i < starting.length; i++) {
@@ -101,14 +81,7 @@ class Recording extends React.Component<
   };
 
   provideStartingBench = (): Player[] => {
-    const lineupPlayerIds: number[] = [];
-    this.props.location.state.startingLineup.forEach((player) => {
-      lineupPlayerIds.push(player.playerId);
-    });
-    const benchPlayers: Player[] = this.state.roster.filter((player) => {
-      return !lineupPlayerIds.includes(player.playerId);
-    });
-    return benchPlayers;
+    return this.state.lineup.slice(6, this.state.lineup.length); // All but first 6 players start on bench
   };
 
   setSubs = (
@@ -177,14 +150,6 @@ class Recording extends React.Component<
     previousPossessions.clear();
   };
 
-  componentDidMount() {
-    if (!this.state.roster.length) {
-      this.getRoster().then((players: Player[]) => {
-        this.setState({ roster: players });
-      });
-    }
-  }
-
   deviceSupportsTouch(): boolean {
     // Dont catch laptops with touch
     try {
@@ -199,36 +164,31 @@ class Recording extends React.Component<
     // Determine if this is a mobile/tablet device in order to set appropriate dragndrop provider
     const useTouch = this.deviceSupportsTouch();
 
-    // If fetch request hasnt returned yet
-    if (!this.state.roster.length) {
-      return <h1>Loading...</h1>;
-    } else {
-      return (
-        <DndProvider backend={useTouch ? TouchBackend : HTML5Backend}>
-          <MatchIdContext.Provider
-            value={Number(this.props.location.state.matchId)}
-          >
-            <h1>Recording</h1>
-            <Bench
-              getStartingBench={this.provideStartingBench}
-              notifyOfSubs={this.setSubs}
-            ></Bench>
-            <Team name={this.team_name} score={this.state.goals_for} />
-            <Team name={this.opp_name} score={this.state.goals_against} />
-            <Field
-              startingLine={this.props.location.state.startingLineup}
-              incrementScore={this.incrementScore}
-              removeFromField={this.state.subField}
-              addToField={this.state.subBench}
-              resetSubs={this.setSubs}
-            />
-            <Link to="/dashboard">
-              <Button variant="contained">Dashboard</Button>
-            </Link>
-          </MatchIdContext.Provider>
-        </DndProvider>
-      );
-    }
+    return (
+      <DndProvider backend={useTouch ? TouchBackend : HTML5Backend}>
+        <MatchIdContext.Provider
+          value={Number(this.props.location.state.matchId)}
+        >
+          <h1>Recording</h1>
+          <Bench
+            getStartingBench={this.provideStartingBench}
+            notifyOfSubs={this.setSubs}
+          ></Bench>
+          <Team name={this.team_name} score={this.state.goals_for} />
+          <Team name={this.opp_name} score={this.state.goals_against} />
+          <Field
+            getStartingLine={this.provideStartingLine}
+            incrementScore={this.incrementScore}
+            removeFromField={this.state.subField}
+            addToField={this.state.subBench}
+            resetSubs={this.setSubs}
+          />
+          <Link to="/dashboard">
+            <Button variant="contained">Dashboard</Button>
+          </Link>
+        </MatchIdContext.Provider>
+      </DndProvider>
+    );
   }
 }
 

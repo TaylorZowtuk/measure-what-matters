@@ -1,6 +1,7 @@
 import React from "react";
 import axios from "axios";
 import authHeader from "../../services/auth.header";
+import { StaticContext } from "react-router";
 import {
   Button,
   Checkbox,
@@ -16,6 +17,7 @@ import CSS from "csstype";
 import { RouteComponentProps } from "react-router-dom";
 import Player from "../interfaces/player";
 import RecordingProps from "../interfaces/props/recording-props";
+import LineupProps from "../interfaces/props/lineup-props";
 
 const styling: CSS.Properties = {
   height: "100%",
@@ -47,18 +49,17 @@ interface StartingLineup {
 interface State {
   players: Player[];
   lineup: Player[];
-  matchId: number;
-  teamId: number;
 }
 
-class LineupComponent extends React.Component<RouteComponentProps, State> {
-  constructor(props: RouteComponentProps) {
+class LineupComponent extends React.Component<
+  RouteComponentProps<{}, StaticContext, LineupProps>,
+  State
+> {
+  constructor(props: RouteComponentProps<{}, StaticContext, LineupProps>) {
     super(props);
     this.state = {
       players: [],
       lineup: [],
-      matchId: 1,
-      teamId: 1,
     };
   }
 
@@ -68,7 +69,7 @@ class LineupComponent extends React.Component<RouteComponentProps, State> {
 
   async getPlayers() {
     axios
-      .get(`/players/teamId?teamId=${this.state.teamId}`, {
+      .get(`/players/teamId?teamId=${this.props.location.state.teamId}`, {
         headers: authHeader(),
       })
       .then((res) => {
@@ -99,14 +100,14 @@ class LineupComponent extends React.Component<RouteComponentProps, State> {
   }
 
   async handleNextClicked() {
-    if (this.state.lineup.length === 6) {
+    if (this.state.lineup.length >= 7) {
       const startingLineup: StartingLineup[] = [];
       const currentTime: number = Date.now();
       this.state.lineup.forEach((player) => {
         const lineupMember: StartingLineup = {
           playerId: player.playerId,
           timeOn: currentTime,
-          matchId: this.state.matchId,
+          matchId: Number(this.props.location.state.matchId),
         };
         startingLineup.push(lineupMember);
       });
@@ -118,13 +119,13 @@ class LineupComponent extends React.Component<RouteComponentProps, State> {
           console.log(err);
         });
       const recordingState: RecordingProps = {
-        matchId: this.state.matchId.toString(),
-        teamId: this.state.teamId.toString(),
+        matchId: this.props.location.state.matchId,
+        teamId: this.props.location.state.teamId,
         startingLineup: this.state.lineup,
       };
       this.props.history.push("/recording", recordingState);
     } else {
-      alert("Must select 6 players.");
+      alert("Must select at least 7 players."); // 6 on field plus one on the bench
     }
   }
 

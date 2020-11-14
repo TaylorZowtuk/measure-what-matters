@@ -42,7 +42,7 @@ export const PlayerDraggable = (props: DraggableProps) => {
     item: { type: DraggableTypes.PLAYER, player },
   });
 
-  if (player.teamId === "ours") {
+  if (player.teamId !== -1) {
     if (props.possession.hasPossession) {
       return (
         <Button ref={drag} variant="outline-dark">

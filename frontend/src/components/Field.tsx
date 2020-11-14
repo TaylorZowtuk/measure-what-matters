@@ -4,12 +4,11 @@ import { useDrop } from "react-dnd";
 import { Container, Row, Col } from "react-bootstrap";
 import { cloneDeep } from "lodash";
 import { CircularBuffer } from "../util/circular-buffer";
-import Player from "./interfaces/player";
 
 import { createPlayerDraggable, createPlayerDraggables } from "./Player";
-
+import Player from "./interfaces/player";
 type FieldProps = {
-  startingLine: Player[];
+  getStartingLine: Function;
   incrementScore: Function;
   removeFromField: Player | undefined;
   addToField: Player | undefined;
@@ -19,7 +18,7 @@ type FieldProps = {
 class Field extends React.Component<
   FieldProps,
   {
-    onField: any[]; // Array of draggablePlayer jsx elements
+    onField: JSX.Element[]; // Array of draggablePlayer jsx elements
     playerIndexWithPossession: number; // The index into onField of the player who currently has possession of the ball
   }
 > {
@@ -31,7 +30,7 @@ class Field extends React.Component<
       firstName: "Opposing",
       lastName: "Team",
       jerseyNum: -1,
-      teamId: "theirs",
+      teamId: -1,
       playerId: -1,
     };
     const oppositionDraggable = createPlayerDraggable(
@@ -42,7 +41,7 @@ class Field extends React.Component<
 
     // Create elements representing our starting line
     let initialPlayersOnField = createPlayerDraggables(
-      this.props.startingLine,
+      this.props.getStartingLine().slice(0, 6),
       this.changePossession
     );
     // Add the opposition
@@ -50,7 +49,7 @@ class Field extends React.Component<
 
     this.state = {
       // Index 0 is goalie; 1 & 2 are defence; 3, 4, & 5 are forwards; 6 is opposition
-      onField: this.props.startingLine,
+      onField: initialPlayersOnField,
       playerIndexWithPossession: Number.NEGATIVE_INFINITY,
     };
   }
@@ -178,7 +177,7 @@ export function FieldTarget(props: FieldTargetProps) {
   const [, drop] = useDrop({
     accept: DraggableTypes.PLAYER,
     drop: (item: any, monitor) => {
-      const ourGoal: Boolean = item.player.teamId === "ours" ? true : false;
+      const ourGoal: Boolean = item.player.teamId !== -1 ? true : false;
       props.incrementScore(
         ourGoal,
         item.player,
