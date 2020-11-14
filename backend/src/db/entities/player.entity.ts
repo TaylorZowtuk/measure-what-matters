@@ -16,7 +16,7 @@ export class Player extends BaseEntity {
   playerId: number;
 
   @ManyToOne(
-    type => Team,
+    () => Team,
     team => team.teamId,
     { eager: true },
   )

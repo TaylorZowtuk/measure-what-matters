@@ -14,6 +14,7 @@ import { OppositionPossessionDTO } from '../../dto/events/possession/oppositionP
 import { PlayerPossessionDTO } from '../../dto/events/possession/playerPossession.dto';
 import { PossessionService } from './possession.service';
 import { RemovePossessionDTO } from '../../dto/events/possession/removePossession.dto';
+import { NeutralPossessionDTO } from '../../dto/events/possession/neutralPossession.dto';
 
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
@@ -23,6 +24,32 @@ import { RemovePossessionDTO } from '../../dto/events/possession/removePossessio
 @Controller('event/possession')
 export class PossessionController {
   constructor(private readonly possessionService: PossessionService) {}
+
+  @ApiResponse({
+    status: 201,
+    description: 'Creates a neutral possession event.',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'MatchId does not exist, or a null value was used.',
+  })
+  @Post('/neutral')
+  async neutralPossession(@Body() possessionDetails: NeutralPossessionDTO) {
+    const { matchId, time } = possessionDetails;
+    try {
+      return await this.possessionService.createNeutralEvent(matchId, time);
+    } catch (error) {
+      console.log(error);
+      if (error instanceof QueryFailedError) {
+        if (error.message.includes('violates foreign key constraint')) {
+          throw new BadRequestException('MatchId invalid');
+        } else if (error.message.includes('violates not-null constraint')) {
+          throw new BadRequestException('null value entered for matchId');
+        }
+      }
+      throw new InternalServerErrorException('Unknown error occurred');
+    }
+  }
 
   @ApiResponse({
     status: 201,
@@ -70,6 +97,7 @@ export class PossessionController {
     try {
       return await this.possessionService.createOppositionEvent(matchId, time);
     } catch (error) {
+      console.log(error);
       if (error instanceof QueryFailedError) {
         if (error.message.includes('violates foreign key constraint')) {
           throw new BadRequestException('MatchId invalid');
@@ -80,16 +108,6 @@ export class PossessionController {
       throw new InternalServerErrorException('Unknown error occurred');
     }
   }
-
-  // TODO, ask if we are computing these stats on the frontend or using an aggregator in the stats endpoint
-  // @ApiResponse({
-  //   status: 200,
-  //   description: 'Returns an ',
-  // })
-  // @Get('/')
-  // async getAllPossessionEvents() {
-  //   // PASS
-  // }
 
   @ApiResponse({
     status: 200,
