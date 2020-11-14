@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Goal } from '../db/entities/events/goal.entity';
 import { Substitution } from '../db/entities/events/substitution.entity';
@@ -70,7 +70,7 @@ export class PlayerStatsService {
       // if time_off is null, that means they were the last sub of the game
       if (time_off == null) {
         if (!matchFinishTime) {
-          throw new BadRequestException('Match does not have finish time');
+          throw new NotFoundException('Match does not have finish time');
         }
         time_off = matchFinishTime;
       }
