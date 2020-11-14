@@ -70,7 +70,7 @@ test("renders player draggables on the field", () => {
   for (let i = 0; i < draggablePlayers.length; i++) {
     // Each player should appear as a button on the field
     const teamName = getByText(
-      new RegExp(draggablePlayers[i].props.first_name, "i")
+      new RegExp(draggablePlayers[i].props.firstName, "i")
     );
     expect(teamName).toBeInTheDocument();
   }
