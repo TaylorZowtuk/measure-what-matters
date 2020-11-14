@@ -54,7 +54,7 @@ interface RecordingState {
   matchId: number;
 }
 
-class MatchLineupComponent extends React.Component<RouteComponentProps, State> {
+class LineupComponent extends React.Component<RouteComponentProps, State> {
   constructor(props: RouteComponentProps) {
     super(props);
     this.state = {
@@ -154,4 +154,4 @@ class MatchLineupComponent extends React.Component<RouteComponentProps, State> {
   }
 }
 
-export default withRouter(MatchLineupComponent);
+export default withRouter(LineupComponent);
