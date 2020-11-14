@@ -31,14 +31,19 @@ export class Possession extends BaseEntity implements IEvent {
   @Column({ type: 'int' })
   time: number;
 
-  // TODO REVIEW JOINCOLUMN IMPLEMENTATION
   @ManyToOne(
     () => Player,
     player => player.playerId,
     { eager: true, nullable: true },
   )
   @JoinColumn({ name: 'playerId' })
+  player: Player;
+
+  @Column({ nullable: true })
   playerId: number;
+
+  @Column({ type: 'bool' })
+  neutral: boolean;
 
   @Column({ type: 'bool', default: false })
   archived: boolean;
