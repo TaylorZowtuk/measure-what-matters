@@ -11,6 +11,7 @@ import { Lineup } from '../db/entities/lineup.entity';
 import { PlusMinusDTO } from 'src/dto/stats/plusMinus.dto';
 import { Possession } from 'src/db/entities/events/possession.entity';
 import { PlayerTouchesDTO } from 'src/dto/stats/playerTouches.dto';
+import { ReturnTouchesDTO } from 'src/dto/stats/returnTouches.dto';
 @Injectable()
 export class PlayerStatsService {
   subRepo: Repository<any>;
@@ -194,6 +195,12 @@ export class PlayerStatsService {
     });
     const players: Player[] = [];
 
+    const match: Match = await this.matchRepo.findOneOrFail({
+      where: { matchId },
+    });
+    // need halfTime to do by half
+    const halfTime = match.halfTime;
+
     for (let i = 0; i < lineup.lineup.length; i++) {
       players.push(
         await this.playerRepo.findOne({
@@ -206,41 +213,92 @@ export class PlayerStatsService {
     const possessions: Possession[] = await this.possRepo.find({
       where: { matchId },
     });
-    const touchesFullMatch: PlayerTouchesDTO[] = [];
+
+    const firstHalfTouches = this.touchesCalculation(
+      1,
+      halfTime,
+      playerDtos,
+      possessions,
+    );
+    const secondHalfTouches = this.touchesCalculation(
+      2,
+      halfTime,
+      playerDtos,
+      possessions,
+    );
+    const fullGameTouches = this.touchesCalculation(
+      3,
+      halfTime,
+      playerDtos,
+      possessions,
+    );
+
+    const gameTouches: ReturnTouchesDTO = {
+      firstHalfTouches,
+      secondHalfTouches,
+      fullGameTouches,
+    };
+
+    return gameTouches;
+  }
+
+  // half is either 1 for first half, 2 for second half or 3 for full game match touches
+  private touchesCalculation(
+    half: number,
+    halfTime: number,
+    playerDtos: PlayerDTO[],
+    possessions: Possession[],
+  ) {
+    const possessionsFiltered = this.filterPossessions(
+      half,
+      halfTime,
+      possessions,
+    );
+    const touchesMatch: PlayerTouchesDTO[] = [];
     let oppTouches = 0;
     for (let i = 0; i < playerDtos.length; i++) {
       let touches = 0;
-      for (let j = 0; j < possessions.length; j++) {
-        if (possessions[j].playerId === playerDtos[i].playerId) {
+      for (let j = 0; j < possessionsFiltered.length; j++) {
+        if (possessionsFiltered[j].playerId === playerDtos[i].playerId) {
           touches++;
         }
       }
-      touchesFullMatch.push({
+      touchesMatch.push({
         player: playerDtos[i],
         touches: touches,
       });
     }
-    for (let i = 0; i < possessions.length; i++) {
-      if (possessions[i].playerId === null) {
+    for (let i = 0; i < possessionsFiltered.length; i++) {
+      if (possessionsFiltered[i].playerId === null) {
         oppTouches++;
       }
     }
 
-    touchesFullMatch.push({
+    touchesMatch.push({
       player: null,
       touches: oppTouches,
     });
-    return touchesFullMatch;
-  }
-  /*
-  function isLessThanHalf(element,index,array){
-    return element 
+    return touchesMatch;
   }
 
-  async touchesPlayersForHalf(half:number,matchId:number, players: PlayerDTO[],possessions:Possession[]){
-    possessions.filter()
+  private filterPossessions(
+    half: number,
+    halfTime: number,
+    possessions: Possession[],
+  ): Possession[] {
+    if (half === 1) {
+      possessions = possessions.filter(
+        possession => possession.time < halfTime,
+      );
+      console.log(possessions);
+    } else if (half == 2) {
+      possessions = possessions.filter(
+        possession => possession.time >= halfTime,
+      );
+      console.log(possessions);
+    }
+    return possessions;
   }
-  */
 
   /**
    * Converts a list of player entities to a list of player dtos

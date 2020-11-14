@@ -36,7 +36,7 @@ export class PlayerService {
         'Jersey number ' + notUnique + ' is already taken',
       );
     }
-    return await this.playerRepo.save(players);
+    return this.playerRepo.save(players);
   }
 
   /**
@@ -132,7 +132,7 @@ export class PlayerService {
     player.firstName = updatePlayer.firstName;
     player.lastName = updatePlayer.lastName;
     player.jerseyNum = updatePlayer.jerseyNum;
-    return await this.playerRepo.save(player);
+    return this.playerRepo.save(player);
   }
 
   /**

@@ -15,6 +15,7 @@ import { PlayerDTO } from '../dto/player/player.dto';
 import { QueryFailedError } from 'typeorm';
 import { PlusMinusDTO } from '../dto/stats/plusMinus.dto';
 import { PlayerTouchesDTO } from '../dto/stats/playerTouches.dto';
+import { ReturnTouchesDTO } from 'src/dto/stats/returnTouches.dto';
 
 @ApiTags('Player Stats')
 @ApiBearerAuth()
@@ -132,7 +133,7 @@ export class PlayerStatsController {
   @Get('/touches')
   async getPlayerTouchesForMatch(
     @Query('matchId', ParseIntPipe) matchId: number,
-  ) {
+  ): Promise<ReturnTouchesDTO> {
     try {
       return await this.playerStatsService.touchesPlayersForMatch(matchId);
     } catch (error) {
