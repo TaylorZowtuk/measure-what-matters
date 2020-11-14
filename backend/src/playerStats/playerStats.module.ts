@@ -7,10 +7,18 @@ import { Substitution } from '../db/entities/events/substitution.entity';
 import { Player } from '../db/entities/player.entity';
 import { PlayerStatsController } from './playerStats.controller';
 import { PlayerStatsService } from './playerStats.service';
+import { Possession } from '../db/entities/events/possession.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Substitution, Goal, Player, Match, Lineup]),
+    TypeOrmModule.forFeature([
+      Substitution,
+      Goal,
+      Player,
+      Match,
+      Lineup,
+      Possession,
+    ]),
   ],
   controllers: [PlayerStatsController],
   providers: [PlayerStatsService],

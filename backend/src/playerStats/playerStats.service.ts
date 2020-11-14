@@ -9,6 +9,8 @@ import { PlayerTimeDTO } from 'src/dto/stats/playerTime.dto';
 import { Match } from '../db/entities/match.entity';
 import { Lineup } from '../db/entities/lineup.entity';
 import { PlusMinusDTO } from 'src/dto/stats/plusMinus.dto';
+import { Possession } from 'src/db/entities/events/possession.entity';
+import { PlayerTouchesDTO } from 'src/dto/stats/playerTouches.dto';
 @Injectable()
 export class PlayerStatsService {
   subRepo: Repository<any>;
@@ -16,6 +18,7 @@ export class PlayerStatsService {
   playerRepo: Repository<any>;
   matchRepo: Repository<any>;
   lineupRepo: Repository<any>;
+  possRepo: Repository<any>;
 
   constructor(
     @InjectRepository(Substitution)
@@ -28,12 +31,15 @@ export class PlayerStatsService {
     matchRepo: Repository<Match>,
     @InjectRepository(Lineup)
     lineupRepo: Repository<Lineup>,
+    @InjectRepository(Possession)
+    possRepo: Repository<Possession>,
   ) {
     this.subRepo = subRepo;
     this.goalRepo = goalRepo;
     this.playerRepo = playerRepo;
     this.matchRepo = matchRepo;
     this.lineupRepo = lineupRepo;
+    this.possRepo = possRepo;
   }
 
   /**
@@ -135,7 +141,7 @@ export class PlayerStatsService {
    *
    * @returns the DTO array of players and their plus minus for a given match
    */
-  async PlusMinus(matchId: number): Promise<PlusMinusDTO[]> {
+  async plusMinus(matchId: number): Promise<PlusMinusDTO[]> {
     const lineup: Lineup = await this.lineupRepo.findOneOrFail({
       where: { matchId },
     });
@@ -165,16 +171,76 @@ export class PlayerStatsService {
           }
         }
       }
-      const plusMinusPlayer: PlusMinusDTO = {
+      plusMinusArray.push({
         player: playerDtos[i],
         plusMinus: plusMinus,
-      };
-      plusMinusArray.push(plusMinusPlayer);
+      });
     }
     console.log(plusMinusArray);
 
     return plusMinusArray;
   }
+
+  /**
+   * Retrieves the touches for all players of a given match
+   *
+   * @param matchId - The id for the match
+   *
+   * @returns the DTO array of players and their touches for a given match
+   */
+  async touchesPlayersForMatch(matchId: number) {
+    const lineup: Lineup = await this.lineupRepo.findOneOrFail({
+      where: { matchId },
+    });
+    const players: Player[] = [];
+
+    for (let i = 0; i < lineup.lineup.length; i++) {
+      players.push(
+        await this.playerRepo.findOne({
+          where: { playerId: lineup.lineup[i] },
+        }),
+      );
+    }
+    const playerDtos: PlayerDTO[] = this.convertToPlayersDtos(players);
+
+    const possessions: Possession[] = await this.possRepo.find({
+      where: { matchId },
+    });
+    const touchesFullMatch: PlayerTouchesDTO[] = [];
+    let oppTouches = 0;
+    for (let i = 0; i < playerDtos.length; i++) {
+      let touches = 0;
+      for (let j = 0; j < possessions.length; j++) {
+        if (possessions[j].playerId === playerDtos[i].playerId) {
+          touches++;
+        }
+      }
+      touchesFullMatch.push({
+        player: playerDtos[i],
+        touches: touches,
+      });
+    }
+    for (let i = 0; i < possessions.length; i++) {
+      if (possessions[i].playerId === null) {
+        oppTouches++;
+      }
+    }
+
+    touchesFullMatch.push({
+      player: null,
+      touches: oppTouches,
+    });
+    return touchesFullMatch;
+  }
+  /*
+  function isLessThanHalf(element,index,array){
+    return element 
+  }
+
+  async touchesPlayersForHalf(half:number,matchId:number, players: PlayerDTO[],possessions:Possession[]){
+    possessions.filter()
+  }
+  */
 
   /**
    * Converts a list of player entities to a list of player dtos

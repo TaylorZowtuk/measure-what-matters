@@ -13,7 +13,8 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { PlayerStatsService } from './playerStats.service';
 import { PlayerDTO } from '../dto/player/player.dto';
 import { QueryFailedError } from 'typeorm';
-import { PlusMinusDTO } from 'src/dto/stats/plusMinus.dto';
+import { PlusMinusDTO } from '../dto/stats/plusMinus.dto';
+import { PlayerTouchesDTO } from '../dto/stats/playerTouches.dto';
 
 @ApiTags('Player Stats')
 @ApiBearerAuth()
@@ -100,7 +101,40 @@ export class PlayerStatsController {
   @Get('/plus_minus')
   async getPlusMinusMatch(@Query('matchId', ParseIntPipe) matchId: number) {
     try {
-      return await this.playerStatsService.PlusMinus(matchId);
+      return await this.playerStatsService.plusMinus(matchId);
+    } catch (error) {
+      if (error.message.includes('Could not find any entity')) {
+        throw new BadRequestException('No lineup for this match');
+      } else {
+        throw new InternalServerErrorException('Unknown error occurred');
+      }
+    }
+  }
+  @ApiResponse({
+    status: 200,
+    type: PlayerTouchesDTO,
+    isArray: true,
+    description:
+      'Returns an array of all players and their touches for a given match',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'No lineup in database for this given match',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Query needs to be an integer',
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Unknown error occurred',
+  })
+  @Get('/touches')
+  async getPlayerTouchesForMatch(
+    @Query('matchId', ParseIntPipe) matchId: number,
+  ) {
+    try {
+      return await this.playerStatsService.touchesPlayersForMatch(matchId);
     } catch (error) {
       if (error.message.includes('Could not find any entity')) {
         throw new BadRequestException('No lineup for this match');
