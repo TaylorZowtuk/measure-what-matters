@@ -13,7 +13,9 @@ import {
   TableRow,
 } from "@material-ui/core";
 import CSS from "csstype";
-import { RouteComponentProps, withRouter } from "react-router-dom";
+import { RouteComponentProps } from "react-router-dom";
+import Player from "../interfaces/player";
+import RecordingProps from "../interfaces/props/recording-props";
 
 const styling: CSS.Properties = {
   height: "100%",
@@ -36,22 +38,17 @@ const buttonStyling: CSS.Properties = {
   margin: "2vh",
 };
 
-interface Player {
+interface StartingLineup {
   playerId: number;
-  teamId: number;
-  firstName: string;
-  lastName: string;
-  jerseyNum: number;
+  matchId: number;
+  timeOn: number;
 }
 
 interface State {
   players: Player[];
   lineup: Player[];
-}
-
-interface RecordingState {
-  teamId: number;
   matchId: number;
+  teamId: number;
 }
 
 class LineupComponent extends React.Component<RouteComponentProps, State> {
@@ -60,6 +57,8 @@ class LineupComponent extends React.Component<RouteComponentProps, State> {
     this.state = {
       players: [],
       lineup: [],
+      matchId: 1,
+      teamId: 1,
     };
   }
 
@@ -68,7 +67,7 @@ class LineupComponent extends React.Component<RouteComponentProps, State> {
   }
 
   async getPlayers() {
-    const res = await axios.get(`/players/teamId?teamId=1`, {
+    const res = await axios.get(`/players/teamId?teamId=${this.state.teamId}`, {
       headers: authHeader(),
     });
     this.setState({ players: res.data });
@@ -93,14 +92,25 @@ class LineupComponent extends React.Component<RouteComponentProps, State> {
     }
   }
 
-  async handleNextClicked(
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) {
+  async handleNextClicked() {
     if (this.state.lineup.length === 6) {
-      await axios.post("substitutions/startingLineup", this.state.lineup);
-      const recordingState: RecordingState = {
-        matchId: 1,
-        teamId: 1,
+      const startingLineup: StartingLineup[] = [];
+      const currentTime: number = Date.now();
+      this.state.lineup.forEach((player) => {
+        const lineupMember: StartingLineup = {
+          playerId: player.playerId,
+          timeOn: currentTime,
+          matchId: this.state.matchId,
+        };
+        startingLineup.push(lineupMember);
+      });
+      await axios.post("event/substitutions/startingLineup", startingLineup, {
+        headers: authHeader(),
+      });
+      const recordingState: RecordingProps = {
+        matchId: this.state.matchId.toString(),
+        teamId: this.state.teamId.toString(),
+        startingLineup: this.state.lineup,
       };
       this.props.history.push("/recording", recordingState);
     } else {
@@ -142,8 +152,8 @@ class LineupComponent extends React.Component<RouteComponentProps, State> {
         </TableContainer>
         <Button
           style={buttonStyling}
-          onClick={(event) => {
-            this.handleNextClicked(event);
+          onClick={() => {
+            this.handleNextClicked();
           }}
           variant="contained"
         >
@@ -154,4 +164,4 @@ class LineupComponent extends React.Component<RouteComponentProps, State> {
   }
 }
 
-export default withRouter(LineupComponent);
+export default LineupComponent;

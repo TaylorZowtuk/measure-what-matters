@@ -12,6 +12,7 @@ import Bench, { StartingPlayer } from "./Bench";
 import Field from "./Field";
 import Player from "./Player";
 import authHeader from "../services/auth.header";
+import RecordingProps from "./interfaces/props/recording-props";
 
 type Goal = {
   id?: number;
@@ -19,11 +20,6 @@ type Goal = {
   time: number;
   playerId: number;
   lineup: number[];
-};
-
-type RecordingProps = {
-  matchId: string;
-  teamId: string;
 };
 
 class Recording extends React.Component<
@@ -59,10 +55,10 @@ class Recording extends React.Component<
     let players: Player[] = [];
     for (let i = 0; i < res.data.length; i++) {
       let player: Player = {
-        first_name: res.data[i].firstName,
-        last_name: res.data[i].lastName,
-        num: res.data[i].jerseyNum,
-        team: "ours",
+        firstName: res.data[i].firstName,
+        lastName: res.data[i].lastName,
+        jerseyNum: res.data[i].jerseyNum,
+        teamId: "ours",
         playerId: res.data[i].playerId,
       };
       players.push(player);
@@ -93,7 +89,14 @@ class Recording extends React.Component<
   };
 
   provideStartingBench = (): Player[] => {
-    return this.state.roster.slice(6, this.state.roster.length); // All but first 6 players start on bench
+    const lineupPlayerIds: number[] = [];
+    this.props.location.state.startingLineup.forEach((player) => {
+      lineupPlayerIds.push(player.playerId);
+    });
+    const benchPlayers: Player[] = this.state.roster.filter((player) => {
+      return !lineupPlayerIds.includes(player.playerId);
+    });
+    return benchPlayers;
   };
 
   setSubs = (
@@ -170,7 +173,7 @@ class Recording extends React.Component<
           <Team name={this.team_name} score={this.state.goals_for} />
           <Team name={this.opp_name} score={this.state.goals_against} />
           <Field
-            getStartingLine={this.provideStartingLine}
+            startingLine={this.props.location.state.startingLineup}
             incrementScore={this.incrementScore}
             removeFromField={this.state.subField}
             addToField={this.state.subBench}

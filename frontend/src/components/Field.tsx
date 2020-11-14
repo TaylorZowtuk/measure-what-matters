@@ -7,7 +7,7 @@ import { cloneDeep } from "lodash";
 import Player, { createPlayerDraggable, PlayerDraggable } from "./Player";
 
 type FieldProps = {
-  getStartingLine: Function;
+  startingLine: Player[];
   incrementScore: Function;
   removeFromField: Player | undefined;
   addToField: Player | undefined;
@@ -23,7 +23,7 @@ class Field extends React.Component<
   constructor(props: FieldProps) {
     super(props);
     this.state = {
-      onField: createPlayerDraggable(this.props.getStartingLine().slice(0, 6)),
+      onField: createPlayerDraggable(this.props.startingLine),
     };
   }
 
@@ -54,13 +54,17 @@ class Field extends React.Component<
     } else {
       var onFieldCopy = [...this.state.onField];
       index = onFieldCopy.findIndex(
-        (playerDraggable) => playerDraggable.props.num === player.num
+        (playerDraggable) =>
+          playerDraggable.props.jerseyNum === player.jerseyNum
       );
       if (index !== -1) {
         onFieldCopy.splice(index, 1);
         await this.setState({ onField: onFieldCopy });
       } else {
-        console.log("Error: no element in onField had num of", player.num);
+        console.log(
+          "Error: no element in onField had num of",
+          player.jerseyNum
+        );
       }
     }
     return index;
@@ -105,7 +109,7 @@ export function FieldTarget(props: FieldTargetProps) {
   const [, drop] = useDrop({
     accept: DraggableTypes.PLAYER,
     drop: (item: any, monitor) => {
-      const ourGoal: Boolean = item.player.team === "ours" ? true : false;
+      const ourGoal: Boolean = item.player.teamId === "ours" ? true : false;
       props.incrementScore(ourGoal, item.player, props.getLineup());
     },
   });
@@ -127,7 +131,7 @@ export function FieldTarget(props: FieldTargetProps) {
     {/* 2 */}
             <Row>
               {/* 0                                     1             2                                   3 */}
-              <Col>{props.draggablePlayers[0]}</Col> <Col></Col> <Col>{props.draggablePlayers[4]}</Col> <Col><PlayerDraggable first_name="Opposing" last_name="Team" num={-1} team="theirs" playerId={-1}/></Col>
+              <Col>{props.draggablePlayers[0]}</Col> <Col></Col> <Col>{props.draggablePlayers[4]}</Col> <Col><PlayerDraggable firstName="Opposing" lastName="Team" jerseyNum={-1} teamId="theirs" playerId={-1}/></Col>
             </Row>
     {/* 3 */}
             <Row>

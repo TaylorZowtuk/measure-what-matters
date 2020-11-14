@@ -2,27 +2,20 @@ import React from "react";
 import { useDrag } from "react-dnd";
 import { DraggableTypes } from "../constants";
 import { Button } from "react-bootstrap";
-
-type Player = {
-  first_name: string;
-  last_name: string;
-  num: number; // Jersey number
-  team: string;
-  playerId: number; // Unique player id from the db
-};
+import Player from "./interfaces/player";
 
 export const PlayerDraggable: React.FC<Player> = ({
-  first_name,
-  last_name,
-  num,
-  team,
+  firstName: first_name,
+  lastName: last_name,
+  jerseyNum: num,
+  teamId: team,
   playerId,
 }) => {
   const player: Player = {
-    first_name: first_name,
-    last_name: last_name,
-    num: num,
-    team: team,
+    firstName: first_name,
+    lastName: last_name,
+    jerseyNum: num,
+    teamId: team,
     playerId: playerId,
   };
   const [, drag] = useDrag({
@@ -51,10 +44,10 @@ export function createPlayerDraggable(players: Player[]): any[] {
   for (var i = 0; i < players.length; i++) {
     playerDraggables.push(
       <PlayerDraggable
-        first_name={players[i].first_name}
-        last_name={players[i].last_name}
-        num={players[i].num}
-        team="ours"
+        firstName={players[i].firstName}
+        lastName={players[i].lastName}
+        jerseyNum={players[i].jerseyNum}
+        teamId="ours"
         playerId={players[i].playerId}
       />
     );
