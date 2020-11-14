@@ -31,15 +31,26 @@ export class PlayerStatsService {
   }
 
   /**
-   * Retrieves seconds played by a player for a given match.
+   * Retrieves milliseconds played by a player for a given match.
    *
    * @param playerId - The player we want to see time played
    * @param matchId - The match for which we want to see time played
    *
-   * @returns the time played in that match in seconds
+   * @returns the time played in that match in milliseconds
+   */
+  /**
+   * Retrieves milliseconds played by a player for a given match.
+   *
+   * @param playerId - The player we want to see time played
+   * @param matchId - The match for which we want to see time played
+   *
+   * @returns the time played in that match in milliseconds
    */
 
-  async getSecondsPlayed(playerId: number, matchId: number): Promise<number> {
+  async getMillisecondsPlayed(
+    playerId: number,
+    matchId: number,
+  ): Promise<number> {
     let timeOnField = 0;
     const match = await this.matchRepo.findOne({ where: { matchId } });
     const matchFinishTime = match.finishTime;
@@ -76,7 +87,7 @@ export class PlayerStatsService {
       const firstName = players[i].firstName;
       const lastName = players[i].lastName;
       const jerseyNum = players[i].jerseyNum;
-      const secondsPlayed = await this.getSecondsPlayed(
+      const millisecondsPlayed = await this.getMillisecondsPlayed(
         players[i].playerId,
         matchId,
       );
@@ -86,7 +97,7 @@ export class PlayerStatsService {
         firstName,
         lastName,
         jerseyNum,
-        secondsPlayed,
+        millisecondsPlayed,
       };
 
       playerTimeDtos.push(player_time_DTO);
