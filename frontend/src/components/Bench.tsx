@@ -144,8 +144,11 @@ function BenchTarget(props: BenchTargetProps) {
   const [, drop] = useDrop({
     accept: DraggableTypes.PLAYER,
     drop: (item: any, _monitor: DropTargetMonitor) => {
-      props.toggleIsExpanded();
-      props.setSubstituteFor(item.player);
+      if (item.player.team === "ours") {
+        // Only allow our players to be dropped on bench
+        props.toggleIsExpanded();
+        props.setSubstituteFor(item.player);
+      }
     },
   });
 

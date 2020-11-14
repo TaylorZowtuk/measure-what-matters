@@ -8,6 +8,7 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { CreateTeamDTO } from '../src/dto/team/createTeam.dto';
+import { mockUserLoggedIn } from './mocks/mockUserLogin';
 
 const teamDto: CreateTeamDTO = {
   name: 'team',
@@ -16,7 +17,8 @@ const teamDto: CreateTeamDTO = {
 describe('TeamController', () => {
   let controller: TeamController;
   let teamService: TeamService;
-  const userId = 1;
+
+  const userId = mockUserLoggedIn.user.userId;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -43,8 +45,8 @@ describe('TeamController', () => {
     const spy = jest
       .spyOn(teamService, 'saveTeam')
       .mockResolvedValue(createdTeam);
-    await controller.createTeam(teamDto, userId);
-    expect(spy).toBeCalledWith(teamDto, userId);
+    await controller.createTeam(teamDto, mockUserLoggedIn);
+    expect(spy).toBeCalledWith(teamDto, mockUserLoggedIn.user.userId);
   });
 
   it('should call team service to get teams by user id', async () => {
@@ -70,7 +72,7 @@ describe('TeamController', () => {
     const queryFailedErr: QueryFailedError = new QueryFailedError('', [], '');
     queryFailedErr.message = 'violates foreign key constraint';
     jest.spyOn(teamService, 'saveTeam').mockRejectedValue(queryFailedErr);
-    const response = controller.createTeam(teamDto, userId);
+    const response = controller.createTeam(teamDto, mockUserLoggedIn);
     await expect(response).rejects.toThrow(BadRequestException);
   });
 
@@ -78,7 +80,7 @@ describe('TeamController', () => {
     const queryFailedErr: QueryFailedError = new QueryFailedError('', [], '');
     queryFailedErr.message = 'violates not-null constraint';
     jest.spyOn(teamService, 'saveTeam').mockRejectedValue(queryFailedErr);
-    const response = controller.createTeam(teamDto, userId);
+    const response = controller.createTeam(teamDto, mockUserLoggedIn);
     await expect(response).rejects.toThrow(BadRequestException);
   });
 
@@ -86,14 +88,14 @@ describe('TeamController', () => {
     const queryFailedErr: QueryFailedError = new QueryFailedError('', [], '');
     queryFailedErr.message = 'violates unique constraint';
     jest.spyOn(teamService, 'saveTeam').mockRejectedValue(queryFailedErr);
-    const response = controller.createTeam(teamDto, userId);
+    const response = controller.createTeam(teamDto, mockUserLoggedIn);
     await expect(response).rejects.toThrow(BadRequestException);
   });
 
   it('should return internal server err if any other err is thrown', async () => {
     const err: Error = new Error();
     jest.spyOn(teamService, 'saveTeam').mockRejectedValue(err);
-    const response = controller.createTeam(teamDto, userId);
+    const response = controller.createTeam(teamDto, mockUserLoggedIn);
     await expect(response).rejects.toThrow(InternalServerErrorException);
   });
 });

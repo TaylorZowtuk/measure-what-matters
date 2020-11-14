@@ -13,7 +13,7 @@ import { Match } from '../match.entity';
 import { Player } from '../player.entity';
 
 @Entity()
-export class Goal extends BaseEntity implements IEvent {
+export class Possession extends BaseEntity implements IEvent {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -25,25 +25,23 @@ export class Goal extends BaseEntity implements IEvent {
   @JoinColumn({ name: 'matchId' })
   match: Match;
 
-  @Column({ type: 'bigint' })
+  @Column()
+  matchId: number;
+
+  @Column({ type: 'int' })
   time: number;
 
+  // TODO REVIEW JOINCOLUMN IMPLEMENTATION
   @ManyToOne(
     () => Player,
     player => player.playerId,
     { eager: true, nullable: true },
   )
   @JoinColumn({ name: 'playerId' })
-  player: Player;
-
-  @Column({ nullable: true })
   playerId: number;
 
-  @Column()
-  matchId: number;
-
-  @Column('int', { array: true })
-  lineup: number[];
+  @Column({ type: 'bool', default: false })
+  archived: boolean;
 
   @CreateDateColumn()
   createdDate: Date;

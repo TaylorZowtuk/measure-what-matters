@@ -10,8 +10,8 @@ export class SubstitutionDTO {
   matchId: number;
 
   @ApiProperty({
-    format: 'int64',
-    description: 'The time the player came onto the field',
+    format: 'int',
+    description: 'The time the player came onto the field in seconds',
   })
   timeOn: number;
 
