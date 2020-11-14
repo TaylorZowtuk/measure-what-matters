@@ -1,6 +1,6 @@
 import React from "react";
 import axios from "axios";
-import authHeader from "../services/auth.header";
+import authHeader from "../../services/auth.header";
 import {
   Button,
   Checkbox,
