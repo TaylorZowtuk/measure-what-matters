@@ -6,9 +6,7 @@ import { GoalController } from '../src/event/goal/goal.controller';
 import { PlayerService } from '../src/player/player.service';
 import {
   BadRequestException,
-  HttpStatus,
   InternalServerErrorException,
-  Query,
 } from '@nestjs/common';
 import { InvalidLineupError } from '../src/exceptions/lineup.exception';
 

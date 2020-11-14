@@ -137,7 +137,7 @@ describe('AssistController tests', () => {
     });
 
     it('should throw a BadRequestException if playerId and matchId both null', async () => {
-      const spy = jest
+      jest
         .spyOn(assistService, 'getAssistByPlayerAndMatch')
         .mockResolvedValue(null);
       const matchId = null;
