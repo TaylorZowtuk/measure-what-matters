@@ -12,6 +12,8 @@ import Typography from "@material-ui/core/Typography";
 import authHeader from "../../services/auth.header";
 import axios from "axios";
 
+// Icons from: https://icons8.com
+
 export default function MatchSelection() {
   return (
     <div>
@@ -33,6 +35,19 @@ export default function MatchSelection() {
 }
 
 const debugData: MatchAndTeam[] = [
+  {
+    match: {
+      matchId: 1,
+      teamId: 4,
+      startTime: Date.now(),
+      isHomeTeam: false,
+      halfTime: null,
+      fullTime: null,
+      createdDate: 12345,
+      updatedDate: 12345,
+    },
+    teamName: "Teal Traitors",
+  },
   {
     match: {
       matchId: 1,
@@ -232,77 +247,95 @@ export function AlignItemsList() {
     getMatches();
   }, []);
 
+  const handleListItemClick = (
+    event: React.MouseEvent<HTMLLIElement, MouseEvent>,
+    index: number
+  ) => {
+    console.log(index);
+  };
+
   // If fetch request hasnt returned yet
   if (!matches) {
     return <h1>Loading...</h1>;
   } else {
     return (
       <List className={classes.root}>
-        <ListItem alignItems="flex-start">
-          <ListItemAvatar>
-            <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
-          </ListItemAvatar>
-          <ListItemText
-            primary="Brunch this weekend?"
-            secondary={
-              <React.Fragment>
-                <Typography
-                  component="span"
-                  variant="body2"
-                  className={classes.inline}
-                  color="textPrimary"
-                >
-                  Ali Connors
-                </Typography>
-                {" — I'll be in your neighborhood doing errands this…"}
-              </React.Fragment>
+        {matches.map((matchAndTeam: MatchAndTeam, index: number) => {
+          const date = new Date(matchAndTeam.match.startTime); // The epoch start time of this match
+          const weekday: string = date.toLocaleString("en-us", {
+            weekday: "long",
+          });
+          let calendarImgPath;
+          switch (
+            weekday // Set the calendar icon according to the start time weekday
+          ) {
+            case "Monday": {
+              calendarImgPath = require("../../static/imgs/icons8-monday-100.png");
+              break;
             }
-          />
-        </ListItem>
-        <Divider variant="inset" component="li" />
-        <ListItem alignItems="flex-start">
-          <ListItemAvatar>
-            <Avatar alt="Travis Howard" src="/static/images/avatar/2.jpg" />
-          </ListItemAvatar>
-          <ListItemText
-            primary="Summer BBQ"
-            secondary={
-              <React.Fragment>
-                <Typography
-                  component="span"
-                  variant="body2"
-                  className={classes.inline}
-                  color="textPrimary"
-                >
-                  to Scott, Alex, Jennifer
-                </Typography>
-                {" — Wish I could come, but I'm out of town this…"}
-              </React.Fragment>
+            case "Tuesday": {
+              calendarImgPath = require("../../static/imgs/icons8-tuesday-100.png");
+              break;
             }
-          />
-        </ListItem>
-        <Divider variant="inset" component="li" />
-        <ListItem alignItems="flex-start">
-          <ListItemAvatar>
-            <Avatar alt="Cindy Baker" src="/static/images/avatar/3.jpg" />
-          </ListItemAvatar>
-          <ListItemText
-            primary="Oui Oui"
-            secondary={
-              <React.Fragment>
-                <Typography
-                  component="span"
-                  variant="body2"
-                  className={classes.inline}
-                  color="textPrimary"
-                >
-                  Sandra Adams
-                </Typography>
-                {" — Do you have Paris recommendations? Have you ever…"}
-              </React.Fragment>
+            case "Wednesday": {
+              calendarImgPath = require("../../static/imgs/icons8-wednesday-100.png");
+              break;
             }
-          />
-        </ListItem>
+            case "Thursday": {
+              calendarImgPath = require("../../static/imgs/icons8-thursday-100.png");
+              break;
+            }
+            case "Friday": {
+              calendarImgPath = require("../../static/imgs/icons8-friday-100.png");
+              break;
+            }
+            case "Saturday": {
+              calendarImgPath = require("../../static/imgs/icons8-saturday-100.png");
+              break;
+            }
+            case "Sunday": {
+              calendarImgPath = require("../../static/imgs/icons8-sunday-100.png");
+              break;
+            }
+          }
+          return (
+            <>
+              <ListItem
+                alignItems="flex-start"
+                onClick={(event) => handleListItemClick(event, index)}
+              >
+                <ListItemAvatar>
+                  <Avatar
+                    variant="rounded"
+                    alt={weekday} // String of the day of week
+                    src={calendarImgPath}
+                  />
+                </ListItemAvatar>
+                <ListItemText
+                  primary={date.toLocaleString()} // Formatted date time in local timezone
+                  primaryTypographyProps={{ color: "textPrimary" }}
+                  secondary={
+                    <React.Fragment>
+                      <Typography
+                        component="span"
+                        variant="body2"
+                        className={classes.inline}
+                        color="textPrimary"
+                      >
+                        {matchAndTeam.teamName} vs.{" "}
+                        {/* TODO: add their team name */}
+                      </Typography>
+                      <br></br>
+                      {matchAndTeam.match.isHomeTeam ? "Home" : "Away"}{" "}
+                      {" Game"}
+                    </React.Fragment>
+                  }
+                />
+              </ListItem>
+              <Divider variant="inset" component="li" />
+            </>
+          );
+        })}
       </List>
     );
   }
