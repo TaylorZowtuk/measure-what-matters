@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Goal } from '../db/entities/events/goal.entity';
 import { Substitution } from '../db/entities/events/substitution.entity';
@@ -55,7 +55,7 @@ export class PlayerStatsService {
   async getSecondsPlayed(playerId: number, matchId: number): Promise<number> {
     let timeOnField = 0;
     const match = await this.matchRepo.findOne({ where: { matchId } });
-    const matchFinishTime = match.finishTime;
+    const matchFinishTime = match.fullTime;
 
     const query1 = this.subRepo.createQueryBuilder('substitution');
 
@@ -69,6 +69,9 @@ export class PlayerStatsService {
 
       // if time_off is null, that means they were the last sub of the game
       if (time_off == null) {
+        if (!matchFinishTime) {
+          throw new BadRequestException('Match does not have finish time');
+        }
         time_off = matchFinishTime;
       }
       timeOnField += time_off - time_on;
@@ -82,7 +85,18 @@ export class PlayerStatsService {
     const match = await this.matchRepo.findOne({ where: { matchId: matchId } });
     const teamId = match.teamId.teamId;
 
-    const players = await this.playerRepo.find({ where: { teamId: teamId } });
+    const lineup: Lineup = await this.lineupRepo.findOneOrFail({
+      where: { matchId },
+    });
+    const players: Player[] = [];
+
+    for (let i = 0; i < lineup.lineup.length; i++) {
+      players.push(
+        await this.playerRepo.findOne({
+          where: { playerId: lineup.lineup[i] },
+        }),
+      );
+    }
 
     for (let i = 0; i < players.length; i++) {
       const playerId = players[i].playerId;

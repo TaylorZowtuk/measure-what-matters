@@ -36,13 +36,14 @@ export class PlayerStatsController {
   @ApiResponse({ status: 500, description: 'Unknown error occured' })
   async getTimeOnField(@Query('matchId', ParseIntPipe) matchId: number) {
     try {
-      matchId = +matchId;
       return await this.playerStatsService.getPlayersTimes(matchId);
     } catch (error) {
       if (error instanceof TypeError) {
         if (error.message.includes('Cannot read property')) {
           throw new BadRequestException('matchId does not exist in database');
         }
+      } else if (error.message.includes('Match does not have finish time')) {
+        throw error;
       }
       return new InternalServerErrorException('Unknown error occured');
     }
