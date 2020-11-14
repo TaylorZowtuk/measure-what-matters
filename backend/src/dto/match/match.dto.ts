@@ -15,4 +15,10 @@ export class MatchDTO {
 
   @ApiProperty()
   isHomeTeam: boolean;
+
+  @ApiProperty()
+  halfTime: number;
+
+  @ApiProperty()
+  fullTime: number;
 }

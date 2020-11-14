@@ -10,6 +10,7 @@ import {
   UsePipes,
   ValidationPipe,
   ParseIntPipe,
+  Delete,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { PlayerDTO } from '../dto/player/player.dto';
@@ -17,6 +18,7 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { PlayerService } from './player.service';
 import { QueryFailedError } from 'typeorm';
 import { CreatePlayerDTO } from '../dto/player/createPlayer.dto';
+import { ApiBody } from '@nestjs/swagger';
 
 @ApiTags('Players')
 @ApiBearerAuth()
@@ -32,6 +34,10 @@ export class PlayerController {
     description: 'TeamId not in database or null value entered for parameter',
   })
   @ApiResponse({ status: 500, description: 'Unknown error occured' })
+  @ApiBody({
+    type: CreatePlayerDTO,
+    isArray: true,
+  })
   @UsePipes(ValidationPipe)
   async createPlayers(@Body() players: CreatePlayerDTO[]) {
     try {
@@ -58,7 +64,9 @@ export class PlayerController {
   })
   @ApiResponse({ status: 400, description: 'Invalid integer entered' })
   @ApiResponse({ status: 500, description: 'Unknown error occured' })
-  async getPlayersByTeamId(@Query('teamId', ParseIntPipe) teamId: number) {
+  async getPlayersByTeamId(
+    @Query('teamId', ParseIntPipe) teamId: number,
+  ): Promise<PlayerDTO[]> {
     try {
       return await this.playerService.getPlayersByTeamId(teamId);
     } catch (error) {
@@ -68,6 +76,36 @@ export class PlayerController {
         }
       } else {
         throw new InternalServerErrorException('Unknown problem occured');
+      }
+    }
+  }
+  @Delete('/delete')
+  @ApiResponse({
+    status: 200,
+    description: 'Player entity removed successfully',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Not a number, number expected',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Player does not exist in database',
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Unknown error occured',
+  })
+  async delete(
+    @Query('playerId', ParseIntPipe) playerId: number,
+  ): Promise<void> {
+    try {
+      return await this.playerService.removePlayerById(playerId);
+    } catch (error) {
+      if (error.message.includes('not found')) {
+        throw error;
+      } else {
+        throw new InternalServerErrorException('Unknown error occured');
       }
     }
   }

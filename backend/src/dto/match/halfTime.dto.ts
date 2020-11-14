@@ -1,12 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty } from 'class-validator';
 
-export class CreateLineupDTO {
-  @ApiProperty({ isArray: true, type: 'integer' })
-  @IsNotEmpty()
-  lineup: number[];
-
+export class HalfTimeDTO {
   @ApiProperty()
   @IsNotEmpty()
   matchId: number;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  halfTime: number;
 }
