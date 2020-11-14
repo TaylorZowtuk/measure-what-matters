@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Goal } from '../db/entities/events/goal.entity';
 import { Substitution } from '../db/entities/events/substitution.entity';
@@ -191,7 +195,6 @@ export class PlayerStatsService {
         plusMinus: plusMinus,
       });
     }
-    console.log(plusMinusArray);
 
     return plusMinusArray;
   }
@@ -304,12 +307,10 @@ export class PlayerStatsService {
       possessions = possessions.filter(
         possession => possession.time < halfTime,
       );
-      console.log(possessions);
     } else if (half == 2) {
       possessions = possessions.filter(
         possession => possession.time >= halfTime,
       );
-      console.log(possessions);
     }
     return possessions;
   }
