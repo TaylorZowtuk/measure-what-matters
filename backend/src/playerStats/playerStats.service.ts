@@ -7,12 +7,15 @@ import { PlayerDTO } from '../dto/player/player.dto';
 import { Repository } from 'typeorm';
 import { PlayerTimeDTO } from 'src/dto/stats/playerTime.dto';
 import { Match } from '../db/entities/match.entity';
+import { Lineup } from '../db/entities/lineup.entity';
+import { PlusMinusDTO } from 'src/dto/stats/plusMinus.dto';
 @Injectable()
 export class PlayerStatsService {
   subRepo: Repository<any>;
   goalRepo: Repository<any>;
   playerRepo: Repository<any>;
   matchRepo: Repository<any>;
+  lineupRepo: Repository<any>;
 
   constructor(
     @InjectRepository(Substitution)
@@ -23,11 +26,14 @@ export class PlayerStatsService {
     playerRepo: Repository<Player>,
     @InjectRepository(Match)
     matchRepo: Repository<Match>,
+    @InjectRepository(Lineup)
+    lineupRepo: Repository<Lineup>,
   ) {
     this.subRepo = subRepo;
     this.goalRepo = goalRepo;
     this.playerRepo = playerRepo;
     this.matchRepo = matchRepo;
+    this.lineupRepo = lineupRepo;
   }
 
   /**
@@ -119,7 +125,55 @@ export class PlayerStatsService {
       players.push(player);
     }
 
-    return this.convertToPlayerDto(players);
+    return this.convertToPlayersDtos(players);
+  }
+
+  /**
+   * Retrieves plus minus of all players on for a match
+   *
+   * @param matchId - The id for the match
+   *
+   * @returns the DTO array of players and their plus minus for a given match
+   */
+  async PlusMinus(matchId: number): Promise<PlusMinusDTO[]> {
+    const lineup: Lineup = await this.lineupRepo.findOneOrFail({
+      where: { matchId },
+    });
+    const players: Player[] = [];
+
+    for (let i = 0; i < lineup.lineup.length; i++) {
+      players.push(
+        await this.playerRepo.findOne({
+          where: { playerId: lineup.lineup[i] },
+        }),
+      );
+    }
+    const playerDtos: PlayerDTO[] = this.convertToPlayersDtos(players);
+
+    const goals: Goal[] = await this.goalRepo.find({ where: { matchId } });
+
+    const plusMinusArray: PlusMinusDTO[] = [];
+
+    for (let i = 0; i < playerDtos.length; i++) {
+      let plusMinus = 0;
+      for (let j = 0; j < goals.length; j++) {
+        if (goals[j].lineup.includes(playerDtos[i].playerId)) {
+          if (goals[j].playerId === null) {
+            plusMinus--;
+          } else {
+            plusMinus++;
+          }
+        }
+      }
+      const plusMinusPlayer: PlusMinusDTO = {
+        player: playerDtos[i],
+        plusMinus: plusMinus,
+      };
+      plusMinusArray.push(plusMinusPlayer);
+    }
+    console.log(plusMinusArray);
+
+    return plusMinusArray;
   }
 
   /**
@@ -130,7 +184,7 @@ export class PlayerStatsService {
    * @returns A list of player dtos converted from an entity
    */
 
-  private convertToPlayerDto(players: any[]) {
+  private convertToPlayersDtos(players: any[]) {
     const playerDtos: PlayerDTO[] = [];
     players.forEach(element => {
       const playerDto: PlayerDTO = {
