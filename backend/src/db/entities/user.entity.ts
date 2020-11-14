@@ -6,6 +6,7 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -30,14 +31,13 @@ export class User extends BaseEntity {
     this.password = await bcrypt.hash(this.password, 10);
   }
 
-  @ManyToOne(
+  @OneToMany(
     () => Team,
-    team => team.teamId,
+    team => team.user,
     { nullable: true },
   )
-  
   @JoinColumn()
-  teamId: number;
+  teams: Team[];
 
   @CreateDateColumn()
   createdDate: Date;
