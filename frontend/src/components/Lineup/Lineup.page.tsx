@@ -67,10 +67,16 @@ class LineupComponent extends React.Component<RouteComponentProps, State> {
   }
 
   async getPlayers() {
-    const res = await axios.get(`/players/teamId?teamId=${this.state.teamId}`, {
-      headers: authHeader(),
-    });
-    this.setState({ players: res.data });
+    axios
+      .get(`/players/teamId?teamId=${this.state.teamId}`, {
+        headers: authHeader(),
+      })
+      .then((res) => {
+        this.setState({ players: res.data });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
   handleSelectedPlayer(
@@ -104,9 +110,13 @@ class LineupComponent extends React.Component<RouteComponentProps, State> {
         };
         startingLineup.push(lineupMember);
       });
-      await axios.post("event/substitutions/startingLineup", startingLineup, {
-        headers: authHeader(),
-      });
+      axios
+        .post("event/substitutions/startingLineup", startingLineup, {
+          headers: authHeader(),
+        })
+        .catch((err) => {
+          console.log(err);
+        });
       const recordingState: RecordingProps = {
         matchId: this.state.matchId.toString(),
         teamId: this.state.teamId.toString(),
