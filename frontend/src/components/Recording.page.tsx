@@ -12,13 +12,23 @@ import Bench, { StartingPlayer } from "./Bench";
 import Field from "./Field";
 import Player from "./Player";
 import authHeader from "../services/auth.header";
+import CircularBuffer from "../util/circular-buffer";
+
+// Provide MatchId to each recording component which requires it through context
+export const MatchIdContext: React.Context<number> = React.createContext(0);
 
 type Goal = {
   id?: number;
   matchId: number;
   time: number;
-  playerId: number;
+  playerId: number | null;
   lineup: number[];
+};
+
+type CreateAssistDTO = {
+  matchId: number;
+  time: number;
+  playerId: number;
 };
 
 type RecordingProps = {
@@ -59,8 +69,8 @@ class Recording extends React.Component<
     let players: Player[] = [];
     for (let i = 0; i < res.data.length; i++) {
       let player: Player = {
-        first_name: res.data[i].firstName,
-        last_name: res.data[i].lastName,
+        firstName: res.data[i].firstName,
+        lastName: res.data[i].lastName,
         num: res.data[i].jerseyNum,
         team: "ours",
         playerId: res.data[i].playerId,
@@ -85,7 +95,9 @@ class Recording extends React.Component<
       lineupSubs.push(sub);
     }
     axios
-      .post(`/event/substitutions/startingLineup`, lineupSubs)
+      .post(`/event/substitutions/startingLineup`, lineupSubs, {
+        headers: authHeader(),
+      })
       .then((res) => {
         console.log("Post starting lineup response:", res); // TODO: catch error and handle if needed
       });
@@ -105,32 +117,61 @@ class Recording extends React.Component<
 
   incrementScore = (
     goal_for: boolean,
-    scorer: Player | undefined = undefined,
-    lineup: any[] | undefined = undefined
+    scorer: Player,
+    previousPossessions: CircularBuffer<number>,
+    lineup: any[]
   ): void => {
+    let ids: number[] = [];
+    // Gather the player ids of all of our players on the field
+    for (let i = 0; i < lineup.length; i++) {
+      ids.push(lineup[i].props.player.playerId);
+    }
+    // Create a GoalDTO object
+    let goal: Goal = {
+      matchId: Number(this.props.location.state.matchId),
+      time: Date.now(), // Epoch time in ms
+      playerId: scorer.playerId !== -1 ? scorer.playerId : null,
+      lineup: ids,
+    };
+
     if (goal_for) {
-      if (scorer && lineup) {
-        this.setState({ goals_for: this.state.goals_for + 1 });
-        let ids: number[] = [];
-        for (let i = 0; i < lineup.length; i++) {
-          ids.push(lineup[i].props.playerId);
+      // Our goal
+      // Update our score
+      this.setState({ goals_for: this.state.goals_for + 1 });
+
+      // Using the previousPossessions, automatically register an assist
+      if (previousPossessions.size() >= 2) {
+        // There was an assist
+        // For indoor soccer, we only record one assister
+        let assisterId: number | null = previousPossessions.dequeue();
+        // We check size > 2 so should never be null
+        if (assisterId && assisterId !== -1) {
+          // The last possession wasnt the opposition
+          let assist: CreateAssistDTO = {
+            matchId: Number(this.props.location.state.matchId),
+            time: Date.now(),
+            playerId: assisterId,
+          };
+          axios
+            .post(`/event/assists`, assist, { headers: authHeader() })
+            .then((res) => {
+              console.log("Post assist response:", res); // TODO: catch error and handle if needed
+            });
         }
-        let goal: Goal = {
-          matchId: Number(this.props.location.state.matchId),
-          time: Date.now(), // Epoch time in ms
-          playerId: scorer.playerId,
-          lineup: ids,
-        };
-        axios
-          .post(`/event/goals`, goal, { headers: authHeader() })
-          .then((res) => {
-            console.log(res); // TODO: catch error and handle if needed
-          });
       }
     } else {
+      // Opposing teams goal
+      // Update their score
       this.setState({ goals_against: this.state.goals_against + 1 });
-      // TODO: add backend call to add against goal
     }
+
+    // Post to the goal endpoint
+    axios.post(`/event/goals`, goal, { headers: authHeader() }).then((res) => {
+      console.log("Post goal response:", res); // TODO: catch error and handle if needed
+    });
+
+    // On any goal, reset the previous possessions queue
+    previousPossessions.clear();
   };
 
   componentDidMount() {
@@ -161,24 +202,27 @@ class Recording extends React.Component<
     } else {
       return (
         <DndProvider backend={useTouch ? TouchBackend : HTML5Backend}>
-          <h1>Recording</h1>
-          <Bench
-            matchId={Number(this.props.location.state.matchId)}
-            getStartingBench={this.provideStartingBench}
-            notifyOfSubs={this.setSubs}
-          ></Bench>
-          <Team name={this.team_name} score={this.state.goals_for} />
-          <Team name={this.opp_name} score={this.state.goals_against} />
-          <Field
-            getStartingLine={this.provideStartingLine}
-            incrementScore={this.incrementScore}
-            removeFromField={this.state.subField}
-            addToField={this.state.subBench}
-            resetSubs={this.setSubs}
-          />
-          <Link to="/dashboard">
-            <Button variant="contained">Dashboard</Button>
-          </Link>
+          <MatchIdContext.Provider
+            value={Number(this.props.location.state.matchId)}
+          >
+            <h1>Recording</h1>
+            <Bench
+              getStartingBench={this.provideStartingBench}
+              notifyOfSubs={this.setSubs}
+            ></Bench>
+            <Team name={this.team_name} score={this.state.goals_for} />
+            <Team name={this.opp_name} score={this.state.goals_against} />
+            <Field
+              getStartingLine={this.provideStartingLine}
+              incrementScore={this.incrementScore}
+              removeFromField={this.state.subField}
+              addToField={this.state.subBench}
+              resetSubs={this.setSubs}
+            />
+            <Link to="/dashboard">
+              <Button variant="contained">Dashboard</Button>
+            </Link>
+          </MatchIdContext.Provider>
         </DndProvider>
       );
     }

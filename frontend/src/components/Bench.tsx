@@ -11,6 +11,7 @@ import authHeader from "../services/auth.header";
 import axios from "axios";
 
 import Player from "./Player";
+import { MatchIdContext } from "./Recording.page";
 
 export type StartingPlayer = {
   id?: number;
@@ -28,7 +29,6 @@ type Substitution = {
 };
 
 type BenchProps = {
-  matchId: number;
   getStartingBench: Function;
   notifyOfSubs: Function;
 };
@@ -90,7 +90,7 @@ class Bench extends React.Component<
     this.setState({ substituteFor: undefined });
   };
 
-  substitute = (num: number): void => {
+  substitute = (num: number, matchId: number): void => {
     if (this.state.substituteFor === undefined) {
       console.log("Error: substituteFor is undefined");
       return;
@@ -100,7 +100,7 @@ class Bench extends React.Component<
         this.state.onBench.findIndex((player) => player.num === num)
       ].playerId, // Player who is coming onto field
       playerIdOut: this.state.substituteFor.playerId, // Player who is leaving field
-      matchId: 1,
+      matchId: matchId,
       time: Date.now(),
     };
     axios
@@ -195,13 +195,17 @@ export function OpenBench(props: OpenBenchProps) {
       <GridList className={classes.gridList} cols={10} cellHeight={"auto"}>
         {props.players.map((player: Player) => (
           <GridListTile key={player.num}>
-            <Button
-              key={player.num}
-              variant="dark"
-              onClick={() => props.substitute(player.num)}
-            >
-              {player.num} {player.first_name} {player.last_name}
-            </Button>
+            <MatchIdContext.Consumer>
+              {(matchId) => (
+                <Button
+                  key={player.num}
+                  variant="dark"
+                  onClick={() => props.substitute(player.num, matchId)}
+                >
+                  {player.num} {player.firstName} {player.lastName}
+                </Button>
+              )}
+            </MatchIdContext.Consumer>
           </GridListTile>
         ))}
       </GridList>
