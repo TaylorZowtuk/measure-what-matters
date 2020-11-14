@@ -18,7 +18,6 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import PersonAddIcon from "@material-ui/icons/PersonAdd";
 import CSS from "csstype";
 import CustomDialog from "../CustomDialog";
-import { ThemeConsumer } from "react-bootstrap/esm/ThemeProvider";
 
 interface Player {
   playerId: number;
