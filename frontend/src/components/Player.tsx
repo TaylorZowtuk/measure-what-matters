@@ -31,6 +31,11 @@ type PlayerPossessionDTO = {
   playerId: number;
 };
 
+export type NeutralPossessionDTO = {
+  matchId: number;
+  time: number;
+};
+
 type DraggableProps = {
   player: Player;
   possession: Possession;

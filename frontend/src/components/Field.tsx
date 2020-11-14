@@ -4,13 +4,17 @@ import { useDrop } from "react-dnd";
 import { Container, Row, Col } from "react-bootstrap";
 import { cloneDeep } from "lodash";
 import { CircularBuffer } from "../util/circular-buffer";
+import axios from "axios";
 
 import Player, {
   createPlayerDraggable,
   createPlayerDraggables,
+  NeutralPossessionDTO,
 } from "./Player";
+import authHeader from "../services/auth.header";
 
 type FieldProps = {
+  matchId: number;
   getStartingLine: Function;
   incrementScore: Function;
   removeFromField: Player | undefined;
@@ -152,9 +156,21 @@ class Field extends React.Component<
   };
 
   resetPlayerWithPossession = (): void => {
+    // Reset possession state
     this.changePossession(Number.NEGATIVE_INFINITY);
 
-    // TODO: post to neutral ball endpoint
+    // Post to neutral ball endpoint
+    let possessionEvent: NeutralPossessionDTO = {
+      matchId: this.props.matchId,
+      time: Date.now() % 10000, // TODO: switch to game time
+    };
+    axios
+      .post(`/event/possession/neutral`, possessionEvent, {
+        headers: authHeader(),
+      })
+      .then((res) => {
+        console.log("Post neutral possession response:", res); // TODO: catch error and handle if needed
+      });
   };
 
   async componentDidUpdate(prevProps: any, _prevState: any) {
