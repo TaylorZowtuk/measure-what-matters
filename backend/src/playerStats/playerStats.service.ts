@@ -38,12 +38,22 @@ export class PlayerStatsService {
    *
    * @returns the time played in that match in milliseconds
    */
+  /**
+   * Retrieves milliseconds played by a player for a given match.
+   *
+   * @param playerId - The player we want to see time played
+   * @param matchId - The match for which we want to see time played
+   *
+   * @returns the time played in that match in milliseconds
+   */
 
   async getMillisecondsPlayed(
     playerId: number,
     matchId: number,
   ): Promise<number> {
     let timeOnField = 0;
+    const match = await this.matchRepo.findOne({ where: { matchId } });
+    const matchFinishTime = match.finishTime;
 
     const query1 = this.subRepo.createQueryBuilder('substitution');
 
@@ -55,9 +65,9 @@ export class PlayerStatsService {
       const time_on = substitutions[i].timeOn;
       let time_off = substitutions[i].timeOff;
 
-      // to be fixed, currently the end of the game does not update the time_off for the final substitution, we will fix for next sprint
+      // if time_off is null, that means they were the last sub of the game
       if (time_off == null) {
-        time_off = time_on;
+        time_off = matchFinishTime;
       }
       timeOnField += time_off - time_on;
     }
