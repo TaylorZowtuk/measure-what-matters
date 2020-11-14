@@ -32,13 +32,120 @@ export default function MatchSelection() {
   );
 }
 
+const debugData: MatchAndTeam[] = [
+  {
+    match: {
+      matchId: 1,
+      teamId: 1,
+      startTime: 1234567,
+      isHomeTeam: true,
+      halfTime: null,
+      fullTime: null,
+      createdDate: 12345,
+      updatedDate: 12345,
+    },
+    teamName: "Red Rovers",
+  },
+  {
+    match: {
+      matchId: 2,
+      teamId: 1,
+      startTime: 123456,
+      isHomeTeam: false,
+      halfTime: null,
+      fullTime: null,
+      createdDate: 12345,
+      updatedDate: 12345,
+    },
+    teamName: "Red Rovers",
+  },
+  {
+    match: {
+      matchId: 2,
+      teamId: 2,
+      startTime: 1234561,
+      isHomeTeam: false,
+      halfTime: 12344,
+      fullTime: 12345,
+      createdDate: 12345,
+      updatedDate: 12345,
+    },
+    teamName: "Pink Pansies",
+  },
+  {
+    match: {
+      matchId: 1,
+      teamId: 2,
+      startTime: 1234561,
+      isHomeTeam: true,
+      halfTime: null,
+      fullTime: null,
+      createdDate: 12345,
+      updatedDate: 12345,
+    },
+    teamName: "Pink Pansies",
+  },
+  {
+    match: {
+      matchId: 3,
+      teamId: 1,
+      startTime: 1234561,
+      isHomeTeam: false,
+      halfTime: null,
+      fullTime: null,
+      createdDate: 12345,
+      updatedDate: 12345,
+    },
+    teamName: "Red Rovers",
+  },
+  {
+    match: {
+      matchId: 1,
+      teamId: 4,
+      startTime: 12311,
+      isHomeTeam: false,
+      halfTime: 126336,
+      fullTime: null,
+      createdDate: 12345,
+      updatedDate: 12345,
+    },
+    teamName: "Yellow Bellies",
+  },
+  {
+    match: {
+      matchId: 1,
+      teamId: 3,
+      startTime: 12345235,
+      isHomeTeam: false,
+      halfTime: 12344,
+      fullTime: 12345,
+      createdDate: 12345,
+      updatedDate: 12345,
+    },
+    teamName: "Green Gadzooks",
+  },
+  {
+    match: {
+      matchId: 1,
+      teamId: 3,
+      startTime: 123,
+      isHomeTeam: false,
+      halfTime: null,
+      fullTime: null,
+      createdDate: 12345,
+      updatedDate: 12345,
+    },
+    teamName: "Green Gadzooks",
+  },
+];
+
 type MatchDTO = {
   matchId: number;
   teamId: number;
   startTime: number;
   isHomeTeam: boolean;
-  halfTime: number;
-  fullTime: number;
+  halfTime: number | null;
+  fullTime: number | null;
   createdDate: number;
   updatedDate: number;
 };
@@ -48,29 +155,59 @@ type TeamDTO = {
   name: string;
 };
 
-// Get all the users upcoming matches for every team they are a part of
-async function fetchMatches(debug = false): Promise<MatchDTO[]> {
-  // Get all the users teams
-  const teamsRes = await axios.get(
-    `/teams?userId=1`, // TODO: Remove hardcoded userId
-    { headers: authHeader() }
-  ); // TODO: catch error and handle
-  console.log("Get teams response:", teamsRes);
-  const teamsData: TeamDTO[] = teamsRes.data;
+type MatchAndTeam = {
+  match: MatchDTO;
+  teamName: string;
+};
 
-  let matches: MatchDTO[] = [];
-  // For each team get all matches
-  for (let i = 0; i < teamsRes.data.length; i++) {
-    const matchesRes = await axios.get(
-      `/match/teamId?teamId=${teamsData[i].teamId}`,
+// Get all the users upcoming matches for every team they are a part of
+async function fetchMatches(debug = true): Promise<MatchAndTeam[]> {
+  let matches: MatchAndTeam[] = [];
+
+  if (debug) {
+    matches = debugData;
+  } else {
+    // Get all the users teams
+    const teamsRes = await axios.get(
+      `/teams?userId=1`, // TODO: Remove hardcoded userId
       { headers: authHeader() }
     ); // TODO: catch error and handle
-    console.log("Get matches response:", matchesRes);
-    const matchesData: MatchDTO[] = matchesRes.data;
-    for (let j = 0; j < matchesData.length; j++) matches.push(matchesData[j]);
+    console.log("Get teams response:", teamsRes);
+    const teamsData: TeamDTO[] = teamsRes.data;
+
+    // For each team get all matches
+    for (let i = 0; i < teamsData.length; i++) {
+      const matchesRes = await axios.get(
+        `/match/teamId?teamId=${teamsData[i].teamId}`,
+        { headers: authHeader() }
+      ); // TODO: catch error and handle
+      console.log("Get matches response:", matchesRes);
+      const matchesData: MatchDTO[] = matchesRes.data;
+      for (let j = 0; j < matchesData.length; j++)
+        matches.push({ match: matchesData[j], teamName: teamsData[i].name });
+    }
   }
-  // TODO: filter completed matches and sort by upcoming
+
+  // Filter completed matches and sort by upcoming
+  matches = filterOutFinishedGames(matches);
+  matches = sortUpcoming(matches);
   return matches;
+}
+
+// Remove games that have been recorded already from matches
+function filterOutFinishedGames(matches: MatchAndTeam[]): MatchAndTeam[] {
+  matches = matches.filter(
+    (matchAndTeam) => matchAndTeam.match.fullTime === null
+  );
+  return matches;
+}
+
+// Sort matches by earliest start time first (when matches include only upcoming matches,
+// this ordering means upcoming first)
+function sortUpcoming(matches: MatchAndTeam[]): MatchAndTeam[] {
+  return matches.sort(function (a, b) {
+    return a.match.startTime - b.match.startTime;
+  });
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -87,7 +224,7 @@ const useStyles = makeStyles((theme) => ({
 export function AlignItemsList() {
   const classes = useStyles();
 
-  const [matches, setMatches] = useState<MatchDTO[] | null>(null);
+  const [matches, setMatches] = useState<MatchAndTeam[] | null>(null);
   useEffect(() => {
     async function getMatches() {
       setMatches(await fetchMatches());
