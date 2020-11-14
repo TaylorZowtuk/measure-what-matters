@@ -37,6 +37,22 @@ export class TeamService {
   }
 
   /**
+   * Updates team name
+   *
+   * @param updateTeam - object containing teamId and new name
+   *
+   * @returns updated team entity
+   */
+
+  async updateTeamName(updateTeam: TeamDTO): Promise<Team> {
+    const team = await this.teamRepo.findOneOrFail({
+      where: { teamId: updateTeam.teamId },
+    });
+    team.name = updateTeam.name;
+    return await this.teamRepo.save(team);
+  }
+
+  /**
    * Converts a list of team entities into a list of team dtos
    *
    * @param teams - The list of team entities to convert to Dto list

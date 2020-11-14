@@ -1,9 +1,14 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Player } from '../db/entities/player.entity';
 import { PlayerDTO } from '../dto/player/player.dto';
 import { Repository } from 'typeorm';
 import { CreatePlayerDTO } from '../dto/player/createPlayer.dto';
+import { UpdatePlayerDTO } from 'src/dto/player/updatePlayer.dto';
 
 @Injectable()
 export class PlayerService {
@@ -18,13 +23,38 @@ export class PlayerService {
    */
 
   async savePlayer(players: CreatePlayerDTO[]) {
-    const playerPromises = [];
+    const jerseyNums: number[] = [];
     for (let i = 0; i < players.length; i++) {
-      playerPromises.push(this.playerRepo.save(players[i]));
+      jerseyNums.push(players[i].jerseyNum);
     }
-    const playersSaved = await Promise.all(playerPromises);
+    const notUnique = await this.uniqueJerseyTeam(
+      players[0].teamId,
+      jerseyNums,
+    );
+    if (notUnique != null) {
+      throw new BadRequestException(
+        'Jersey number ' + notUnique + ' is already taken',
+      );
+    }
+    return await this.playerRepo.save(players);
+  }
 
-    return playersSaved;
+  /**
+   * Checks to make sure that the jerseyNum is not taken for the team
+   *
+   * @param teamId team we are searching to see if jerseyNum unique for
+   * @param jerseyNum jersey number we are seeing if already taken
+   *
+   * @returns A promise of a list of players
+   */
+
+  async uniqueJerseyTeam(teamId: number, jerseyNum: number[]) {
+    const players: PlayerDTO[] = await this.getPlayersByTeamId(teamId);
+    for (let i = 0; i < players.length; i++) {
+      if (jerseyNum.includes(players[i].jerseyNum)) {
+        return players[i].jerseyNum;
+      }
+    }
   }
 
   /**
@@ -78,6 +108,31 @@ export class PlayerService {
         'Player with playerId ' + playerId + ' not found',
       );
     }
+  }
+
+  /**
+   * Updates a player object
+   *
+   * @param updatePlayer - object containing player update
+   *
+   * @returns updated player
+   */
+
+  async updatePlayer(updatePlayer: UpdatePlayerDTO): Promise<Player> {
+    const jerseyNums: number[] = [updatePlayer.jerseyNum];
+    const player = await this.playerRepo.findOneOrFail({
+      where: { playerId: updatePlayer.playerId },
+    });
+    const notUnique = await this.uniqueJerseyTeam(player.teamId, jerseyNums);
+    if (notUnique != null) {
+      throw new BadRequestException(
+        'Jersey number ' + notUnique + ' is already taken',
+      );
+    }
+    player.firstName = updatePlayer.firstName;
+    player.lastName = updatePlayer.lastName;
+    player.jerseyNum = updatePlayer.jerseyNum;
+    return await this.playerRepo.save(player);
   }
 
   /**
