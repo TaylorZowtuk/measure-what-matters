@@ -5,11 +5,8 @@ import { Container, Row, Col } from "react-bootstrap";
 import { cloneDeep } from "lodash";
 import { CircularBuffer } from "../util/circular-buffer";
 
-import Player, {
-  createPlayerDraggable,
-  createPlayerDraggables,
-} from "./Player";
-
+import { createPlayerDraggable, createPlayerDraggables } from "./Player";
+import Player from "./interfaces/player";
 type FieldProps = {
   getStartingLine: Function;
   incrementScore: Function;
@@ -21,7 +18,7 @@ type FieldProps = {
 class Field extends React.Component<
   FieldProps,
   {
-    onField: any[]; // Array of draggablePlayer jsx elements
+    onField: JSX.Element[]; // Array of draggablePlayer jsx elements
     playerIndexWithPossession: number; // The index into onField of the player who currently has possession of the ball
   }
 > {
@@ -32,8 +29,8 @@ class Field extends React.Component<
     const oppositionPlayer: Player = {
       firstName: "Opposing",
       lastName: "Team",
-      num: -1,
-      team: "theirs",
+      jerseyNum: -1,
+      teamId: -1,
       playerId: -1,
     };
     const oppositionDraggable = createPlayerDraggable(
@@ -90,13 +87,17 @@ class Field extends React.Component<
     } else {
       var onFieldCopy = [...this.state.onField];
       index = onFieldCopy.findIndex(
-        (playerDraggable) => playerDraggable.props.player.num === player.num
+        (playerDraggable) =>
+          playerDraggable.props.player.jerseyNum === player.jerseyNum
       );
       if (index !== -1) {
         onFieldCopy.splice(index, 1);
         await this.setState({ onField: onFieldCopy });
       } else {
-        console.log("Error: no element in onField had num of", player.num);
+        console.log(
+          "Error: no element in onField had num of",
+          player.jerseyNum
+        );
       }
     }
     return index;
@@ -176,7 +177,7 @@ export function FieldTarget(props: FieldTargetProps) {
   const [, drop] = useDrop({
     accept: DraggableTypes.PLAYER,
     drop: (item: any, monitor) => {
-      const ourGoal: Boolean = item.player.team === "ours" ? true : false;
+      const ourGoal: Boolean = item.player.teamId !== -1 ? true : false;
       props.incrementScore(
         ourGoal,
         item.player,

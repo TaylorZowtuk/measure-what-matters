@@ -7,6 +7,7 @@ import Teams from "./components/Teams/Teams.page";
 import AddTeam from "./components/AddTeam/AddTeam.page";
 import Signup from "./components/Signup/Signup.page";
 import MatchSelection from "./components/recording/MatchSelection.page";
+import LineupComponent from "./components/Lineup/Lineup.page";
 
 const Router = () => {
   return (
@@ -18,6 +19,7 @@ const Router = () => {
       <Route exact path="/teams" component={Teams}></Route>
       <Route exact path="/create-team" component={AddTeam}></Route>
       <Route exact path="/upcoming" component={MatchSelection}></Route>
+      <Route exact path="/lineup" component={LineupComponent}></Route>
       <Route exact path="/recording" component={Recording}></Route>
       <Route exact path="/signup" component={Signup}></Route>
     </Switch>

@@ -5,14 +5,7 @@ import { Button } from "react-bootstrap";
 import axios from "axios";
 import authHeader from "../services/auth.header";
 import { MatchIdContext } from "./Recording.page";
-
-type Player = {
-  firstName: string;
-  lastName: string;
-  num: number; // Jersey number
-  team: string;
-  playerId: number; // Unique player id from the db
-};
+import Player from "./interfaces/player";
 
 type Possession = {
   hasPossession: boolean; // Whether or not the the player has possession of the ball
@@ -40,8 +33,8 @@ export const PlayerDraggable = (props: DraggableProps) => {
   const player: Player = {
     firstName: props.player.firstName,
     lastName: props.player.lastName,
-    num: props.player.num,
-    team: props.player.team,
+    jerseyNum: props.player.jerseyNum,
+    teamId: props.player.teamId,
     playerId: props.player.playerId,
   };
 
@@ -49,11 +42,11 @@ export const PlayerDraggable = (props: DraggableProps) => {
     item: { type: DraggableTypes.PLAYER, player },
   });
 
-  if (player.team === "ours") {
+  if (player.teamId !== -1) {
     if (props.possession.hasPossession) {
       return (
         <Button ref={drag} variant="outline-dark">
-          {player.num} {player.firstName} {player.lastName}
+          {player.jerseyNum} {player.firstName} {player.lastName}
         </Button>
       );
     } else {
@@ -71,7 +64,7 @@ export const PlayerDraggable = (props: DraggableProps) => {
                 )
               }
             >
-              {player.num} {player.firstName} {player.lastName}
+              {player.jerseyNum} {player.firstName} {player.lastName}
             </Button>
           )}
         </MatchIdContext.Consumer>
@@ -156,8 +149,8 @@ export function createPlayerDraggables(
     const player: Player = {
       firstName: players[i].firstName,
       lastName: players[i].lastName,
-      num: players[i].num,
-      team: players[i].team,
+      jerseyNum: players[i].jerseyNum,
+      teamId: players[i].teamId,
       playerId: players[i].playerId,
     };
     const possession: Possession = {

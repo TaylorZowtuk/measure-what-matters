@@ -6,7 +6,7 @@ export class GoalDTO {
 
   @ApiProperty({
     format: 'int',
-    description: 'The time the goal was scored in seconds',
+    description: 'The time the goal was scored in milliseconds',
   })
   time: number;
 
