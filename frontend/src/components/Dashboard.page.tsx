@@ -2,8 +2,9 @@ import React from "react";
 import { Link } from "react-router-dom";
 import Button from "@material-ui/core/Button";
 import TimeOnField from "./reports/TimeOnField";
-import CircularStatic from "./reports/Possession";
 import { Col, Container, Row } from "react-bootstrap";
+import Touches from "./reports/Touches";
+import PossessionCircular from "./reports/Possession";
 
 const Dashboard = () => (
   <div className="dashboard">
@@ -30,7 +31,12 @@ const Dashboard = () => (
     <Container style={{ backgroundColor: "#282c34" }}>
       <Row>
         <Col>
-          <CircularStatic />
+          <PossessionCircular />
+        </Col>
+      </Row>
+      <Row>
+        <Col>
+          <Touches />
         </Col>
       </Row>
       <Row>

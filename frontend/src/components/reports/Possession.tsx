@@ -56,7 +56,7 @@ function fetchTimes(debug = true): number[] {
   return [68, 32, 50];
 }
 
-export default function CircularStatic() {
+export default function PossessionCircular() {
   let times: number[] = fetchTimes();
   while (times.length < 3) {
     // If there was a problem with fetch, then display 0's
