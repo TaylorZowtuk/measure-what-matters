@@ -10,6 +10,7 @@ import { Button } from "react-bootstrap";
 import authHeader from "../services/auth.header";
 import axios from "axios";
 import Player from "./interfaces/player";
+import { MatchIdContext } from "./Recording.page";
 
 export type StartingPlayer = {
   id?: number;
@@ -27,7 +28,6 @@ type Substitution = {
 };
 
 type BenchProps = {
-  matchId: number;
   getStartingBench: Function;
   notifyOfSubs: Function;
 };
@@ -89,7 +89,7 @@ class Bench extends React.Component<
     this.setState({ substituteFor: undefined });
   };
 
-  substitute = (num: number): void => {
+  substitute = (num: number, matchId: number): void => {
     if (this.state.substituteFor === undefined) {
       console.log("Error: substituteFor is undefined");
       return;
@@ -99,7 +99,7 @@ class Bench extends React.Component<
         this.state.onBench.findIndex((player) => player.jerseyNum === num)
       ].playerId, // Player who is coming onto field
       playerIdOut: this.state.substituteFor.playerId, // Player who is leaving field
-      matchId: 1,
+      matchId: matchId,
       time: Date.now(),
     };
     axios
@@ -194,13 +194,17 @@ export function OpenBench(props: OpenBenchProps) {
       <GridList className={classes.gridList} cols={10} cellHeight={"auto"}>
         {props.players.map((player: Player) => (
           <GridListTile key={player.jerseyNum}>
-            <Button
-              key={player.jerseyNum}
-              variant="dark"
-              onClick={() => props.substitute(player.jerseyNum)}
-            >
-              {player.jerseyNum} {player.firstName} {player.lastName}
-            </Button>
+            <MatchIdContext.Consumer>
+              {(matchId) => (
+                <Button
+                  key={player.jerseyNum}
+                  variant="dark"
+                  onClick={() => props.substitute(player.jerseyNum, matchId)}
+                >
+                  {player.jerseyNum} {player.firstName} {player.lastName}
+                </Button>
+              )}
+            </MatchIdContext.Consumer>
           </GridListTile>
         ))}
       </GridList>
