@@ -11,7 +11,7 @@ const Dashboard = () => (
     {/* Navigation */}
     <Link
       to={{
-        pathname: "/recording",
+        pathname: "/lineup",
         state: {
           matchId: 1,
           teamId: 1,

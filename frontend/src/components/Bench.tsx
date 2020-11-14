@@ -67,7 +67,7 @@ class Bench extends React.Component<
   removeFromBench = (removeNum: number): Player | undefined => {
     // Remove the player (first instance) from onBench whose number is num
     var array = [...this.state.onBench];
-    var index = array.findIndex((player) => player.num === removeNum);
+    var index = array.findIndex((player) => player.jerseyNum === removeNum);
     if (index !== -1) {
       let p = array.splice(index, 1)[0];
       this.setState({ onBench: array }); // Remove the player and return it
@@ -97,7 +97,7 @@ class Bench extends React.Component<
     }
     let sub: Substitution = {
       playerIdIn: this.state.onBench[
-        this.state.onBench.findIndex((player) => player.num === num)
+        this.state.onBench.findIndex((player) => player.jerseyNum === num)
       ].playerId, // Player who is coming onto field
       playerIdOut: this.state.substituteFor.playerId, // Player who is leaving field
       matchId: matchId,
@@ -144,7 +144,7 @@ function BenchTarget(props: BenchTargetProps) {
   const [, drop] = useDrop({
     accept: DraggableTypes.PLAYER,
     drop: (item: any, _monitor: DropTargetMonitor) => {
-      if (item.player.team === "ours") {
+      if (item.player.teamId !== -1) {
         // Only allow our players to be dropped on bench
         props.toggleIsExpanded();
         props.setSubstituteFor(item.player);
@@ -194,15 +194,15 @@ export function OpenBench(props: OpenBenchProps) {
     <div className={classes.root}>
       <GridList className={classes.gridList} cols={10} cellHeight={"auto"}>
         {props.players.map((player: Player) => (
-          <GridListTile key={player.num}>
+          <GridListTile key={player.jerseyNum}>
             <MatchIdContext.Consumer>
               {(matchId) => (
                 <Button
-                  key={player.num}
+                  key={player.jerseyNum}
                   variant="dark"
-                  onClick={() => props.substitute(player.num, matchId)}
+                  onClick={() => props.substitute(player.jerseyNum, matchId)}
                 >
-                  {player.num} {player.firstName} {player.lastName}
+                  {player.jerseyNum} {player.firstName} {player.lastName}
                 </Button>
               )}
             </MatchIdContext.Consumer>
