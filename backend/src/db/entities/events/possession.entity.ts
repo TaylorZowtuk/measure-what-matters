@@ -26,6 +26,7 @@ export class Possession extends BaseEntity implements IEvent {
   matchId: number;
   @Column({ type: 'int' })
   time: number;
+
   @ManyToOne(
     () => Player,
     player => player.playerId,
@@ -33,8 +34,13 @@ export class Possession extends BaseEntity implements IEvent {
   )
   @JoinColumn({ name: 'playerId' })
   player: Player;
+
   @Column({ nullable: true })
   playerId: number;
+
+  @Column({ type: 'bool' })
+  neutral: boolean;
+
   @Column({ type: 'bool', default: false })
   archived: boolean;
   @CreateDateColumn()
