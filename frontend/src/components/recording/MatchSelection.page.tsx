@@ -286,8 +286,10 @@ export function AlignItemsList() {
 
   const handleListItemClick = (
     event: React.MouseEvent<HTMLLIElement, MouseEvent>,
-    index: number
+    index: number,
+    matchAndTeam: MatchAndTeam
   ) => {
+    console.log(matchAndTeam);
     console.log(index);
   };
 
@@ -307,7 +309,9 @@ export function AlignItemsList() {
             <>
               <ListItem
                 alignItems="flex-start"
-                onClick={(event) => handleListItemClick(event, index)}
+                onClick={(event) =>
+                  handleListItemClick(event, index, matchAndTeam)
+                }
                 key={index}
               >
                 <ListItemAvatar>

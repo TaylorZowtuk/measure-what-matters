@@ -220,7 +220,7 @@ class Recording extends React.Component<
               resetSubs={this.setSubs}
             />
             <Link to="/dashboard">
-              <Button variant="contained">Dashboard</Button>
+              <Button variant="contained">Finish Recording</Button>
             </Link>
           </MatchIdContext.Provider>
         </DndProvider>
