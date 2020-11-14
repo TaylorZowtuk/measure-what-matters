@@ -50,29 +50,27 @@ export default function TouchesBar() {
   return (
     <Container>
       <h4>Number of Touches</h4>
-      <Row>
-        <FlexibleWidthXYPlot xType="ordinal" height={300} xDistance={100}>
-          <DiscreteColorLegend
-            orientation="horizontal"
-            items={[
-              {
-                title: "First Half",
-                color: "#12939A",
-              },
-              {
-                title: "Second Half",
-                color: "#79C7E3",
-              },
-            ]}
-          />
-          <VerticalGridLines />
-          <HorizontalGridLines />
-          <XAxis />
-          <YAxis />
-          <VerticalBarSeries data={bothHalvesData[0]} barWidth={0.8} />
-          <VerticalBarSeries data={bothHalvesData[1]} barWidth={0.8} />
-        </FlexibleWidthXYPlot>
-      </Row>
+      <FlexibleWidthXYPlot xType="ordinal" height={300} xDistance={100}>
+        <VerticalGridLines />
+        <HorizontalGridLines />
+        <XAxis />
+        <YAxis />
+        <VerticalBarSeries data={bothHalvesData[0]} barWidth={0.8} />
+        <VerticalBarSeries data={bothHalvesData[1]} barWidth={0.8} />
+      </FlexibleWidthXYPlot>
+      <DiscreteColorLegend
+        orientation="horizontal"
+        items={[
+          {
+            title: "First Half",
+            color: "#12939A",
+          },
+          {
+            title: "Second Half",
+            color: "#79C7E3",
+          },
+        ]}
+      />
     </Container>
   );
 }
