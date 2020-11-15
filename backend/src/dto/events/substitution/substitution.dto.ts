@@ -11,9 +11,13 @@ export class SubstitutionDTO {
 
   @ApiProperty({
     format: 'int',
-    description: 'The time the player came onto the field in seconds',
+    description: 'The time the player came onto the field in milliseconds',
   })
   timeOn: number;
 
+  @ApiProperty({
+    format: 'int',
+    description: 'The time the player came off the field in milliseconds',
+  })
   timeOff?: number;
 }

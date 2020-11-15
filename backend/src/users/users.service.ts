@@ -35,9 +35,9 @@ export class UsersService {
   }
 
   // Update
-  async update(userId: number, name: string, teamId: number) {
+  async update(userId: number, name: string) {
     const user = await this.findOne(userId);
-    const updatedUser = { ...user, name, teamId };
+    const updatedUser = { ...user, name };
     return this.userRepository.save(updatedUser);
   }
 }

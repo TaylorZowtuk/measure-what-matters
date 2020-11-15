@@ -1,23 +1,21 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty } from '@nestjs/swagger';
 
 export class PlayerTimeDTO {
+  @ApiProperty()
+  playerId: number;
 
-    @ApiProperty()
-    playerId: number;
+  @ApiProperty()
+  teamId: number;
 
-    @ApiProperty()
-    teamId : number;
+  @ApiProperty()
+  firstName: string;
 
-    @ApiProperty()
-    firstName : string;
+  @ApiProperty()
+  lastName: string;
 
-    @ApiProperty()
-    lastName : string;
+  @ApiProperty()
+  jerseyNum: number;
 
-    @ApiProperty()
-    jerseyNum : number;
-
-    @ApiProperty()
-    secondsPlayed : number;
-
+  @ApiProperty()
+  millisecondsPlayed: number;
 }
