@@ -14,7 +14,6 @@ import LineupComponent from "./components/recording/Lineup.page";
 const Router = () => {
   return (
     <Switch>
-      {" "}
       {/* The Switch decides which component to show based on the current URL.*/}
       <Route exact path="/" component={Login}></Route>
       <Route exact path="/dashboard" component={Dashboard}></Route>
