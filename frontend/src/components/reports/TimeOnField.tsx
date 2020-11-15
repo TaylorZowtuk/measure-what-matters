@@ -20,6 +20,7 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Switch from "@material-ui/core/Switch";
 import axios from "axios";
 import authHeader from "../../services/auth.header";
+import { timeOnFieldDTO } from "../interfaces/timeOnField";
 
 interface FormattedData {
   name: string;
@@ -27,24 +28,15 @@ interface FormattedData {
   minutes: number;
 }
 
-type PlayerTimeDTO = {
-  playerId: number;
-  teamId: number;
-  firstName: string;
-  lastName: string;
-  jerseyNum: number;
-  secondsPlayed: number;
-};
-
 // Parse data in a consistent manner for display in table columns
 function createData(
   first: string,
   last: string,
   number: number,
-  seconds: number
+  milliseconds: number
 ) {
   let name: string = first + " " + last;
-  let minutes = Math.floor(seconds / 60);
+  let minutes = Math.floor(milliseconds / (60 * 1000));
   return { name, number, minutes };
 }
 
@@ -79,13 +71,13 @@ async function fetchRows(debug = false): Promise<FormattedData[]> {
   console.log("Time on field response:", res.data);
   let rows: FormattedData[] = [];
   for (let i = 0; i < res.data.length; i++) {
-    let player: PlayerTimeDTO = res.data[i];
+    let player: timeOnFieldDTO = res.data[i];
     rows.push(
       createData(
         player.firstName,
         player.lastName,
         player.jerseyNum,
-        player.secondsPlayed
+        player.millisecondsPlayed
       )
     );
   }
