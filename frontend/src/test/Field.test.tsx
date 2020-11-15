@@ -1,10 +1,10 @@
 import React from "react";
 import { cleanup, render } from "@testing-library/react";
-import Player, { createPlayerDraggable } from "../components/recording/Player";
+import Player, { createPlayerDraggables } from "../components/recording/Player";
 import { FieldTarget } from "../components/recording/Field";
-import { DraggableTypes } from "../constants";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
+import CircularBuffer from "../util/circular-buffer";
 
 const roster: Player[] = [
   {
@@ -55,22 +55,24 @@ afterEach(cleanup);
 
 test("renders player draggables on the field", () => {
   // Create mock player draggables
-  // let draggablePlayers: any[] = createPlayerDraggable(roster);
-  // const { getByText } = render(
-  //   <DndProvider backend={HTML5Backend}>
-  //     <FieldTarget
-  //       draggablePlayers={draggablePlayers}
-  //       incrementScore={() => {}}
-  //       getLineup={() => {}}
-  //       previousPossessions:
-  //     />
-  //   </DndProvider>
-  // );
-  // for (let i = 0; i < draggablePlayers.length; i++) {
-  //   // Each player should appear as a button on the field
-  //   const teamName = getByText(
-  //     new RegExp(draggablePlayers[i].props.firstName, "i")
-  //   );
-  //   expect(teamName).toBeInTheDocument();
-  // }
+  let draggablePlayers: any[] = createPlayerDraggables(roster, () => {});
+  const { getByText } = render(
+    <DndProvider backend={HTML5Backend}>
+      <FieldTarget
+        enterShootingState={() => {}}
+        resetPlayerWithPossession={() => {}}
+        draggablePlayers={draggablePlayers}
+        getLineup={() => {}}
+        previousPossessions={new CircularBuffer(0)}
+      />
+    </DndProvider>
+  );
+  for (let i = 0; i < draggablePlayers.length; i++) {
+    // Each player should appear as a button on the field
+
+    const firstName = getByText(
+      new RegExp(draggablePlayers[i].props.player.firstName, "i")
+    );
+    expect(firstName).toBeInTheDocument();
+  }
 });
