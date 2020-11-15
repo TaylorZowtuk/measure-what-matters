@@ -15,6 +15,7 @@ import authHeader from "../services/auth.header";
 import CircularBuffer from "../util/circular-buffer";
 import RecordingProps from "./interfaces/props/recording-props";
 import { fullTimeDTO } from "./interfaces/fullTime";
+import { Col, Row } from "react-bootstrap";
 
 // Provide MatchId to each recording component which requires it through context
 export const MatchIdContext: React.Context<number> = React.createContext(0);
@@ -186,12 +187,18 @@ class Recording extends React.Component<
           value={Number(this.props.location.state.matchId)}
         >
           <h1>Recording</h1>
+          <Row>
+            <Col md="auto">
+              <Team name={this.team_name} score={this.state.goals_for} />
+            </Col>
+            <Col md="auto">
+              <Team name={this.opp_name} score={this.state.goals_against} />
+            </Col>
+          </Row>
           <Bench
             getStartingBench={this.provideStartingBench}
             notifyOfSubs={this.setSubs}
           ></Bench>
-          <Team name={this.team_name} score={this.state.goals_for} />
-          <Team name={this.opp_name} score={this.state.goals_against} />
           <Field
             matchId={Number(this.props.location.state.matchId)}
             getStartingLine={this.provideStartingLine}

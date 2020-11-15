@@ -154,7 +154,8 @@ function BenchTarget(props: BenchTargetProps) {
 
   return (
     <div ref={drop} id="bench">
-      Bench Area
+      <h2>Bench</h2>
+      <h6>Drag players here to substitute</h6>
     </div>
   );
 }
