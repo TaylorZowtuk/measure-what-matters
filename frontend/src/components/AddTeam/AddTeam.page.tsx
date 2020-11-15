@@ -143,7 +143,7 @@ class AddTeam extends React.Component<{}, createTeamState> {
                     lastName: player.lastName,
                     jerseyNum: Number(player.number),
                   });
-                  return;
+                  return null;
                 });
                 console.log(playerArray);
                 axios
