@@ -1,13 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty } from 'class-validator';
 
-export class FullTimeDTO {
+export class StartMatchDTO {
   @ApiProperty()
   @IsNotEmpty()
   matchId: number;
 
   @ApiProperty({
-    description: 'The game time in milliseconds that the game concluded.',
+    description: 'The epoch timestamp the game recording session began.',
   })
   @IsNotEmpty()
   time: number;
