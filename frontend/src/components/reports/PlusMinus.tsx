@@ -107,11 +107,11 @@ export default function PlusMinusComponent() {
                     style={{
                       backgroundColor:
                         plusMinus.plusMinus <= 0
-                          ? plusMinus.plusMinus == 0
+                          ? plusMinus.plusMinus === 0
                             ? "white"
                             : "red"
                           : "green",
-                      color: plusMinus.plusMinus != 0 ? "white" : "black",
+                      color: plusMinus.plusMinus !== 0 ? "white" : "black",
                     }}
                   >
                     {plusMinus.plusMinus}
