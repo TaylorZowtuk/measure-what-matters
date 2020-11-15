@@ -171,10 +171,9 @@ class Roster extends React.Component<
     );
     if (ind > -1) {
       axios
-        .delete(
-          `/players/delete?playerId=${this.state.playerToAction.playerId}`,
-          { headers: authHeader() }
-        )
+        .delete(`/players?playerId=${this.state.playerToAction.playerId}`, {
+          headers: authHeader(),
+        })
         .catch((err) => {
           console.log(err);
         });
