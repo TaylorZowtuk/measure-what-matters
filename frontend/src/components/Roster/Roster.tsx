@@ -83,7 +83,7 @@ class Roster extends React.Component<
     this.getPlayers();
   }
 
-  async getPlayers() {
+  getPlayers = async () => {
     axios
       .get(`/players/teamId?teamId=${this.state.teamId}`, {
         headers: authHeader(),
@@ -91,15 +91,15 @@ class Roster extends React.Component<
       .then((res) => {
         const players: Player[] = res.data;
         this.setState({
-          players: players.sort((a, b) => (a.jerseyNum > b.jerseyNum ? 1 : -1)),
+          players: players.sort((a, b) => (a.jerseyNum > b.jerseyNum ? 1 : -1)), // sort the players by the jersey num for easier viewing
         });
       })
       .catch((err) => {
         console.log(err);
       });
-  }
+  };
 
-  handleActionClicked(player: Player, action: Actions) {
+  handleActionClicked = (player: Player, action: Actions) => {
     if (action === Actions.Edit || action === Actions.Add) {
       this.setState({
         editDialogOpen: true,
@@ -113,7 +113,7 @@ class Roster extends React.Component<
         action: action,
       });
     }
-  }
+  };
 
   handleCancel = () => {
     this.setState({
@@ -123,9 +123,9 @@ class Roster extends React.Component<
     });
   };
 
-  getTitle(action: Actions) {
+  getTitle = (action: Actions) => {
     return `${Actions[action.valueOf()]} Player`;
-  }
+  };
 
   handleEditConfirmation = () => {
     if (this.state.action === Actions.Edit) {
@@ -179,16 +179,16 @@ class Roster extends React.Component<
     this.setStateDefaults();
   };
 
-  setStateDefaults() {
+  setStateDefaults = () => {
     this.setState({
       editDialogOpen: false,
       deleteDialogOpen: false,
       playerToAction: defaultPlayer,
       action: Actions.None,
     });
-  }
+  };
 
-  editDialogContents(player: Player): JSX.Element {
+  editDialogContents = (player: Player): JSX.Element => {
     return (
       <div>
         <TextField
@@ -232,7 +232,7 @@ class Roster extends React.Component<
         ></TextField>
       </div>
     );
-  }
+  };
 
   render() {
     return (
