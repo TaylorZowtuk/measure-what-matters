@@ -3,7 +3,6 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  Index,
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
@@ -13,8 +12,7 @@ import { IEvent } from './IEvent.interface';
 import { Match } from '../match.entity';
 import { Player } from '../player.entity';
 @Entity()
-@Index(['matchId', 'playerId', 'neutral'])
-export class Possession extends BaseEntity implements IEvent {
+export class Shot extends BaseEntity implements IEvent {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -27,7 +25,7 @@ export class Possession extends BaseEntity implements IEvent {
   match: Match;
   @Column()
   matchId: number;
-  
+
   @Column({ type: 'int' })
   time: number;
 
@@ -38,19 +36,18 @@ export class Possession extends BaseEntity implements IEvent {
   )
   @JoinColumn({ name: 'playerId' })
   player: Player;
-
   @Column({ nullable: true })
   playerId: number;
 
-  @Column({ type: 'bool' })
-  neutral: boolean;
+  @Column()
+  onTarget: boolean;
 
   @Column({ type: 'bool', default: false })
   archived: boolean;
 
   @CreateDateColumn()
   createdDate: Date;
-
+  
   @UpdateDateColumn()
   updatedDate: Date;
 }

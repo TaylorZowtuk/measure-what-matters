@@ -9,6 +9,11 @@ export class UpdatePlayerDTO {
 
   @ApiProperty()
   @IsNotEmpty()
+  @IsNumber()
+  teamId: number;
+
+  @ApiProperty()
+  @IsNotEmpty()
   @IsString()
   firstName: string;
 

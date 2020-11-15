@@ -11,6 +11,7 @@ import authHeader from "../services/auth.header";
 import axios from "axios";
 
 import Player from "./Player";
+import { MatchIdContext } from "./Recording.page";
 
 export type StartingPlayer = {
   id?: number;
@@ -28,7 +29,6 @@ type Substitution = {
 };
 
 type BenchProps = {
-  matchId: number;
   getStartingBench: Function;
   notifyOfSubs: Function;
 };
@@ -67,7 +67,7 @@ class Bench extends React.Component<
   removeFromBench = (removeNum: number): Player | undefined => {
     // Remove the player (first instance) from onBench whose number is num
     var array = [...this.state.onBench];
-    var index = array.findIndex((player) => player.num === removeNum);
+    var index = array.findIndex((player) => player.jerseyNum === removeNum);
     if (index !== -1) {
       let p = array.splice(index, 1)[0];
       this.setState({ onBench: array }); // Remove the player and return it
@@ -90,17 +90,17 @@ class Bench extends React.Component<
     this.setState({ substituteFor: undefined });
   };
 
-  substitute = (num: number): void => {
+  substitute = (num: number, matchId: number): void => {
     if (this.state.substituteFor === undefined) {
       console.log("Error: substituteFor is undefined");
       return;
     }
     let sub: Substitution = {
       playerIdIn: this.state.onBench[
-        this.state.onBench.findIndex((player) => player.num === num)
+        this.state.onBench.findIndex((player) => player.jerseyNum === num)
       ].playerId, // Player who is coming onto field
       playerIdOut: this.state.substituteFor.playerId, // Player who is leaving field
-      matchId: 1,
+      matchId: matchId,
       time: Date.now(),
     };
     axios
@@ -144,7 +144,7 @@ function BenchTarget(props: BenchTargetProps) {
   const [, drop] = useDrop({
     accept: DraggableTypes.PLAYER,
     drop: (item: any, _monitor: DropTargetMonitor) => {
-      if (item.player.team === "ours") {
+      if (item.player.teamId !== -1) {
         // Only allow our players to be dropped on bench
         props.toggleIsExpanded();
         props.setSubstituteFor(item.player);
@@ -194,14 +194,18 @@ export function OpenBench(props: OpenBenchProps) {
     <div className={classes.root}>
       <GridList className={classes.gridList} cols={10} cellHeight={"auto"}>
         {props.players.map((player: Player) => (
-          <GridListTile key={player.num}>
-            <Button
-              key={player.num}
-              variant="dark"
-              onClick={() => props.substitute(player.num)}
-            >
-              {player.num} {player.first_name} {player.last_name}
-            </Button>
+          <GridListTile key={player.jerseyNum}>
+            <MatchIdContext.Consumer>
+              {(matchId) => (
+                <Button
+                  key={player.jerseyNum}
+                  variant="dark"
+                  onClick={() => props.substitute(player.jerseyNum, matchId)}
+                >
+                  {player.jerseyNum} {player.firstName} {player.lastName}
+                </Button>
+              )}
+            </MatchIdContext.Consumer>
           </GridListTile>
         ))}
       </GridList>
