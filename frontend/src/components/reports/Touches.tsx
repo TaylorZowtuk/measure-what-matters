@@ -8,7 +8,7 @@ import {
   HorizontalGridLines,
   VerticalBarSeries,
 } from "react-vis";
-import { Col, Container, Row } from "react-bootstrap";
+import { Container } from "react-bootstrap";
 
 type DataType = {
   x: string;
