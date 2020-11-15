@@ -7,13 +7,17 @@ import {
   ParseIntPipe,
   Post,
   Query,
+  UseGuards,
 } from '@nestjs/common';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
-import { ShotDTO } from 'src/dto/events/shot/shot.dto';
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
+import { ShotDTO } from '../../dto/events/shot/shot.dto';
 import { CreateShotDTO } from '../../dto/events/shot/createShot.dto';
 import { ShotService } from './shot.service';
 
 @ApiTags('Shots')
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
 @Controller('event/shots')
 export class ShotController {
   constructor(private readonly shotService: ShotService) {}
@@ -34,7 +38,7 @@ export class ShotController {
       if (error.message.includes('violates foreign key constraint')) {
         throw new BadRequestException('MatchId or PlayerId invalid');
       } else {
-        throw new InternalServerErrorException('Unknown error occured');
+        throw new InternalServerErrorException('Unknown error occurred');
       }
     }
   }
@@ -52,7 +56,7 @@ export class ShotController {
   })
   @ApiResponse({
     status: 500,
-    description: 'Unknown error occured',
+    description: 'Unknown error occurred',
   })
   async getShotsByMatch(@Query('matchId', ParseIntPipe) matchId: number) {
     try {
