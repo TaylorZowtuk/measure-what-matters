@@ -15,6 +15,7 @@ import { Player } from '../player.entity';
 export class Shot extends BaseEntity implements IEvent {
   @PrimaryGeneratedColumn()
   id: number;
+
   @ManyToOne(
     () => Match,
     match => match.matchId,
@@ -24,8 +25,10 @@ export class Shot extends BaseEntity implements IEvent {
   match: Match;
   @Column()
   matchId: number;
+
   @Column({ type: 'int' })
   time: number;
+
   @ManyToOne(
     () => Player,
     player => player.playerId,
@@ -35,12 +38,16 @@ export class Shot extends BaseEntity implements IEvent {
   player: Player;
   @Column({ nullable: true })
   playerId: number;
+
   @Column()
   onTarget: boolean;
+
   @Column({ type: 'bool', default: false })
   archived: boolean;
+
   @CreateDateColumn()
   createdDate: Date;
+  
   @UpdateDateColumn()
   updatedDate: Date;
 }

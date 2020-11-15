@@ -15,6 +15,7 @@ import { Player } from '../player.entity';
 export class Possession extends BaseEntity implements IEvent {
   @PrimaryGeneratedColumn()
   id: number;
+
   @ManyToOne(
     () => Match,
     match => match.matchId,
@@ -24,6 +25,7 @@ export class Possession extends BaseEntity implements IEvent {
   match: Match;
   @Column()
   matchId: number;
+  
   @Column({ type: 'int' })
   time: number;
 
@@ -43,8 +45,10 @@ export class Possession extends BaseEntity implements IEvent {
 
   @Column({ type: 'bool', default: false })
   archived: boolean;
+
   @CreateDateColumn()
   createdDate: Date;
+
   @UpdateDateColumn()
   updatedDate: Date;
 }
