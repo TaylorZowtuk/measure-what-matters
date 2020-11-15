@@ -21,14 +21,7 @@ import CustomDialog from "../CustomDialog";
 import { Link, RouteComponentProps } from "react-router-dom";
 import { StaticContext } from "react-router";
 import RosterProps from "../interfaces/props/roster-props";
-
-interface Player {
-  playerId: number;
-  teamId: number;
-  firstName: string;
-  lastName: string;
-  jerseyNum: number;
-}
+import Player from "../interfaces/player";
 
 interface State {
   players: Player[];
