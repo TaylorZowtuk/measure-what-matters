@@ -103,7 +103,6 @@ function changePossession(
       matchId: matchId,
       time: Date.now() % 10000, // TODO: switch to game time
     };
-    console.log("Their possession", possessionEvent);
     axios
       .post(`/event/possession/opposition`, possessionEvent, {
         headers: authHeader(),
