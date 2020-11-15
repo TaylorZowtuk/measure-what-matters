@@ -2,8 +2,11 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Delete,
   Get,
   InternalServerErrorException,
+  Param,
+  ParseIntPipe,
   Post,
   Query,
   UseGuards,
@@ -81,6 +84,35 @@ export class AssistController {
       return await this.assistService.getAssistByMatchId(matchId);
     } else {
       throw new BadRequestException('Both playerId and matchId null');
+    }
+  }
+
+  @Delete('/delete')
+  @ApiResponse({
+    status: 200,
+    description: 'Assist event removed successfully',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Assist event does not exist in database',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Not a number, number expected',
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Unknown error occured',
+  })
+  async deleteAssist(@Query('id', ParseIntPipe) id: number): Promise<void> {
+    try {
+      return await this.assistService.removeAssistEventById(id);
+    } catch (error) {
+      if (error.message.includes('not found')) {
+        throw error;
+      } else {
+        throw new InternalServerErrorException('Unknown error occured');
+      }
     }
   }
 }

@@ -20,6 +20,10 @@ import { RequestUser } from '../types/requestUser.type';
 import { EditUserDTO } from '../dto/users/editUser.dto';
 
 @ApiTags('Users')
+@ApiResponse({
+  status: 500,
+  description: 'Unknown exception ocurred.',
+})
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
@@ -35,10 +39,6 @@ export class UsersController {
   @ApiResponse({
     status: 401,
     description: 'User is not authenticated.',
-  })
-  @ApiResponse({
-    status: 500,
-    description: 'Unknown exception ocurred.',
   })
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
@@ -68,20 +68,8 @@ export class UsersController {
   @Post('profile/edit')
   async editUser(@Body() data: EditUserDTO, @Request() { user }: RequestUser) {
     try {
-      return await this.usersService.update(
-        user.userId,
-        data.name,
-        data.teamId,
-      );
+      return await this.usersService.update(user.userId, data.name);
     } catch (error) {
-      Logger.error(error);
-      if (error instanceof QueryFailedError) {
-        if (error.message.includes('violates foreign key constraint ')) {
-          throw new BadRequestException(
-            'TeamId must reference a team that already exists',
-          );
-        }
-      }
       throw new InternalServerErrorException(error);
     }
   }
@@ -101,10 +89,6 @@ export class UsersController {
   @ApiResponse({
     status: 409,
     description: 'Username is taken.',
-  })
-  @ApiResponse({
-    status: 500,
-    description: 'Unknown exception ocurred.',
   })
   @Post('/create')
   async createUser(

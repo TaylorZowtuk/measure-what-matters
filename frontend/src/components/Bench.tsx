@@ -31,6 +31,7 @@ type Substitution = {
 type BenchProps = {
   getStartingBench: Function;
   notifyOfSubs: Function;
+  inShootingState: boolean;
 };
 
 class Bench extends React.Component<
@@ -118,6 +119,8 @@ class Bench extends React.Component<
   componentDidUpdate(_prevProps: any, _prevState: any) {}
 
   render() {
+    if (this.props.inShootingState) return null; // If were in the shooting state, hide the bench
+
     if (this.state.isExpanded) {
       return (
         <OpenBench players={this.state.onBench} substitute={this.substitute} />
@@ -144,7 +147,7 @@ function BenchTarget(props: BenchTargetProps) {
   const [, drop] = useDrop({
     accept: DraggableTypes.PLAYER,
     drop: (item: any, _monitor: DropTargetMonitor) => {
-      if (item.player.team === "ours") {
+      if (item.player.teamId !== -1) {
         // Only allow our players to be dropped on bench
         props.toggleIsExpanded();
         props.setSubstituteFor(item.player);
@@ -154,7 +157,8 @@ function BenchTarget(props: BenchTargetProps) {
 
   return (
     <div ref={drop} id="bench">
-      Bench Area
+      <h2>Bench</h2>
+      <h6>Drag players here to substitute</h6>
     </div>
   );
 }
@@ -202,7 +206,7 @@ export function OpenBench(props: OpenBenchProps) {
                   variant="dark"
                   onClick={() => props.substitute(player.playerId, matchId)}
                 >
-                  {player.num} {player.firstName} {player.lastName}
+                  {player.jerseyNum} {player.firstName} {player.lastName}
                 </Button>
               )}
             </MatchIdContext.Consumer>

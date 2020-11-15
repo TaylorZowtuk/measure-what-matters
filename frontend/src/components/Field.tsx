@@ -4,15 +4,19 @@ import { useDrop } from "react-dnd";
 import { Container, Row, Col } from "react-bootstrap";
 import { cloneDeep } from "lodash";
 import { CircularBuffer } from "../util/circular-buffer";
+import axios from "axios";
 
-import Player, {
-  createPlayerDraggable,
-  createPlayerDraggables,
-} from "./Player";
+import { createPlayerDraggable, createPlayerDraggables } from "./Player";
+import Player from "./interfaces/player";
+import authHeader from "../services/auth.header";
+import { NeutralPossessionDTO } from "./interfaces/neutralPossession";
+import { ShotFieldInfo } from "./recording/ShotResultPicker";
 
 type FieldProps = {
+  matchId: number;
   getStartingLine: Function;
-  incrementScore: Function;
+  inShootingState: boolean;
+  enterShootingState: Function;
   removeFromField: Player | undefined;
   addToField: Player | undefined;
   resetSubs: Function;
@@ -21,7 +25,7 @@ type FieldProps = {
 class Field extends React.Component<
   FieldProps,
   {
-    onField: any[]; // Array of draggablePlayer jsx elements
+    onField: JSX.Element[]; // Array of draggablePlayer jsx elements
     playerIndexWithPossession: number; // The index into onField of the player who currently has possession of the ball
   }
 > {
@@ -32,8 +36,8 @@ class Field extends React.Component<
     const oppositionPlayer: Player = {
       firstName: "Opposing",
       lastName: "Team",
-      num: -1,
-      team: "theirs",
+      jerseyNum: -1,
+      teamId: -1,
       playerId: -1,
     };
     const oppositionDraggable = createPlayerDraggable(
@@ -152,9 +156,21 @@ class Field extends React.Component<
   };
 
   resetPlayerWithPossession = (): void => {
+    // Reset possession state
     this.changePossession(Number.NEGATIVE_INFINITY);
 
-    // TODO: post to neutral ball endpoint
+    // Post to neutral ball endpoint
+    let possessionEvent: NeutralPossessionDTO = {
+      matchId: this.props.matchId,
+      time: Date.now() % 10000, // TODO: switch to game time
+    };
+    axios
+      .post(`/event/possession/neutral`, possessionEvent, {
+        headers: authHeader(),
+      })
+      .then((res) => {
+        console.log("Post neutral possession response:", res); // TODO: catch error and handle if needed
+      });
   };
 
   async componentDidUpdate(prevProps: any, _prevState: any) {
@@ -168,9 +184,14 @@ class Field extends React.Component<
   }
 
   render() {
+    if (this.props.inShootingState) {
+      // If were in the shooting state hide the field
+      return null;
+    }
+
     return (
       <FieldTarget
-        incrementScore={this.props.incrementScore}
+        enterShootingState={this.props.enterShootingState}
         draggablePlayers={this.state.onField}
         previousPossessions={this.previousPossessions}
         resetPlayerWithPossession={this.resetPlayerWithPossession}
@@ -181,7 +202,7 @@ class Field extends React.Component<
 }
 
 type FieldTargetProps = {
-  incrementScore: Function;
+  enterShootingState: Function;
   draggablePlayers: any[];
   previousPossessions: CircularBuffer<number>;
   resetPlayerWithPossession: Function;
@@ -192,16 +213,16 @@ export function FieldTarget(props: FieldTargetProps) {
   const [, drop] = useDrop({
     accept: DraggableTypes.PLAYER,
     drop: (item: any, monitor) => {
+      // A shot was taken
       if (item.player.playerId === props.previousPossessions.peekBack()) {
         // Only allow the player who currently has the ball to 'shoot'
         props.resetPlayerWithPossession();
-        const ourGoal: Boolean = item.player.team === "ours" ? true : false;
-        props.incrementScore(
-          ourGoal,
-          item.player,
-          props.previousPossessions,
-          props.getLineup()
-        );
+        let shotFieldInfo: ShotFieldInfo = {
+          shooter: item.player,
+          previousPossessions: props.previousPossessions,
+          getLineup: props.getLineup,
+        };
+        props.enterShootingState(true, shotFieldInfo);
       }
     },
   });
