@@ -45,6 +45,8 @@ const Dashboard = () => (
       <Row style={{ margin: "20px" }}>
         <Col>
           <LineupGoal />
+        </Col>
+      </Row>
       <Row style={{ margin: "20px" }}>
         <Col>
           <PlusMinusComponent />
