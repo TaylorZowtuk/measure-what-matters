@@ -12,7 +12,7 @@ export class SubstitutionExchangeDTO {
 
   @ApiProperty({
     format: 'int',
-    description: 'The time that the player was subbed out in seconds',
+    description: 'The time that the player was subbed out in milliseconds',
   })
   time: number;
 }
