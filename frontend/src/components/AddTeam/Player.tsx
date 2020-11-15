@@ -30,7 +30,7 @@ class Player extends React.Component<PlayerProps> {
         </td>
         <td>{this.props.player.number}</td>
         <td>
-          <button onClick={this.removePlayer}>remove</button>
+          <button onClick={this.removePlayer}>REMOVE</button>
         </td>
       </tr>
     );
