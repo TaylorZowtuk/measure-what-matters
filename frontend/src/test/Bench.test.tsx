@@ -24,7 +24,7 @@ test("renders the bench area when not expanded", () => {
 });
 
 test("does not render the bench area when in shooting state", () => {
-  const { getByText } = render(
+  render(
     <DndProvider backend={HTML5Backend}>
       <Bench
         getStartingBench={() => {}}

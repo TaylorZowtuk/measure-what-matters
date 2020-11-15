@@ -81,7 +81,7 @@ test("renders player draggables on the field", () => {
 test("does not render player draggables on the field when in shooting state", () => {
   // Create mock player draggables
   let draggablePlayers: any[] = createPlayerDraggables(roster, () => {});
-  const { getByText } = render(
+  render(
     <DndProvider backend={HTML5Backend}>
       <Field
         matchId={1}

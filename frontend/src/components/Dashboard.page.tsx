@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import Button from "@material-ui/core/Button";
 import TimeOnField from "./reports/TimeOnField";
 import { Col, Container, Row } from "react-bootstrap";
-import PossessionCircular from "./reports/Possession";
+import PossessionCircular, { fetchTimes } from "./reports/Possession";
 import TouchesBar from "./reports/Touches";
 
 const Dashboard = () => (
@@ -23,7 +23,7 @@ const Dashboard = () => (
     <Container style={{ backgroundColor: "#282c34" }}>
       <Row>
         <Col>
-          <PossessionCircular />
+          <PossessionCircular fetchTimes={fetchTimes} />
         </Col>
       </Row>
       <Row>

@@ -7,7 +7,7 @@ import Box from "@material-ui/core/Box";
 import { Col, Container, Row } from "react-bootstrap";
 import { withStyles } from "@material-ui/core/styles";
 
-function CircularProgressWithLabel(
+export function CircularProgressWithLabel(
   props: CircularProgressProps & { value: number }
 ) {
   const StyledProgress = withStyles({
@@ -46,7 +46,7 @@ function CircularProgressWithLabel(
   );
 }
 
-function fetchTimes(debug = true): number[] {
+export function fetchTimes(debug = true): number[] {
   if (debug) {
     // Return 3 hardcoded values
     return [68, 32, 50];
@@ -56,11 +56,15 @@ function fetchTimes(debug = true): number[] {
   return [68, 32, 50];
 }
 
-export default function PossessionCircular() {
-  let times: number[] = fetchTimes();
-  while (times.length < 3) {
+type PossessionCircularProps = {
+  fetchTimes: Function; // Dependency inject for testing
+};
+
+export default function PossessionCircular(props: PossessionCircularProps) {
+  let times: number[] = props.fetchTimes();
+  if (!times || times.length < 3) {
     // If there was a problem with fetch, then display 0's
-    times.push(0);
+    times = [0, 0, 0];
   }
 
   return (
