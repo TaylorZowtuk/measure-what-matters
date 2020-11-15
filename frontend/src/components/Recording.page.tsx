@@ -14,6 +14,7 @@ import Player from "./interfaces/player";
 import authHeader from "../services/auth.header";
 import CircularBuffer from "../util/circular-buffer";
 import RecordingProps from "./interfaces/props/recording-props";
+import { fullTimeDTO } from "./interfaces/fullTime";
 
 // Provide MatchId to each recording component which requires it through context
 export const MatchIdContext: React.Context<number> = React.createContext(0);
@@ -54,6 +55,7 @@ class Recording extends React.Component<
       subBench: undefined,
       lineup: this.props.location.state.startingLineup,
     };
+    // TODO: add start match call
   }
 
   provideStartingLine = (): Player[] => {
@@ -150,6 +152,20 @@ class Recording extends React.Component<
     previousPossessions.clear();
   };
 
+  endGame = (): void => {
+    // Post to the match end game endpoint
+    let endTime: fullTimeDTO = {
+      matchId: Number(this.props.location.state.matchId),
+      fullTime: Date.now(),
+    };
+
+    axios
+      .post(`/match/fullTime`, endTime, { headers: authHeader() })
+      .then((res) => {
+        console.log("Post full time response:", res); // TODO: catch error and handle if needed
+      });
+  };
+
   deviceSupportsTouch(): boolean {
     // Dont catch laptops with touch
     try {
@@ -184,7 +200,9 @@ class Recording extends React.Component<
             resetSubs={this.setSubs}
           />
           <Link to="/dashboard">
-            <Button variant="contained">Finish Recording</Button>
+            <Button variant="contained" onClick={this.endGame}>
+              Finish Recording
+            </Button>
           </Link>
         </MatchIdContext.Provider>
       </DndProvider>
