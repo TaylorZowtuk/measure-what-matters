@@ -11,8 +11,8 @@ export class SubstitutionExchangeDTO {
   matchId: number;
 
   @ApiProperty({
-    format: 'int64',
-    description: 'The time that the player was subbed out',
+    format: 'int',
+    description: 'The time that the player was subbed out in milliseconds',
   })
   time: number;
 }

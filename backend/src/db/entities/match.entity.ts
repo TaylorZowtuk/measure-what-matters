@@ -1,27 +1,54 @@
-import { BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
-import { Team } from "./team.entity";
+import {
+  BaseEntity,
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
+import { Team } from './team.entity';
 
 @Entity()
-
 export class Match extends BaseEntity {
+  @PrimaryGeneratedColumn()
+  matchId: number;
 
-    @PrimaryGeneratedColumn()
-    matchId : number;
+  @ManyToOne(
+    () => Team,
+    team => team.teamId,
+    { eager: true },
+  )
+  @JoinColumn({ name: 'teamId' })
+  team: Team;
 
-    @ManyToOne(type => Team, team => team.teamId, {eager: true})
-    @JoinColumn()
-    teamId: number;
+  @Column()
+  teamId: number;
 
-    @Column({ type: "bigint" })
-    time: number;
+  // Epoch time of game date/time
+  @Column({ type: 'int' })
+  scheduledTime: number;
 
-    @Column()
-    isHomeTeam: boolean;
+  // Epoch time of date/time recording began
+  @Column({ type: 'int', nullable: true })
+  startTime: number;
 
-    @CreateDateColumn()
-    createdDate: Date;
-  
-    @UpdateDateColumn()
-    updatedDate: Date;
+  @Column({ nullable: true })
+  halfTime: number;
 
+  @Column({ nullable: true })
+  fullTime: number;
+
+  @Column()
+  opponentTeamName: string;
+
+  @Column()
+  isHomeTeam: boolean;
+
+  @CreateDateColumn()
+  createdDate: Date;
+
+  @UpdateDateColumn()
+  updatedDate: Date;
 }

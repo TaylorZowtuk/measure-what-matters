@@ -8,8 +8,6 @@ import {
   Post,
   Query,
   UseGuards,
-  UsePipes,
-  ValidationPipe,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { QueryFailedError } from 'typeorm';
@@ -32,7 +30,6 @@ export class LineupController {
     description: 'Violates foreign key, or null value entered',
   })
   @ApiResponse({ status: 500, description: 'Unknown error occured' })
-  @UsePipes(ValidationPipe)
   async createLineup(@Body() lineup: CreateLineupDTO) {
     try {
       return await this.lineupService.saveLineup(lineup);
@@ -44,7 +41,7 @@ export class LineupController {
           throw new BadRequestException('null value entered for parameter');
         }
       } else {
-        throw new InternalServerErrorException('Unknown error');
+        throw new InternalServerErrorException('Unknown error occurred');
       }
     }
   }

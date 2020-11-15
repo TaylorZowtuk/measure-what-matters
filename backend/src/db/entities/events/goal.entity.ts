@@ -25,18 +25,18 @@ export class Goal extends BaseEntity implements IEvent {
   @JoinColumn({ name: 'matchId' })
   match: Match;
 
-  @Column({ type: 'bigint' })
+  @Column({ type: 'int' })
   time: number;
 
   @ManyToOne(
     () => Player,
     player => player.playerId,
-    { eager: true },
+    { eager: true, nullable: true },
   )
   @JoinColumn({ name: 'playerId' })
   player: Player;
 
-  @Column()
+  @Column({ nullable: true })
   playerId: number;
 
   @Column()

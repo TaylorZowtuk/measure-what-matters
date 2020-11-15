@@ -4,7 +4,10 @@ export class GoalDTO {
   @ApiProperty()
   matchId: number;
 
-  @ApiProperty({ format: 'int64' })
+  @ApiProperty({
+    format: 'int',
+    description: 'The time the goal was scored in milliseconds',
+  })
   time: number;
 
   @ApiProperty()

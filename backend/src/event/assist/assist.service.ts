@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Assist } from '../../db/entities/events/assist.entity';
@@ -67,6 +67,22 @@ export class AssistService {
       where: { matchId: matchId, playerId: playerId },
     });
     return this.convertToDto(assists);
+  }
+
+  /**
+   * Deletes an assist event
+   *
+   * @param id: ID of the assist to be deleted
+   *
+   * @returns a void promise
+   */
+
+  async removeAssistEventById(id: number): Promise<void> {
+    const result = await this.assistRepo.delete(id);
+
+    if (result.affected === 0) {
+      throw new NotFoundException('Assist with ID ' + id + ' not found');
+    }
   }
 
   /**

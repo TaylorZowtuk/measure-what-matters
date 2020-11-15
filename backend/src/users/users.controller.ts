@@ -4,7 +4,9 @@ import {
   ConflictException,
   Controller,
   Get,
+  HttpCode,
   InternalServerErrorException,
+  Logger,
   Post,
   Request,
 } from '@nestjs/common';
@@ -15,8 +17,13 @@ import { UseGuards, UnauthorizedException } from '@nestjs/common';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RequestUser } from '../types/requestUser.type';
+import { EditUserDTO } from '../dto/users/editUser.dto';
 
 @ApiTags('Users')
+@ApiResponse({
+  status: 500,
+  description: 'Unknown exception ocurred.',
+})
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
@@ -33,17 +40,13 @@ export class UsersController {
     status: 401,
     description: 'User is not authenticated.',
   })
-  @ApiResponse({
-    status: 500,
-    description: 'Unknown exception ocurred.',
-  })
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Get('/profile')
   async getUserDetails(@Request() { user }: RequestUser) {
     let userData;
     try {
-      userData = await this.usersService.findOne(user.username);
+      userData = await this.usersService.findOne(user.userId);
     } catch (error) {
       throw new InternalServerErrorException(
         "We don't know what went wrong :(",
@@ -52,9 +55,23 @@ export class UsersController {
     if (!userData) {
       throw new BadRequestException('User not found.');
     }
-    const returnable = { ...userData };
-    delete returnable.password;
-    return returnable;
+    return userData;
+  }
+
+  @ApiResponse({
+    status: 200,
+    description: 'User details updated successfully',
+  })
+  @ApiBearerAuth()
+  @HttpCode(200)
+  @UseGuards(JwtAuthGuard)
+  @Post('profile/edit')
+  async editUser(@Body() data: EditUserDTO, @Request() { user }: RequestUser) {
+    try {
+      return await this.usersService.update(user.userId, data.name);
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
   }
 
   @ApiResponse({
@@ -72,10 +89,6 @@ export class UsersController {
   @ApiResponse({
     status: 409,
     description: 'Username is taken.',
-  })
-  @ApiResponse({
-    status: 500,
-    description: 'Unknown exception ocurred.',
   })
   @Post('/create')
   async createUser(

@@ -1,6 +1,6 @@
 import React from "react";
 import { cleanup, render } from "@testing-library/react";
-import Recording from "../components/Recording.page";
+import Recording from "../components/recording/Recording.page";
 import { BrowserRouter } from "react-router-dom";
 import { routerTestProps } from "./routerTestProps";
 

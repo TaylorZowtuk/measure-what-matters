@@ -3,6 +3,9 @@ import { Link } from "react-router-dom";
 import Button from "@material-ui/core/Button";
 import TimeOnField from "./reports/TimeOnField";
 import LineupGoal from "./LineupGoal/LineupGoal";
+import { Col, Container, Row } from "react-bootstrap";
+import PossessionCircular from "./reports/Possession";
+import TouchesBar from "./reports/Touches";
 
 const Dashboard = () => (
   <div className="dashboard">
@@ -10,25 +13,40 @@ const Dashboard = () => (
     <br></br>
 
     {/* Navigation */}
-    <Link
-      to={{
-        pathname: "/recording",
-        state: {
-          matchId: 1,
-          teamId: 1,
-        },
-      }}
-    >
+    <Link to="/matches/upcoming">
       <Button variant="contained">Recording</Button>
     </Link>
     <Link to="/teams">
       <Button variant="contained">Teams</Button>
     </Link>
+    <Link to="/view-account">
+      <Button variant="contained">Account</Button>
+    </Link>
 
     {/* Reports */}
     <TimeOnField />
-    <br></br>
-    <LineupGoal></LineupGoal>
+    <Container style={{ backgroundColor: "#282c34" }}>
+      <Row>
+        <Col>
+          <PossessionCircular />
+        </Col>
+      </Row>
+      <Row>
+        <Col>
+          <TouchesBar />
+        </Col>
+      </Row>
+      <Row>
+        <Col>
+          <TimeOnField />
+        </Col>
+      </Row>
+      <Row>
+        <Col>
+          <LineupGoal />
+        </Col>
+      </Row>
+    </Container>
   </div>
 );
 
