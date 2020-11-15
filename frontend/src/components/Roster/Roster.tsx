@@ -18,6 +18,9 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import PersonAddIcon from "@material-ui/icons/PersonAdd";
 import CSS from "csstype";
 import CustomDialog from "../CustomDialog";
+import { Link, RouteComponentProps } from "react-router-dom";
+import { StaticContext } from "react-router";
+import RosterProps from "../interfaces/props/roster-props";
 
 interface Player {
   playerId: number;
@@ -27,19 +30,25 @@ interface Player {
   jerseyNum: number;
 }
 
-interface Props {}
-
 interface State {
   players: Player[];
   editDialogOpen: boolean;
   deleteDialogOpen: boolean;
   playerToAction: Player;
   action: Actions;
+  teamId: number;
+}
+
+interface CreatePlayerDTO {
+  teamId: number;
+  firstName: string;
+  lastName: string;
+  jerseyNum: number;
 }
 
 const tableStyling: CSS.Properties = {
-  height: "50vh",
-  width: "50vw",
+  height: "70vh",
+  width: "40vw",
   margin: "auto",
 };
 
@@ -58,8 +67,20 @@ enum Actions {
   Add,
 }
 
-class Roster extends React.Component<Props, State> {
-  constructor(props: Props) {
+const textHeaderStyling: CSS.Properties = {
+  marginTop: "10vh",
+  marginBottom: "5vh",
+};
+
+const buttonStyling: CSS.Properties = {
+  margin: "2vh",
+};
+
+class Roster extends React.Component<
+  RouteComponentProps<{}, StaticContext, RosterProps>,
+  State
+> {
+  constructor(props: RouteComponentProps<{}, StaticContext, RosterProps>) {
     super(props);
     this.state = {
       players: [],
@@ -67,6 +88,7 @@ class Roster extends React.Component<Props, State> {
       deleteDialogOpen: false,
       playerToAction: defaultPlayer,
       action: Actions.None,
+      teamId: props.location.state.teamId,
     };
   }
 
@@ -75,10 +97,16 @@ class Roster extends React.Component<Props, State> {
   }
 
   async getPlayers() {
-    const res = await axios.get(`/players/teamId?teamId=1`, {
-      headers: authHeader(),
-    });
-    this.setState({ players: res.data });
+    axios
+      .get(`/players/teamId?teamId=${this.state.teamId}`, {
+        headers: authHeader(),
+      })
+      .then((res) => {
+        this.setState({ players: res.data });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
   handleActionClicked(player: Player, action: Actions) {
@@ -110,22 +138,30 @@ class Roster extends React.Component<Props, State> {
   }
 
   handleEditConfirmation = () => {
-    const ind = this.state.players.findIndex(
-      (player) => player.playerId === this.state.playerToAction.playerId
-    );
-    const editedPlayers = this.state.players;
-
-    if (ind > -1) {
-      editedPlayers[ind] = this.state.playerToAction;
-      this.setState({
-        players: editedPlayers,
-      });
-    } else if (this.state.playerToAction.jerseyNum !== -1) {
-      editedPlayers.push(this.state.playerToAction);
-      this.setState({
-        players: editedPlayers,
-      });
+    if (this.state.action === Actions.Edit) {
+      axios
+        .post("/players/edit", this.state.playerToAction, {
+          headers: authHeader(),
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else if (this.state.action === Actions.Add) {
+      const dto: CreatePlayerDTO = {
+        teamId: this.state.teamId,
+        firstName: this.state.playerToAction.firstName,
+        lastName: this.state.playerToAction.lastName,
+        jerseyNum: this.state.playerToAction.jerseyNum,
+      };
+      axios
+        .post("/players", [dto], {
+          headers: authHeader(),
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
+    this.getPlayers();
     this.setStateDefaults();
   };
 
@@ -134,15 +170,16 @@ class Roster extends React.Component<Props, State> {
       (player) => player.playerId === this.state.playerToAction.playerId
     );
     if (ind > -1) {
-      const editedPlayers = this.state.players;
-      console.log(editedPlayers);
-      editedPlayers.splice(ind, 1);
-      console.log(editedPlayers);
-      this.setState({
-        players: editedPlayers,
-      });
-      console.log(this.state);
+      axios
+        .delete(
+          `/players/delete?playerId=${this.state.playerToAction.playerId}`,
+          { headers: authHeader() }
+        )
+        .catch((err) => {
+          console.log(err);
+        });
     }
+    this.getPlayers();
     this.setStateDefaults();
   };
 
@@ -179,11 +216,9 @@ class Roster extends React.Component<Props, State> {
           onChange={(e: any) => {
             const player = this.state.playerToAction;
             player.lastName = e.target.value;
-            console.log(this.state);
             this.setState({
               playerToAction: player,
             });
-            console.log(this.state);
           }}
         ></TextField>
         <TextField
@@ -206,15 +241,15 @@ class Roster extends React.Component<Props, State> {
   render() {
     return (
       <div>
+        <h1 style={textHeaderStyling}>Edit Roster</h1>
         <TableContainer component={Paper} style={tableStyling}>
           <Table stickyHeader>
             <TableHead>
               <TableRow>
                 <TableCell>First Name</TableCell>
                 <TableCell>Last Name</TableCell>
-                <TableCell>Jersey Number</TableCell>
-                <TableCell></TableCell>
-                <TableCell>
+                <TableCell align="center">Jersey Number</TableCell>
+                <TableCell align="right">
                   <Button
                     variant="contained"
                     color="default"
@@ -236,8 +271,8 @@ class Roster extends React.Component<Props, State> {
                 <TableRow key={player.playerId} hover>
                   <TableCell>{player.firstName}</TableCell>
                   <TableCell>{player.lastName}</TableCell>
-                  <TableCell>{player.jerseyNum}</TableCell>
-                  <TableCell>
+                  <TableCell align="center">{player.jerseyNum}</TableCell>
+                  <TableCell align="right">
                     <IconButton
                       onClick={() => {
                         this.handleActionClicked({ ...player }, Actions.Edit);
@@ -245,8 +280,6 @@ class Roster extends React.Component<Props, State> {
                     >
                       <EditIcon />
                     </IconButton>
-                  </TableCell>
-                  <TableCell>
                     <IconButton
                       onClick={() => {
                         this.handleActionClicked({ ...player }, Actions.Delete);
@@ -260,6 +293,11 @@ class Roster extends React.Component<Props, State> {
             </TableBody>
           </Table>
         </TableContainer>
+        <Link to="/teams">
+          <Button style={buttonStyling} variant="contained">
+            Back
+          </Button>
+        </Link>
         <CustomDialog
           isOpen={this.state.editDialogOpen}
           handleConfirmation={this.handleEditConfirmation}
