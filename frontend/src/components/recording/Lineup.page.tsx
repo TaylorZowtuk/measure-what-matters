@@ -18,7 +18,7 @@ import { RouteComponentProps } from "react-router-dom";
 import Player from "../interfaces/player";
 import RecordingProps from "../interfaces/props/recording-props";
 import LineupProps from "../interfaces/props/lineup-props";
-import { LineupsDTO } from "../interfaces/lineups";
+import { CreateLineupDTO } from "../interfaces/createLineup";
 
 const styling: CSS.Properties = {
   height: "100%",
@@ -119,7 +119,7 @@ class LineupComponent extends React.Component<
         teamId: this.props.location.state.teamId,
         startingLineup: this.state.lineup,
       };
-      const matchLineup: LineupsDTO = {
+      const matchLineup: CreateLineupDTO = {
         lineup: startingLineupPlayerIds,
         matchId: Number(this.props.location.state.matchId),
       };
