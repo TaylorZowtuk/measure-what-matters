@@ -47,6 +47,10 @@ export class PlayerStatsController {
         }
       } else if (error.message.includes('Match does not have finish time')) {
         throw error;
+      } else if (error.message.includes('Could not find any entity')) {
+        throw new BadRequestException(
+          'No lineup for this match, or match does not exist',
+        );
       }
       throw new InternalServerErrorException('Unknown error occured');
     }

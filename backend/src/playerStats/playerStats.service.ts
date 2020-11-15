@@ -75,7 +75,7 @@ export class PlayerStatsService {
     if (matchId === null) {
       throw new BadRequestException('matchId cannot be null');
     }
-    const match = await this.matchRepo.findOne({ where: { matchId } });
+    const match = await this.matchRepo.findOneOrFail({ where: { matchId } });
     const matchFinishTime = match.fullTime;
 
     const query1 = this.subRepo.createQueryBuilder('substitution');
