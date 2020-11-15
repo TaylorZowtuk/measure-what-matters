@@ -220,7 +220,7 @@ class Roster extends React.Component<
         <TextField
           fullWidth
           style={{ marginTop: "30px", marginBottom: "30px" }}
-          defaultValue={player.jerseyNum === -1 ? "" : player.jerseyNum}
+          defaultValue={player.jerseyNum === -1 ? "" : player.jerseyNum} // if default (-1) then we're adding a new player so leave field empty
           label="Jersey Number"
           onChange={(e: any) => {
             const player = this.state.playerToAction;
