@@ -6,7 +6,7 @@ import authHeader from "../../services/auth.header";
 import CircularBuffer from "../../util/circular-buffer";
 import Player from "../interfaces/player";
 import { ShotDTO } from "../interfaces/shot";
-import { MatchIdContext } from "../Recording.page";
+import { MatchIdContext } from "./Recording.page";
 
 type ShotResultPickerProps = {
   shooting: boolean;
@@ -121,10 +121,11 @@ function shotOnClick(props: ShotOnClickProps) {
     // If the shooter was our player, send a post to the shot endpoint
     let shot: ShotDTO = {
       matchId: props.matchId,
-      time: Date.now() / 100000,
+      time: Date.now() % 100000,
       playerId: props.shooter.playerId,
       onTarget: props.onTarget,
     };
+    console.log(shot);
 
     axios.post(`/event/shots`, shot, { headers: authHeader() }).then((res) => {
       console.log("Post shot response:", res); // TODO: catch error and handle if needed

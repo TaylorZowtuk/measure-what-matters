@@ -18,6 +18,7 @@ import { RouteComponentProps } from "react-router-dom";
 import Player from "../interfaces/player";
 import RecordingProps from "../interfaces/props/recording-props";
 import LineupProps from "../interfaces/props/lineup-props";
+import { LineupsDTO } from "../interfaces/lineups";
 
 const styling: CSS.Properties = {
   height: "100%",
@@ -102,6 +103,7 @@ class LineupComponent extends React.Component<
   async handleNextClicked() {
     if (this.state.lineup.length >= 7) {
       const startingLineup: StartingLineup[] = [];
+      const startingLineupPlayerIds: number[] = [];
       const currentTime: number = Date.now();
       this.state.lineup.forEach((player) => {
         const lineupMember: StartingLineup = {
@@ -110,12 +112,25 @@ class LineupComponent extends React.Component<
           matchId: Number(this.props.location.state.matchId),
         };
         startingLineup.push(lineupMember);
+        startingLineupPlayerIds.push(player.playerId);
       });
       const recordingState: RecordingProps = {
         matchId: this.props.location.state.matchId,
         teamId: this.props.location.state.teamId,
         startingLineup: this.state.lineup,
       };
+      const matchLineup: LineupsDTO = {
+        lineup: startingLineupPlayerIds,
+        matchId: Number(this.props.location.state.matchId),
+      };
+      axios
+        .post("/lineups", matchLineup, {
+          headers: authHeader(),
+        })
+        .then((res) => {
+          console.log("Post match lineup response:", res); // TODO: catch error and handle if needed
+        });
+
       this.props.history.push("/match/recording", recordingState);
     } else {
       alert("Must select at least 7 players."); // 6 on field plus one on the bench

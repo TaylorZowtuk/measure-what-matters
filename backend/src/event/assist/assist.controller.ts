@@ -5,7 +5,6 @@ import {
   Delete,
   Get,
   InternalServerErrorException,
-  Param,
   ParseIntPipe,
   Post,
   Query,

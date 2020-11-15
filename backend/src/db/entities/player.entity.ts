@@ -32,6 +32,9 @@ export class Player extends BaseEntity {
   @Column()
   jerseyNum: number;
 
+  @Column({ type: 'bool', default: false })
+  archived: boolean;
+
   @CreateDateColumn()
   createdDate: Date;
 

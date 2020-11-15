@@ -16,6 +16,9 @@ import { PlusMinusDTO } from 'src/dto/stats/plusMinus.dto';
 import { Possession } from 'src/db/entities/events/possession.entity';
 import { PlayerTouchesDTO } from 'src/dto/stats/playerTouches.dto';
 import { ReturnTouchesDTO } from 'src/dto/stats/returnTouches.dto';
+import { PlayerPossessionStatDTO } from 'src/dto/stats/possession/playerPossessionStat.dto';
+import { PlayerPossessionsReturnDTO } from 'src/dto/stats/possession/playerPossessionReturn.dto';
+import { TeamPossessionSummaryDTO } from 'src/dto/stats/possession/teamPossessionSummary.dto';
 @Injectable()
 export class PlayerStatsService {
   subRepo: Repository<any>;
@@ -72,7 +75,7 @@ export class PlayerStatsService {
     if (matchId === null) {
       throw new BadRequestException('matchId cannot be null');
     }
-    const match = await this.matchRepo.findOne({ where: { matchId } });
+    const match = await this.matchRepo.findOneOrFail({ where: { matchId } });
     const matchFinishTime = match.fullTime;
 
     const query1 = this.subRepo.createQueryBuilder('substitution');
@@ -276,6 +279,10 @@ export class PlayerStatsService {
     return gameTouches;
   }
 
+  /**
+   *  Returns the calculation of touches per player for either first half, second half, or whole game
+   *
+   */
   // half is either 1 for first half, 2 for second half or 3 for full game match touches
   private touchesCalculation(
     half: number,
@@ -315,6 +322,10 @@ export class PlayerStatsService {
     return touchesMatch;
   }
 
+  /**
+   * Filters possession objects for either first half, second half or whole game
+   */
+
   private filterPossessions(
     half: number,
     halfTime: number,
@@ -330,6 +341,201 @@ export class PlayerStatsService {
       );
     }
     return possessions;
+  }
+
+  /**
+   * Calculation for all of first half, second half or whole game player possessions
+   *
+   * @param matchId: matchId we want the possessions for
+   *
+   * @returns 3 parameters, one carrying possessions for first half, one for second and one for whole game
+   */
+  async playerPossessionsStat(matchId: number) {
+    const lineup: Lineup = await this.lineupRepo.findOneOrFail({
+      where: { matchId },
+    });
+    const players: Player[] = [];
+
+    const match: Match = await this.matchRepo.findOneOrFail({
+      where: { matchId },
+    });
+    // need halfTime to do by half
+    const halfTime = match.halfTime;
+    const fullTime = match.fullTime;
+
+    for (let i = 0; i < lineup.lineup.length; i++) {
+      players.push(
+        await this.playerRepo.findOne({
+          where: { playerId: lineup.lineup[i] },
+        }),
+      );
+    }
+    const playerDtos: PlayerDTO[] = this.convertToPlayersDtos(players);
+
+    const possessions: Possession[] = await this.possRepo.find({
+      where: { matchId },
+    });
+    possessions.sort(function(a, b) {
+      return a.time - b.time;
+    });
+    const possessionsFilt = possessions.filter(
+      possession => possession.neutral === false,
+    );
+
+    const firstHalfPossessionsPlayer: PlayerPossessionStatDTO[] = this.playersPossessionsCalculate(
+      1,
+      halfTime,
+      fullTime,
+      possessionsFilt,
+      playerDtos,
+    );
+
+    const secondHalfPossessionsPlayer: PlayerPossessionStatDTO[] = this.playersPossessionsCalculate(
+      2,
+      halfTime,
+      fullTime,
+      possessionsFilt,
+      playerDtos,
+    );
+    const fullGamePossessionsPlayer: PlayerPossessionStatDTO[] = this.playersPossessionsCalculate(
+      3,
+      halfTime,
+      fullTime,
+      possessionsFilt,
+      playerDtos,
+    );
+
+    const playerPossessionsReturnObject: PlayerPossessionsReturnDTO = {
+      firstHalfPossessionsPlayer,
+      secondHalfPossessionsPlayer,
+      fullGamePossessionsPlayer,
+    };
+
+    return playerPossessionsReturnObject;
+  }
+
+  /**
+   * Calculates the possessions of each player for a half, or full game
+   *
+   *
+   * @returns An array of objects carrying players and their possession for a half or the full game
+   */
+  // first half = 1, second half = 2, whole game = 3
+  private playersPossessionsCalculate(
+    half: number,
+    halfTime: number,
+    fullTime: number,
+    possessions: Possession[],
+    playerDtos: PlayerDTO[],
+  ) {
+    const playerPossessionsStatDTOs: PlayerPossessionStatDTO[] = [];
+    const possessionsFilt = this.filterPossessions(half, halfTime, possessions);
+
+    for (let i = 0; i < playerDtos.length; i++) {
+      let possession = 0;
+      for (let j = 0; j < possessionsFilt.length; j++) {
+        if (possessionsFilt[j].playerId === playerDtos[i].playerId) {
+          if (j < possessionsFilt.length - 1) {
+            possession += possessionsFilt[j + 1].time - possessionsFilt[j].time;
+          }
+          // if its the last possession, need to use match full time or halftime if first half
+          else {
+            if (half === 1) {
+              possession += halfTime - possessionsFilt[j].time;
+            } else {
+              possession += fullTime - possessionsFilt[j].time;
+            }
+          }
+        }
+      }
+      playerPossessionsStatDTOs.push({
+        player: playerDtos[i],
+        possession,
+      });
+    }
+    let oppPossession = 0;
+
+    for (let j = 0; j < possessionsFilt.length; j++) {
+      if (possessionsFilt[j].playerId === null && !possessionsFilt[j].neutral) {
+        if (j < possessionsFilt.length - 1) {
+          oppPossession +=
+            possessionsFilt[j + 1].time - possessionsFilt[j].time;
+        }
+        // if its the last possession, need to use match full time
+        else {
+          if (half === 1) {
+            oppPossession += halfTime - possessionsFilt[j].time;
+          } else {
+            oppPossession += fullTime - possessionsFilt[j].time;
+          }
+        }
+      }
+    }
+    playerPossessionsStatDTOs.push({
+      player: null,
+      possession: oppPossession,
+    });
+
+    return playerPossessionsStatDTOs;
+  }
+
+  /** Calculates the possession splits for first half, second half, and whole game
+   *
+   * @param matchId the match we are seeking the summary for
+   *
+   * @returns an object containing our teams percent possession for first half, second half and full match
+   *
+   */
+
+  async teamPossessionSummaryForMatch(matchId: number) {
+    const playerPossessions: PlayerPossessionsReturnDTO = await this.playerPossessionsStat(
+      matchId,
+    );
+
+    const firstHalfPossOurTeam = this.teamPossessionCalculation(
+      playerPossessions.firstHalfPossessionsPlayer,
+    );
+    const secondHalfPossOurTeam = this.teamPossessionCalculation(
+      playerPossessions.secondHalfPossessionsPlayer,
+    );
+    const fullGamePossOurTeam = this.teamPossessionCalculation(
+      playerPossessions.fullGamePossessionsPlayer,
+    );
+
+    const teamPossessionSummary: TeamPossessionSummaryDTO = {
+      firstHalfPossOurTeam,
+      secondHalfPossOurTeam,
+      fullGamePossOurTeam,
+    };
+
+    return teamPossessionSummary;
+  }
+
+  /**
+   *
+   * calculates the possession splits for a given half, or full game
+   *
+   */
+
+  private teamPossessionCalculation(
+    playerPossessions: PlayerPossessionStatDTO[],
+  ): number {
+    let ourPossession = 0;
+    let oppPossession = 0;
+
+    for (let i = 0; i < playerPossessions.length; i++) {
+      if (playerPossessions[i].player) {
+        ourPossession += playerPossessions[i].possession;
+      }
+      // null player, means other team, will be one value for this in a playerPossessions object
+      else {
+        oppPossession += playerPossessions[i].possession;
+      }
+    }
+
+    const totalPossession = ourPossession + oppPossession;
+
+    return (100 * ourPossession) / totalPossession;
   }
 
   /**
