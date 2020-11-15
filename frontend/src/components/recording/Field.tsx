@@ -1,16 +1,16 @@
 import React from "react";
-import { DraggableTypes } from "../constants";
+import { DraggableTypes } from "../../constants";
 import { useDrop } from "react-dnd";
 import { Container, Row, Col } from "react-bootstrap";
 import { cloneDeep } from "lodash";
-import { CircularBuffer } from "../util/circular-buffer";
+import { CircularBuffer } from "../../util/circular-buffer";
 import axios from "axios";
 
 import { createPlayerDraggable, createPlayerDraggables } from "./Player";
-import Player from "./interfaces/player";
-import authHeader from "../services/auth.header";
-import { NeutralPossessionDTO } from "./interfaces/neutralPossession";
-import { ShotFieldInfo } from "./recording/ShotResultPicker";
+import Player from "../interfaces/player";
+import authHeader from "../../services/auth.header";
+import { NeutralPossessionDTO } from "../interfaces/neutralPossession";
+import { ShotFieldInfo } from "./ShotResultPicker";
 
 type FieldProps = {
   matchId: number;

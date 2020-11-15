@@ -87,7 +87,9 @@ export class PlayerService {
       const player: Player = await this.playerRepo.findOne({
         where: { playerId: playerIds[i] },
       });
-      players.push(player);
+      if (player.archived === false) {
+        players.push(player);
+      }
     }
     return players;
   }
@@ -97,17 +99,13 @@ export class PlayerService {
    *
    * @param playerId: ID of the player to be deleted
    *
-   * @returns a void promise
+   * @returns updated player object with archived true (we are keeping removed objects in database with different flag)
    */
 
-  async removePlayerById(playerId: number): Promise<void> {
-    const result = await this.playerRepo.delete(playerId);
-
-    if (result.affected === 0) {
-      throw new NotFoundException(
-        'Player with playerId ' + playerId + ' not found',
-      );
-    }
+  async removePlayerById(playerId: number): Promise<Player> {
+    const playerRemove = await this.playerRepo.findOneOrFail({ playerId });
+    playerRemove.archived = true;
+    return this.playerRepo.save(playerRemove);
   }
 
   /**
