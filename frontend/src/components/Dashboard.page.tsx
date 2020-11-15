@@ -5,7 +5,7 @@ import TimeOnField from "./reports/TimeOnField";
 import { Col, Container, Row } from "react-bootstrap";
 import PossessionCircular from "./reports/Possession";
 import TouchesBar from "./reports/Touches";
-import MatchDropdown from "./MatchDropdown/MatchDropdown";
+import MatchDropdown from "./reports/MatchDropdown";
 
 const Dashboard = () => (
   <div className="dashboard">

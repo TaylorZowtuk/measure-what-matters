@@ -21,6 +21,7 @@ import Switch from "@material-ui/core/Switch";
 import axios from "axios";
 import authHeader from "../../services/auth.header";
 import { timeOnFieldDTO } from "../interfaces/timeOnField";
+import { MatchReportContext } from "./MatchDropdown";
 
 interface FormattedData {
   name: string;
@@ -58,13 +59,16 @@ const hardCodedRows = [
 ];
 
 // Enable using a hardcoded set of values for testing or to use data from an api call
-async function fetchRows(debug = false): Promise<FormattedData[]> {
+async function fetchRows(
+  matchId: number,
+  debug = false
+): Promise<FormattedData[]> {
   if (debug) {
     return hardCodedRows;
   }
 
   const res = await axios.get(
-    `/player-stats/timeOnField?matchId=1`, // TODO: Remove hardcoded matchId
+    `/player-stats/timeOnField?matchId=${matchId}`, // TODO: Remove hardcoded matchId
     { headers: authHeader() }
   );
 
@@ -216,9 +220,8 @@ const useToolbarStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const EnhancedTableToolbar = () => {
+const EnhancedTableToolbar = (matchId: number) => {
   const classes = useToolbarStyles();
-  const matchId: number = 1;
   return (
     <Toolbar>
       <Typography
@@ -267,6 +270,7 @@ export default function EnhancedTable() {
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  //const matchId = React.useContext(MatchReportContext);
 
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
@@ -295,7 +299,7 @@ export default function EnhancedTable() {
   const [rows, setRows] = useState<FormattedData[] | null>(null);
   useEffect(() => {
     async function getRows() {
-      setRows(await fetchRows());
+      setRows(await fetchRows(1));
     }
     getRows();
   }, []);
@@ -307,58 +311,62 @@ export default function EnhancedTable() {
     rowsPerPage - Math.min(rowsPerPage, _rows.length - page * rowsPerPage);
 
   return (
-    <div className={classes.root}>
-      <Paper className={classes.paper}>
-        <EnhancedTableToolbar />
-        <TableContainer>
-          <Table
-            className={classes.table}
-            aria-labelledby="tableTitle"
-            size={dense ? "small" : "medium"}
-            aria-label="enhanced table"
-          >
-            <EnhancedTableHead
-              classes={classes}
-              order={order}
-              orderBy={orderBy}
-              onRequestSort={handleRequestSort}
-            />
-            <TableBody>
-              {stableSort(_rows, getComparator(order, orderBy))
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row) => {
-                  return (
-                    <TableRow hover tabIndex={-1} key={row.name}>
-                      <TableCell component="th" scope="row" padding="none">
-                        {row.name}
-                      </TableCell>
-                      <TableCell align="right">{row.number}</TableCell>
-                      <TableCell align="right">{row.minutes}</TableCell>
+    <MatchReportContext.Consumer>
+      {(matchId) => (
+        <div className={classes.root}>
+          <Paper className={classes.paper}>
+            <EnhancedTableToolbar {...matchId} />
+            <TableContainer>
+              <Table
+                className={classes.table}
+                aria-labelledby="tableTitle"
+                size={dense ? "small" : "medium"}
+                aria-label="enhanced table"
+              >
+                <EnhancedTableHead
+                  classes={classes}
+                  order={order}
+                  orderBy={orderBy}
+                  onRequestSort={handleRequestSort}
+                />
+                <TableBody>
+                  {stableSort(_rows, getComparator(order, orderBy))
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map((row) => {
+                      return (
+                        <TableRow hover tabIndex={-1} key={row.name}>
+                          <TableCell component="th" scope="row" padding="none">
+                            {row.name}
+                          </TableCell>
+                          <TableCell align="right">{row.number}</TableCell>
+                          <TableCell align="right">{row.minutes}</TableCell>
+                        </TableRow>
+                      );
+                    })}
+                  {emptyRows > 0 && (
+                    <TableRow style={{ height: (dense ? 33 : 53) * emptyRows }}>
+                      <TableCell colSpan={6} />
                     </TableRow>
-                  );
-                })}
-              {emptyRows > 0 && (
-                <TableRow style={{ height: (dense ? 33 : 53) * emptyRows }}>
-                  <TableCell colSpan={6} />
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component="div"
-          count={_rows.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onChangePage={handleChangePage}
-          onChangeRowsPerPage={handleChangeRowsPerPage}
-        />
-      </Paper>
-      <FormControlLabel
-        control={<Switch checked={dense} onChange={handleChangeDense} />}
-        label="Dense padding"
-      />
-    </div>
+                  )}
+                </TableBody>
+              </Table>
+            </TableContainer>
+            <TablePagination
+              rowsPerPageOptions={[5, 10, 25]}
+              component="div"
+              count={_rows.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onChangePage={handleChangePage}
+              onChangeRowsPerPage={handleChangeRowsPerPage}
+            />
+          </Paper>
+          <FormControlLabel
+            control={<Switch checked={dense} onChange={handleChangeDense} />}
+            label="Dense padding"
+          />
+        </div>
+      )}
+    </MatchReportContext.Consumer>
   );
 }
