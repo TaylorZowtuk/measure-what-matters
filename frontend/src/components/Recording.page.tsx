@@ -173,8 +173,9 @@ class Recording extends React.Component<
     // Post to the match end game endpoint
     let endTime: fullTimeDTO = {
       matchId: Number(this.props.location.state.matchId),
-      fullTime: Date.now(),
+      fullTime: Date.now() / 10000,
     };
+    console.log("endTime object:", endTime);
 
     axios
       .post(`/match/fullTime`, endTime, { headers: authHeader() })
