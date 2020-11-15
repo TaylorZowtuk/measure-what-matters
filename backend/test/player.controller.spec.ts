@@ -1,7 +1,6 @@
 import { Test } from '@nestjs/testing';
 import { TestingModule } from '@nestjs/testing';
 import { CreatePlayerDTO } from 'src/dto/player/createPlayer.dto';
-import { PlayerDTO } from '../src/dto/player/player.dto';
 import { PlayerController } from '../src/player/player.controller';
 import { PlayerService } from '../src/player/player.service';
 import { Repository } from 'typeorm';
@@ -29,14 +28,6 @@ describe('PlayerController', () => {
     createPlayerDto2,
   ];
 
-  const returnPlayerDto: PlayerDTO = {
-    playerId: 1,
-    teamId: 1,
-    firstName: 'Jesus',
-    lastName: 'Shuttlesworth',
-    jerseyNum: 1,
-  };
-
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [PlayerController],
@@ -58,12 +49,6 @@ describe('PlayerController', () => {
     // create player that throws an error
     // checking that errors returned by controller match
     // error types thrown by service
-    const createPlayerDto1: CreatePlayerDTO = {
-      teamId: 1,
-      firstName: 'Jesus',
-      lastName: 'Shuttlesworth',
-      jerseyNum: 1,
-    };
     it('Calls player service to create a player', async () => {
       const spy = jest
         .spyOn(playerService, 'savePlayer')

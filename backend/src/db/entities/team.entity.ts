@@ -19,8 +19,8 @@ export class Team extends BaseEntity {
   name: string;
 
   @ManyToOne(
-    type => User,
-    user => user.userId,
+    () => User,
+    user => user.teams,
     { eager: true },
   )
   @JoinColumn({ name: 'userId' })

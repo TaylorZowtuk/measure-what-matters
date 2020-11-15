@@ -36,7 +36,6 @@ describe('AssistService Test', () => {
   assist.playerId = 1;
 
   const assistEntities = [assist, assist];
-  const assistDtos = [createAssistDto, createAssistDto];
 
   it('check if service defined', () => {
     expect(assistService).toBeDefined();

@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Team } from '../db/entities/team.entity';
@@ -34,6 +34,22 @@ export class TeamService {
       where: { userId: userId },
     });
     return this.convertToDto(teams);
+  }
+
+  /**
+   * Updates team name
+   *
+   * @param updateTeam - object containing teamId and new name
+   *
+   * @returns updated team entity
+   */
+
+  async updateTeamName(updateTeam: TeamDTO): Promise<Team> {
+    const team = await this.teamRepo.findOneOrFail({
+      where: { teamId: updateTeam.teamId },
+    });
+    team.name = updateTeam.name;
+    return await this.teamRepo.save(team);
   }
 
   /**

@@ -1,142 +1,158 @@
-import { Injectable } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { Goal } from "../db/entities/events/goal.entity";
-import { Substitution } from "../db/entities/events/substitution.entity";
-import { Player } from "../db/entities/player.entity";
-import { PlayerDTO } from "../dto/player/player.dto";
-import { Repository } from "typeorm";
-import { PlayerTimeDTO } from "src/dto/stats/playerTime.dto";
-import { Match } from "../db/entities/match.entity";
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Goal } from '../db/entities/events/goal.entity';
+import { Substitution } from '../db/entities/events/substitution.entity';
+import { Player } from '../db/entities/player.entity';
+import { PlayerDTO } from '../dto/player/player.dto';
+import { Repository } from 'typeorm';
+import { PlayerTimeDTO } from 'src/dto/stats/playerTime.dto';
+import { Match } from '../db/entities/match.entity';
 @Injectable()
-export class PlayerStatsService{
+export class PlayerStatsService {
+  subRepo: Repository<any>;
+  goalRepo: Repository<any>;
+  playerRepo: Repository<any>;
+  matchRepo: Repository<any>;
 
-    subRepo: Repository<any>;
-    goalRepo: Repository<any>;
-    playerRepo: Repository<any>;
-    matchRepo: Repository<any>;
-
-    constructor(@InjectRepository(Substitution)
-    subRepo: Repository<Substitution>, 
+  constructor(
+    @InjectRepository(Substitution)
+    subRepo: Repository<Substitution>,
     @InjectRepository(Goal)
     goalRepo: Repository<Goal>,
     @InjectRepository(Player)
-    playerRepo : Repository<Player>,
+    playerRepo: Repository<Player>,
     @InjectRepository(Match)
-    matchRepo : Repository<Match>
-    ) {
-        this.subRepo = subRepo;
-        this.goalRepo = goalRepo;
-        this.playerRepo = playerRepo;
-        this.matchRepo = matchRepo;
+    matchRepo: Repository<Match>,
+  ) {
+    this.subRepo = subRepo;
+    this.goalRepo = goalRepo;
+    this.playerRepo = playerRepo;
+    this.matchRepo = matchRepo;
+  }
+
+  /**
+   * Retrieves milliseconds played by a player for a given match.
+   *
+   * @param playerId - The player we want to see time played
+   * @param matchId - The match for which we want to see time played
+   *
+   * @returns the time played in that match in milliseconds
+   */
+  /**
+   * Retrieves milliseconds played by a player for a given match.
+   *
+   * @param playerId - The player we want to see time played
+   * @param matchId - The match for which we want to see time played
+   *
+   * @returns the time played in that match in milliseconds
+   */
+
+  async getMillisecondsPlayed(
+    playerId: number,
+    matchId: number,
+  ): Promise<number> {
+    let timeOnField = 0;
+    const match = await this.matchRepo.findOne({ where: { matchId } });
+    const matchFinishTime = match.finishTime;
+
+    const query1 = this.subRepo.createQueryBuilder('substitution');
+
+    query1.andWhere('substitution.playerId = :id1', { id1: playerId });
+    query1.andWhere('substitution.matchId = :id2', { id2: matchId });
+    const substitutions = await query1.getMany();
+
+    for (let i = 0; i < substitutions.length; i++) {
+      const time_on = substitutions[i].timeOn;
+      let time_off = substitutions[i].timeOff;
+
+      // if time_off is null, that means they were the last sub of the game
+      if (time_off == null) {
+        time_off = matchFinishTime;
+      }
+      timeOnField += time_off - time_on;
     }
 
-    /**
-    * Retrieves seconds played by a player for a given match.
-    *
-    * @param playerId - The player we want to see time played
-    * @param matchId - The match for which we want to see time played
-    * 
-    * @returns the time played in that match in seconds
-    */
+    return timeOnField;
+  }
 
-    async getSecondsPlayed(playerId:number, matchId:number) : Promise<number> {
-        let timeOnField = 0;
+  async getPlayersTimes(matchId: number): Promise<PlayerTimeDTO[]> {
+    const playerTimeDtos: PlayerTimeDTO[] = [];
+    const match = await this.matchRepo.findOne({ where: { matchId: matchId } });
+    const teamId = match.teamId.teamId;
 
-        const query1 = this.subRepo.createQueryBuilder('substitution');
+    const players = await this.playerRepo.find({ where: { teamId: teamId } });
 
-        query1.andWhere("substitution.playerId = :id1", {id1 : playerId});
-        query1.andWhere("substitution.matchId = :id2", {id2 : matchId});
-        const substitutions = await query1.getMany();
+    for (let i = 0; i < players.length; i++) {
+      const playerId = players[i].playerId;
+      const firstName = players[i].firstName;
+      const lastName = players[i].lastName;
+      const jerseyNum = players[i].jerseyNum;
+      const millisecondsPlayed = await this.getMillisecondsPlayed(
+        players[i].playerId,
+        matchId,
+      );
+      const player_time_DTO: PlayerTimeDTO = {
+        playerId,
+        teamId,
+        firstName,
+        lastName,
+        jerseyNum,
+        millisecondsPlayed,
+      };
 
-        for(let i=0; i<substitutions.length; i++){
-            const time_on = (substitutions[i].timeOn);
-            let time_off = (substitutions[i].timeOff);
-
-            // to be fixed, currently the end of the game does not update the time_off for the final substitution, we will fix for next sprint
-            if(time_off == null){
-                time_off = time_on ;
-            }
-            timeOnField+=(time_off-time_on);
-        }
-
-        return timeOnField;
+      playerTimeDtos.push(player_time_DTO);
     }
 
-    async getPlayersTimes(matchId:number) : Promise<PlayerTimeDTO[]> {
-        const playerTimeDtos: PlayerTimeDTO[] = [];
-        const match = await this.matchRepo.findOne(
-            {where: {matchId:matchId}}
-        );
-        const teamId = match.teamId.teamId;
-        
-        const players = await this.playerRepo.find(
-            {where: {teamId:teamId}}
-        );
+    return playerTimeDtos;
+  }
 
-        for(let i=0; i<players.length;i++){
+  /**
+   * Retrieves an array of players on the field at the time of a goal.
+   *
+   * @param goalId - The id for the goal scored
+   *
+   * @returns the DTO array of players on the field during the time of the goal
+   */
 
-            const playerId = players[i].playerId;
-            const firstName = players[i].firstName;
-            const lastName = players[i].lastName;
-            const jerseyNum = players[i].jerseyNum;
-            const secondsPlayed = await this.getSecondsPlayed(players[i].playerId, matchId);
-            const player_time_DTO: PlayerTimeDTO = {playerId, teamId, firstName, lastName, jerseyNum, secondsPlayed};
-        
-            playerTimeDtos.push(player_time_DTO); 
-        }
+  async getPlayersOnForGoal(goalId: number) {
+    const players: Player[] = [];
 
-        return playerTimeDtos;
+    const query1 = this.goalRepo.createQueryBuilder('goal');
+
+    query1.andWhere('goal.id = :id1', { id1: goalId });
+
+    const goal = await query1.getOne();
+
+    for (let i = 0; i < goal.lineup.length; i++) {
+      const player: Player = await this.playerRepo.findOne({
+        where: { playerId: goal.lineup[i] },
+      });
+      players.push(player);
     }
 
-    /**
-    * Retrieves an array of players on the field at the time of a goal.
-    *
-    * @param goalId - The id for the goal scored
-    * 
-    * @returns the DTO array of players on the field during the time of the goal
-    */
+    return this.convertToPlayerDto(players);
+  }
 
-    async getPlayersOnForGoal(goalId: number) {
-        const players: Player[] = [];
+  /**
+   * Converts a list of player entities to a list of player dtos
+   *
+   * @param players - The list of player entities we want to convert to a list of player DTOs
+   *
+   * @returns A list of player dtos converted from an entity
+   */
 
-        const query1 = this.goalRepo.createQueryBuilder('goal');
-
-        query1.andWhere("goal.id = :id1", {id1:goalId});
-
-        const goal = await query1.getOne();
-
-        for(let i=0; i<goal.lineup.length; i++){
-            const player: Player = await this.playerRepo.findOne(
-                {where: {playerId : goal.lineup[i]}});
-            players.push(player);
-            
-        }
-
-        return this.convertToPlayerDto(players);
-    }
-
-    /**
-    * Converts a list of player entities to a list of player dtos
-    *
-    * @param players - The list of player entities we want to convert to a list of player DTOs
-    *
-    * @returns A list of player dtos converted from an entity
-    */
-
-    private convertToPlayerDto(players: any[]) {
-        const playerDtos: PlayerDTO[] = [];
-        players.forEach(element => {
-          const playerDto: PlayerDTO = {
-            playerId: element.playerId,
-            teamId: element.teamId.teamId,
-            firstName: element.firstName,
-            lastName: element.lastName,
-            jerseyNum: element.jerseyNum,
-          };
-          playerDtos.push(playerDto);
-        });
-        return playerDtos;
-    }
-
-
+  private convertToPlayerDto(players: any[]) {
+    const playerDtos: PlayerDTO[] = [];
+    players.forEach(element => {
+      const playerDto: PlayerDTO = {
+        playerId: element.playerId,
+        teamId: element.teamId.teamId,
+        firstName: element.firstName,
+        lastName: element.lastName,
+        jerseyNum: element.jerseyNum,
+      };
+      playerDtos.push(playerDto);
+    });
+    return playerDtos;
+  }
 }

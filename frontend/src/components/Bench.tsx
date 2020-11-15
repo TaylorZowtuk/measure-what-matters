@@ -144,7 +144,7 @@ function BenchTarget(props: BenchTargetProps) {
   const [, drop] = useDrop({
     accept: DraggableTypes.PLAYER,
     drop: (item: any, _monitor: DropTargetMonitor) => {
-      if (item.player.team === "ours") {
+      if (item.player.teamId !== -1) {
         // Only allow our players to be dropped on bench
         props.toggleIsExpanded();
         props.setSubstituteFor(item.player);
@@ -202,7 +202,7 @@ export function OpenBench(props: OpenBenchProps) {
                   variant="dark"
                   onClick={() => props.substitute(player.playerId, matchId)}
                 >
-                  {player.num} {player.firstName} {player.lastName}
+                  {player.jerseyNum} {player.firstName} {player.lastName}
                 </Button>
               )}
             </MatchIdContext.Consumer>

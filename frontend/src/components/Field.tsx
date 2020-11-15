@@ -6,13 +6,13 @@ import { cloneDeep } from "lodash";
 import { CircularBuffer } from "../util/circular-buffer";
 import axios from "axios";
 
-import Player, {
+import {
   createPlayerDraggable,
   createPlayerDraggables,
   NeutralPossessionDTO,
 } from "./Player";
+import Player from "./interfaces/player";
 import authHeader from "../services/auth.header";
-
 type FieldProps = {
   matchId: number;
   getStartingLine: Function;
@@ -25,7 +25,7 @@ type FieldProps = {
 class Field extends React.Component<
   FieldProps,
   {
-    onField: any[]; // Array of draggablePlayer jsx elements
+    onField: JSX.Element[]; // Array of draggablePlayer jsx elements
     playerIndexWithPossession: number; // The index into onField of the player who currently has possession of the ball
   }
 > {
@@ -36,8 +36,8 @@ class Field extends React.Component<
     const oppositionPlayer: Player = {
       firstName: "Opposing",
       lastName: "Team",
-      num: -1,
-      team: "theirs",
+      jerseyNum: -1,
+      teamId: -1,
       playerId: -1,
     };
     const oppositionDraggable = createPlayerDraggable(
@@ -211,7 +211,7 @@ export function FieldTarget(props: FieldTargetProps) {
       if (item.player.playerId === props.previousPossessions.peekBack()) {
         // Only allow the player who currently has the ball to 'shoot'
         props.resetPlayerWithPossession();
-        const ourGoal: Boolean = item.player.team === "ours" ? true : false;
+        const ourGoal: Boolean = item.player.teamId !== -1 ? true : false;
         props.incrementScore(
           ourGoal,
           item.player,

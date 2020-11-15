@@ -10,9 +10,11 @@ import Button from "@material-ui/core/Button";
 import Team from "./Team";
 import Bench, { StartingPlayer } from "./Bench";
 import Field from "./Field";
-import Player from "./Player";
+import Player from "./interfaces/player";
 import authHeader from "../services/auth.header";
 import CircularBuffer from "../util/circular-buffer";
+import RecordingProps from "./interfaces/props/recording-props";
+import { fullTimeDTO } from "./interfaces/fullTime";
 
 // Provide MatchId to each recording component which requires it through context
 export const MatchIdContext: React.Context<number> = React.createContext(0);
@@ -21,7 +23,7 @@ type Goal = {
   id?: number;
   matchId: number;
   time: number;
-  playerId: number;
+  playerId: number | null;
   lineup: number[];
 };
 
@@ -31,11 +33,6 @@ type CreateAssistDTO = {
   playerId: number;
 };
 
-type RecordingProps = {
-  matchId: string;
-  teamId: string;
-};
-
 class Recording extends React.Component<
   RouteComponentProps<{}, StaticContext, RecordingProps>,
   {
@@ -43,7 +40,7 @@ class Recording extends React.Component<
     goals_for: number;
     subField: Player | undefined; // Player to remove from field
     subBench: Player | undefined; // Player to add to field from bench
-    roster: Player[]; // List of Players in this game for our team
+    lineup: Player[]; // List of Players in this game for our team
   }
 > {
   team_name: string = "Blue Blazers";
@@ -56,32 +53,13 @@ class Recording extends React.Component<
       goals_against: 0,
       subField: undefined,
       subBench: undefined,
-      roster: [],
+      lineup: this.props.location.state.startingLineup,
     };
+    // TODO: add start match call
   }
 
-  getRoster = async (): Promise<Player[]> => {
-    const res = await axios.get(
-      `/players/teamId?teamId=${this.props.location.state.matchId}`,
-      { headers: authHeader() }
-    );
-    // TODO: handle error
-    let players: Player[] = [];
-    for (let i = 0; i < res.data.length; i++) {
-      let player: Player = {
-        firstName: res.data[i].firstName,
-        lastName: res.data[i].lastName,
-        num: res.data[i].jerseyNum,
-        team: "ours",
-        playerId: res.data[i].playerId,
-      };
-      players.push(player);
-    }
-    return players;
-  };
-
   provideStartingLine = (): Player[] => {
-    let starting: Player[] = this.state.roster.slice(0, 6); // First 6 players of roster are the starting lineup
+    let starting: Player[] = this.state.lineup.slice(0, 6); // First 6 players of lineup are the starting lineup
 
     let lineupSubs: any[] = [];
     for (let i = 0; i < starting.length; i++) {
@@ -105,7 +83,7 @@ class Recording extends React.Component<
   };
 
   provideStartingBench = (): Player[] => {
-    return this.state.roster.slice(6, this.state.roster.length); // All but first 6 players start on bench
+    return this.state.lineup.slice(6, this.state.lineup.length); // All but first 6 players start on bench
   };
 
   setSubs = (
@@ -117,77 +95,76 @@ class Recording extends React.Component<
 
   incrementScore = (
     goal_for: boolean,
-    scorer: Player | undefined = undefined,
+    scorer: Player,
     previousPossessions: CircularBuffer<number>,
-    lineup: any[] | undefined = undefined
+    lineup: any[]
   ): void => {
+    let ids: number[] = [];
+    // Gather the player ids of all of our players on the field
+    for (let i = 0; i < lineup.length; i++) {
+      ids.push(lineup[i].props.player.playerId);
+    }
+    // Create a GoalDTO object
+    let goal: Goal = {
+      matchId: Number(this.props.location.state.matchId),
+      time: Date.now(), // Epoch time in ms
+      playerId: scorer.playerId !== -1 ? scorer.playerId : null,
+      lineup: ids,
+    };
+
     if (goal_for) {
       // Our goal
-      if (scorer && lineup) {
-        // Update our score
-        this.setState({ goals_for: this.state.goals_for + 1 });
+      // Update our score
+      this.setState({ goals_for: this.state.goals_for + 1 });
 
-        // Gather the player ids of all of our players on the field
-        let ids: number[] = [];
-        for (let i = 0; i < lineup.length; i++) {
-          ids.push(lineup[i].props.player.playerId);
+      // Using the previousPossessions, automatically register an assist
+      if (previousPossessions.size() >= 2) {
+        // There was an assist
+        // For indoor soccer, we only record one assister
+        let assisterId: number | null = previousPossessions.dequeue();
+        // We check size > 2 so should never be null
+        if (assisterId && assisterId !== -1) {
+          // The last possession wasnt the opposition
+          let assist: CreateAssistDTO = {
+            matchId: Number(this.props.location.state.matchId),
+            time: Date.now(),
+            playerId: assisterId,
+          };
+          axios
+            .post(`/event/assists`, assist, { headers: authHeader() })
+            .then((res) => {
+              console.log("Post assist response:", res); // TODO: catch error and handle if needed
+            });
         }
-        // Create a GoalDTO object
-        let goal: Goal = {
-          matchId: Number(this.props.location.state.matchId),
-          time: Date.now(), // Epoch time in ms
-          playerId: scorer.playerId,
-          lineup: ids,
-        };
-
-        // Using the previousPossessions, automatically register an assist
-        if (previousPossessions.size() >= 2) {
-          // There was an assist
-          // For indoor soccer, we only record one assister
-          let assisterId: number | null = previousPossessions.dequeue();
-          // We check size > 2 so should never be null
-          if (assisterId && assisterId !== -1) {
-            // The last possession wasnt the opposition
-            let assist: CreateAssistDTO = {
-              matchId: Number(this.props.location.state.matchId),
-              time: Date.now(),
-              playerId: assisterId,
-            };
-            axios
-              .post(`/event/assists`, assist, { headers: authHeader() })
-              .then((res) => {
-                console.log("Post assist response:", res); // TODO: catch error and handle if needed
-              });
-          }
-        }
-
-        // Post the the goal endpoint
-        axios
-          .post(`/event/goals`, goal, { headers: authHeader() })
-          .then((res) => {
-            console.log("Post goal response:", res); // TODO: catch error and handle if needed
-          });
-
-        // Post to the assists endpoint
       }
     } else {
       // Opposing teams goal
       // Update their score
       this.setState({ goals_against: this.state.goals_against + 1 });
-      // TODO: add backend call to add against goal
     }
+
+    // Post to the goal endpoint
+    axios.post(`/event/goals`, goal, { headers: authHeader() }).then((res) => {
+      console.log("Post goal response:", res); // TODO: catch error and handle if needed
+    });
 
     // On any goal, reset the previous possessions queue
     previousPossessions.clear();
   };
 
-  componentDidMount() {
-    if (!this.state.roster.length) {
-      this.getRoster().then((players: Player[]) => {
-        this.setState({ roster: players });
+  endGame = (): void => {
+    // Post to the match end game endpoint
+    let endTime: fullTimeDTO = {
+      matchId: Number(this.props.location.state.matchId),
+      fullTime: Date.now(),
+    };
+
+    axios
+      .post(`/match/fullTime`, endTime, { headers: authHeader() })
+      .then((res) => {
+        console.log("Post full time response:", res); // TODO: catch error and handle if needed
       });
-    }
-  }
+  };
 
   deviceSupportsTouch(): boolean {
     // Dont catch laptops with touch
@@ -203,37 +180,34 @@ class Recording extends React.Component<
     // Determine if this is a mobile/tablet device in order to set appropriate dragndrop provider
     const useTouch = this.deviceSupportsTouch();
 
-    // If fetch request hasnt returned yet
-    if (!this.state.roster.length) {
-      return <h1>Loading...</h1>;
-    } else {
-      return (
-        <DndProvider backend={useTouch ? TouchBackend : HTML5Backend}>
-          <MatchIdContext.Provider
-            value={Number(this.props.location.state.matchId)}
-          >
-            <h1>Recording</h1>
-            <Bench
-              getStartingBench={this.provideStartingBench}
-              notifyOfSubs={this.setSubs}
-            ></Bench>
-            <Team name={this.team_name} score={this.state.goals_for} />
-            <Team name={this.opp_name} score={this.state.goals_against} />
-            <Field
-              matchId={Number(this.props.location.state.matchId)}
-              getStartingLine={this.provideStartingLine}
-              incrementScore={this.incrementScore}
-              removeFromField={this.state.subField}
-              addToField={this.state.subBench}
-              resetSubs={this.setSubs}
-            />
-            <Link to="/dashboard">
-              <Button variant="contained">Dashboard</Button>
-            </Link>
-          </MatchIdContext.Provider>
-        </DndProvider>
-      );
-    }
+    return (
+      <DndProvider backend={useTouch ? TouchBackend : HTML5Backend}>
+        <MatchIdContext.Provider
+          value={Number(this.props.location.state.matchId)}
+        >
+          <h1>Recording</h1>
+          <Bench
+            getStartingBench={this.provideStartingBench}
+            notifyOfSubs={this.setSubs}
+          ></Bench>
+          <Team name={this.team_name} score={this.state.goals_for} />
+          <Team name={this.opp_name} score={this.state.goals_against} />
+          <Field
+            matchId={Number(this.props.location.state.matchId)}
+            getStartingLine={this.provideStartingLine}
+            incrementScore={this.incrementScore}
+            removeFromField={this.state.subField}
+            addToField={this.state.subBench}
+            resetSubs={this.setSubs}
+          />
+          <Link to="/dashboard">
+            <Button variant="contained" onClick={this.endGame}>
+              Finish Recording
+            </Button>
+          </Link>
+        </MatchIdContext.Provider>
+      </DndProvider>
+    );
   }
 }
 

@@ -31,12 +31,12 @@ export class Goal extends BaseEntity implements IEvent {
   @ManyToOne(
     () => Player,
     player => player.playerId,
-    { eager: true },
+    { eager: true, nullable: true },
   )
   @JoinColumn({ name: 'playerId' })
   player: Player;
 
-  @Column()
+  @Column({ nullable: true })
   playerId: number;
 
   @Column()

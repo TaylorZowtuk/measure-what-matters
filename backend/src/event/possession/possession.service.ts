@@ -20,7 +20,7 @@ export class PossessionService {
     matchId: number,
     time: number,
     playerId: number,
-  ) {
+  ): Promise<Possession> {
     return this.possessionRepo.save({
       matchId,
       time,
@@ -30,12 +30,15 @@ export class PossessionService {
   }
 
   // create an opposition possession event
-  public async createOppositionEvent(matchId: number, time: number) {
-    return this.possessionRepo.save({ matchId, time, neutral: false });
+  public async createOppositionEvent(
+    matchId: number,
+    time: number,
+  ): Promise<Possession> {
+    return this.possessionRepo.save({ matchId, time });
   }
 
   // remove a possession event by ID
-  public async removePossessionEventById(eventId: number) {
+  public async removePossessionEventById(eventId: number): Promise<Possession> {
     const toArchive = await this.possessionRepo.findOneOrFail({ id: eventId });
     toArchive.archived = true;
     return this.possessionRepo.save(toArchive);
