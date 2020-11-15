@@ -26,6 +26,7 @@ describe('PossessionService', () => {
 
   it('should be defined', () => {
     expect(possessionService).toBeDefined();
+    expect(possessionRepository).toBeDefined();
   });
 
   // TODO, some actual tests

@@ -72,9 +72,7 @@ describe('MatchController', () => {
     });
 
     it('should throw a BadRequestException if the teamId does not exist when searching for matches', async () => {
-      const spy = jest
-        .spyOn(matchService, 'getMatches')
-        .mockResolvedValue(null);
+      jest.spyOn(matchService, 'getMatches').mockResolvedValue(null);
       const teamId = -1;
       try {
         await matchService.getMatches(teamId);

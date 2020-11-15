@@ -22,6 +22,7 @@ describe('PossessionController', () => {
 
   it('should be defined', () => {
     expect(controller).toBeDefined();
+    expect(possessionService).toBeDefined();
   });
 
   // TODO, some actual tests
