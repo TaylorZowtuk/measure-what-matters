@@ -12,6 +12,8 @@ import Typography from "@material-ui/core/Typography";
 import authHeader from "../../services/auth.header";
 import axios from "axios";
 import LineupProps from "../interfaces/props/lineup-props";
+import { MatchDTO } from "../interfaces/match";
+import { TeamDTO } from "../interfaces/team";
 
 // Icons from: https://icons8.com
 
@@ -34,142 +36,6 @@ export default function MatchSelection() {
     </div>
   );
 }
-
-const debugData: MatchAndTeam[] = [
-  {
-    match: {
-      matchId: 1,
-      teamId: 4,
-      startTime: Date.now(),
-      isHomeTeam: false,
-      halfTime: null,
-      fullTime: null,
-      createdDate: 12345,
-      updatedDate: 12345,
-    },
-    teamName: "Teal Traitors",
-  },
-  {
-    match: {
-      matchId: 1,
-      teamId: 1,
-      startTime: 1234567,
-      isHomeTeam: true,
-      halfTime: null,
-      fullTime: null,
-      createdDate: 12345,
-      updatedDate: 12345,
-    },
-    teamName: "Red Rovers",
-  },
-  {
-    match: {
-      matchId: 2,
-      teamId: 1,
-      startTime: 123456,
-      isHomeTeam: false,
-      halfTime: null,
-      fullTime: null,
-      createdDate: 12345,
-      updatedDate: 12345,
-    },
-    teamName: "Red Rovers",
-  },
-  {
-    match: {
-      matchId: 2,
-      teamId: 2,
-      startTime: 1234561,
-      isHomeTeam: false,
-      halfTime: 12344,
-      fullTime: 12345,
-      createdDate: 12345,
-      updatedDate: 12345,
-    },
-    teamName: "Pink Pansies",
-  },
-  {
-    match: {
-      matchId: 1,
-      teamId: 2,
-      startTime: 1234561,
-      isHomeTeam: true,
-      halfTime: null,
-      fullTime: null,
-      createdDate: 12345,
-      updatedDate: 12345,
-    },
-    teamName: "Pink Pansies",
-  },
-  {
-    match: {
-      matchId: 3,
-      teamId: 1,
-      startTime: 1234561,
-      isHomeTeam: false,
-      halfTime: null,
-      fullTime: null,
-      createdDate: 12345,
-      updatedDate: 12345,
-    },
-    teamName: "Red Rovers",
-  },
-  {
-    match: {
-      matchId: 1,
-      teamId: 4,
-      startTime: 12311,
-      isHomeTeam: false,
-      halfTime: 126336,
-      fullTime: null,
-      createdDate: 12345,
-      updatedDate: 12345,
-    },
-    teamName: "Yellow Bellies",
-  },
-  {
-    match: {
-      matchId: 1,
-      teamId: 3,
-      startTime: 12345235,
-      isHomeTeam: false,
-      halfTime: 12344,
-      fullTime: 12345,
-      createdDate: 12345,
-      updatedDate: 12345,
-    },
-    teamName: "Green Gadzooks",
-  },
-  {
-    match: {
-      matchId: 1,
-      teamId: 3,
-      startTime: 123,
-      isHomeTeam: false,
-      halfTime: null,
-      fullTime: null,
-      createdDate: 12345,
-      updatedDate: 12345,
-    },
-    teamName: "Green Gadzooks",
-  },
-];
-
-type MatchDTO = {
-  matchId: number;
-  teamId: number;
-  startTime: number;
-  isHomeTeam: boolean;
-  halfTime: number | null;
-  fullTime: number | null;
-  createdDate: number;
-  updatedDate: number;
-};
-
-type TeamDTO = {
-  teamId: number;
-  name: string;
-};
 
 type MatchAndTeam = {
   match: MatchDTO;
@@ -355,3 +221,123 @@ export function AlignItemsList() {
     );
   }
 }
+
+const debugData: MatchAndTeam[] = [
+  {
+    match: {
+      matchId: 1,
+      teamId: 4,
+      startTime: Date.now(),
+      isHomeTeam: false,
+      halfTime: null,
+      fullTime: null,
+      createdDate: 12345,
+      updatedDate: 12345,
+    },
+    teamName: "Teal Traitors",
+  },
+  {
+    match: {
+      matchId: 1,
+      teamId: 1,
+      startTime: 46544654,
+      isHomeTeam: true,
+      halfTime: null,
+      fullTime: null,
+      createdDate: 12345,
+      updatedDate: 12345,
+    },
+    teamName: "Red Rovers",
+  },
+  {
+    match: {
+      matchId: 2,
+      teamId: 1,
+      startTime: 123456,
+      isHomeTeam: false,
+      halfTime: null,
+      fullTime: null,
+      createdDate: 12345,
+      updatedDate: 12345,
+    },
+    teamName: "Red Rovers",
+  },
+  {
+    match: {
+      matchId: 2,
+      teamId: 2,
+      startTime: 1234561,
+      isHomeTeam: false,
+      halfTime: 12344,
+      fullTime: 12345,
+      createdDate: 12345,
+      updatedDate: 12345,
+    },
+    teamName: "Pink Pansies",
+  },
+  {
+    match: {
+      matchId: 1,
+      teamId: 2,
+      startTime: 1234561,
+      isHomeTeam: true,
+      halfTime: null,
+      fullTime: null,
+      createdDate: 12345,
+      updatedDate: 12345,
+    },
+    teamName: "Pink Pansies",
+  },
+  {
+    match: {
+      matchId: 3,
+      teamId: 1,
+      startTime: 1234561,
+      isHomeTeam: false,
+      halfTime: null,
+      fullTime: null,
+      createdDate: 12345,
+      updatedDate: 12345,
+    },
+    teamName: "Red Rovers",
+  },
+  {
+    match: {
+      matchId: 1,
+      teamId: 4,
+      startTime: 12311,
+      isHomeTeam: false,
+      halfTime: 126336,
+      fullTime: null,
+      createdDate: 12345,
+      updatedDate: 12345,
+    },
+    teamName: "Yellow Bellies",
+  },
+  {
+    match: {
+      matchId: 1,
+      teamId: 3,
+      startTime: 12345235,
+      isHomeTeam: false,
+      halfTime: 12344,
+      fullTime: 12345,
+      createdDate: 12345,
+      updatedDate: 12345,
+    },
+    teamName: "Green Gadzooks",
+  },
+  {
+    match: {
+      matchId: 1,
+      teamId: 3,
+      startTime: 123,
+      isHomeTeam: false,
+      halfTime: null,
+      fullTime: null,
+      createdDate: 12345,
+      updatedDate: 12345,
+    },
+    teamName: "Green Gadzooks",
+  },
+];
