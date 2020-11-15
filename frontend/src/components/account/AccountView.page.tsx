@@ -12,6 +12,7 @@ interface accountState {
   lastDisable: boolean;
   firstEdit: string;
   lastEdit: string;
+  errorMessage: string;
 }
 
 class AccountView extends React.Component<{}, accountState> {
@@ -25,6 +26,7 @@ class AccountView extends React.Component<{}, accountState> {
       lastDisable: true,
       firstEdit: "",
       lastEdit: "",
+      errorMessage: "",
     };
 
     // get user profile
@@ -59,10 +61,78 @@ class AccountView extends React.Component<{}, accountState> {
   };
 
   handleLastDisable = (): void => {
-    if (this.state.firstDisable) {
+    if (this.state.lastDisable) {
       this.setState({ lastDisable: false });
     }
     console.log("clicked");
+  };
+
+  handleFirstSave = (): void => {
+    if (this.state.firstEdit.trim() === "") {
+      this.setState({ errorMessage: "Cannot have empty first/last name" });
+    } else {
+      let tempFirst = this.state.firstEdit;
+      this.setState({
+        firstName: tempFirst,
+        firstDisable: true,
+        errorMessage: "",
+      });
+      axios
+        .post(
+          "/users/profile/edit",
+          { name: this.state.firstEdit + " " + this.state.lastName },
+          { headers: authHeader() }
+        )
+        .then(
+          (response) => {
+            console.log(response);
+          },
+          (error) => {
+            console.log(error);
+          }
+        );
+    }
+  };
+
+  handleFirstCancel = (): void => {
+    let tempFirst = this.state.firstName;
+    this.setState({
+      firstEdit: tempFirst,
+      firstDisable: true,
+      errorMessage: "",
+    });
+  };
+
+  handleLastSave = (): void => {
+    if (this.state.lastEdit.trim() === "") {
+      this.setState({ errorMessage: "Cannot have empty first/last name" });
+    } else {
+      let tempLast = this.state.lastEdit;
+      this.setState({
+        lastName: tempLast,
+        lastDisable: true,
+        errorMessage: "",
+      });
+      axios
+        .post(
+          "/users/profile/edit",
+          { name: this.state.firstName + " " + this.state.lastEdit },
+          { headers: authHeader() }
+        )
+        .then(
+          (response) => {
+            console.log(response);
+          },
+          (error) => {
+            console.log(error);
+          }
+        );
+    }
+  };
+
+  handleLastCancel = (): void => {
+    let tempLast = this.state.lastName;
+    this.setState({ lastEdit: tempLast, lastDisable: true, errorMessage: "" });
   };
 
   render() {
@@ -75,6 +145,17 @@ class AccountView extends React.Component<{}, accountState> {
         }}
       >
         <h2 style={{ padding: 0, margin: "20px" }}>Account Information</h2>
+        <p
+          style={{
+            color: "crimson",
+            fontSize: 14,
+            width: "30ch",
+            marginLeft: "auto",
+            marginRight: "auto",
+          }}
+        >
+          {this.state.errorMessage}
+        </p>
         <div
           style={{
             display: "flex",
@@ -134,7 +215,25 @@ class AccountView extends React.Component<{}, accountState> {
                 this.state.firstDisable ? (): void => {} : this.handleFirstEdit
               }
             />
-            <p style={{ fontSize: "14px" }}>Ok</p>
+            <div
+              style={{
+                display: this.state.firstDisable ? "none" : "flex",
+                margin: 0,
+              }}
+            >
+              <p
+                style={{ fontSize: "14px", margin: "0 10px", color: "crimson" }}
+                onClick={this.handleFirstSave}
+              >
+                Save
+              </p>
+              <p
+                style={{ fontSize: "14px", margin: "0 10px", color: "crimson" }}
+                onClick={this.handleFirstCancel}
+              >
+                Cancel
+              </p>
+            </div>
           </div>
           <EditIcon onClick={this.handleFirstDisable}></EditIcon>
           {/* <p style={{ fontSize: "14px" }}>Ok</p> */}
@@ -159,17 +258,38 @@ class AccountView extends React.Component<{}, accountState> {
           >
             Last Name:
           </p>
-          <TextField
-            margin="dense"
-            variant="outlined"
-            color="secondary"
-            value={this.state.lastEdit}
-            disabled={this.state.lastDisable}
-            style={{ margin: "auto" }}
-            onChange={
-              this.state.firstDisable ? (): void => {} : this.handleFirstEdit
-            }
-          />
+          <div style={{ display: "block" }}>
+            <TextField
+              margin="dense"
+              variant="outlined"
+              color="secondary"
+              value={this.state.lastEdit}
+              disabled={this.state.lastDisable}
+              style={{ margin: "auto" }}
+              onChange={
+                this.state.lastDisable ? (): void => {} : this.handleLastEdit
+              }
+            />
+            <div
+              style={{
+                display: this.state.lastDisable ? "none" : "flex",
+                margin: 0,
+              }}
+            >
+              <p
+                style={{ fontSize: "14px", margin: "0 10px", color: "crimson" }}
+                onClick={this.handleLastSave}
+              >
+                Save
+              </p>
+              <p
+                style={{ fontSize: "14px", margin: "0 10px", color: "crimson" }}
+                onClick={this.handleLastCancel}
+              >
+                Cancel
+              </p>
+            </div>
+          </div>
           <EditIcon onClick={this.handleLastDisable}></EditIcon>
         </div>
       </div>
