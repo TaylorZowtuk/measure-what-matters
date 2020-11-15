@@ -34,7 +34,7 @@ export class PossessionService {
     matchId: number,
     time: number,
   ): Promise<Possession> {
-    return this.possessionRepo.save({ matchId, time });
+    return this.possessionRepo.save({ matchId, time, neutral: false });
   }
 
   // remove a possession event by ID

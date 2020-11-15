@@ -193,6 +193,7 @@ class Recording extends React.Component<
           <Team name={this.team_name} score={this.state.goals_for} />
           <Team name={this.opp_name} score={this.state.goals_against} />
           <Field
+            matchId={Number(this.props.location.state.matchId)}
             getStartingLine={this.provideStartingLine}
             incrementScore={this.incrementScore}
             removeFromField={this.state.subField}
