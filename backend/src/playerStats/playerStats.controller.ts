@@ -45,7 +45,7 @@ export class PlayerStatsController {
       } else if (error.message.includes('Match does not have finish time')) {
         throw error;
       }
-      return new InternalServerErrorException('Unknown error occured');
+      throw new InternalServerErrorException('Unknown error occured');
     }
   }
 
@@ -63,12 +63,11 @@ export class PlayerStatsController {
   @Get('/onForGoal')
   async getPlayersOnForGoal(@Query('goalId', ParseIntPipe) goalId: number) {
     try {
-      goalId = +goalId;
       return await this.playerStatsService.getPlayersOnForGoal(goalId);
     } catch (error) {
       if (error instanceof QueryFailedError) {
         if (error.message.includes('invalid input syntax for type integer')) {
-          return new BadRequestException(
+          throw new BadRequestException(
             'Please enter a valid integer for goalId',
           );
         }
@@ -77,7 +76,7 @@ export class PlayerStatsController {
           throw new BadRequestException('matchId does not exist in database');
         }
       } else {
-        return new InternalServerErrorException('Unknown error occured');
+        throw new InternalServerErrorException('Unknown error occured');
       }
     }
   }
