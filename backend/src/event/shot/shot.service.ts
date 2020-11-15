@@ -1,9 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { match } from 'assert';
-import { Shot } from 'src/db/entities/events/shot.entity';
-import { ShotDTO } from 'src/dto/events/shot/shot.dto';
-import { TeamsShotSummaryGameDTO } from 'src/dto/events/shot/teamShotSummaryGame';
+import { Shot } from '../../db/entities/events/shot.entity';
+import { ShotDTO } from '../../dto/events/shot/shot.dto';
+import { TeamsShotSummaryGameDTO } from '../../dto/events/shot/teamShotSummaryGame';
 import { Repository } from 'typeorm';
 import { CreateShotDTO } from '../../dto/events/shot/createShot.dto';
 
