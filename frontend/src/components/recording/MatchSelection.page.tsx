@@ -23,6 +23,9 @@ export default function MatchSelection() {
       <h1>Upcoming Matches</h1>
       <h5>Select a match to begin</h5>
       <AlignItemsList />
+      <Link to="/dashboard">
+        <Button variant="contained">Back</Button>
+      </Link>
     </div>
   );
 }
