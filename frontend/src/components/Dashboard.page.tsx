@@ -4,7 +4,7 @@ import Button from "@material-ui/core/Button";
 import TimeOnField from "./reports/TimeOnField";
 import { Col, Container, Row } from "react-bootstrap";
 import PossessionCircular, { fetchTimes } from "./reports/Possession";
-import TouchesBar from "./reports/Touches";
+import TouchesBar, { fetchTouches } from "./reports/Touches";
 
 const Dashboard = () => (
   <div className="dashboard">
@@ -28,7 +28,7 @@ const Dashboard = () => (
       </Row>
       <Row>
         <Col>
-          <TouchesBar />
+          <TouchesBar fetchTouches={fetchTouches} />
         </Col>
       </Row>
       <Row>
