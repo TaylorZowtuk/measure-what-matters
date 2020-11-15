@@ -1,7 +1,7 @@
 import React from "react";
 import { cleanup, render } from "@testing-library/react";
 import { BrowserRouter } from "react-router-dom";
-import Team from "../components/Team";
+import Team from "../components/recording/Team";
 
 afterEach(cleanup);
 

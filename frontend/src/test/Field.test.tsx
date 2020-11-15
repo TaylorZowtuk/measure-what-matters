@@ -1,7 +1,7 @@
 import React from "react";
 import { cleanup, render } from "@testing-library/react";
-import Player, { createPlayerDraggable } from "../components/Player";
-import { FieldTarget } from "../components/Field";
+import Player, { createPlayerDraggable } from "../components/recording/Player";
+import { FieldTarget } from "../components/recording/Field";
 import { DraggableTypes } from "../constants";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";

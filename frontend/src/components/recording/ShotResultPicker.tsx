@@ -6,7 +6,7 @@ import authHeader from "../../services/auth.header";
 import CircularBuffer from "../../util/circular-buffer";
 import Player from "../interfaces/player";
 import { ShotDTO } from "../interfaces/shot";
-import { MatchIdContext } from "../Recording.page";
+import { MatchIdContext } from "./Recording.page";
 
 type ShotResultPickerProps = {
   shooting: boolean;
