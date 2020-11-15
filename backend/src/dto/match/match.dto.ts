@@ -6,7 +6,7 @@ export class MatchDTO {
   matchId: number;
 
   @ApiProperty()
-  team: Team[];
+  team: Team;
 
   @ApiProperty()
   teamId: number;
