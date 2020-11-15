@@ -20,19 +20,9 @@ import { TeamDTO } from "../interfaces/team";
 export default function MatchSelection() {
   return (
     <div>
-      <h1>Upcoming Games</h1>
+      <h1>Upcoming Matches</h1>
+      <h5>Select a match to begin</h5>
       <AlignItemsList />
-      <Link
-        to={{
-          pathname: "/recording",
-          state: {
-            matchId: 1,
-            teamId: 1,
-          },
-        }}
-      >
-        <Button variant="contained">Recording</Button>
-      </Link>
     </div>
   );
 }
@@ -183,13 +173,14 @@ export function AlignItemsList() {
                 onClick={(event) =>
                   handleListItemClick(event, index, matchAndTeam)
                 }
-                key={index}
+                key={`item-${matchAndTeam.match.teamId}-${matchAndTeam.match.matchId}`}
               >
                 <ListItemAvatar>
                   <Avatar
                     variant="rounded"
                     alt={weekday} // String of the day of week
                     src={calendarImgPath}
+                    key={`item-${matchAndTeam.match.teamId}-${matchAndTeam.match.matchId}-avatar`}
                   />
                 </ListItemAvatar>
                 <ListItemText
@@ -211,9 +202,14 @@ export function AlignItemsList() {
                       {" Game"}
                     </React.Fragment>
                   }
+                  key={`item-${matchAndTeam.match.teamId}-${matchAndTeam.match.matchId}-text`}
                 />
               </ListItem>
-              <Divider variant="inset" component="li" />
+              <Divider
+                variant="inset"
+                component="li"
+                key={`item-${matchAndTeam.match.teamId}-${matchAndTeam.match.matchId}-divider`}
+              />
             </>
           );
         })}
