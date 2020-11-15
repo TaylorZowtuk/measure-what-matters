@@ -111,13 +111,6 @@ class LineupComponent extends React.Component<
         };
         startingLineup.push(lineupMember);
       });
-      axios
-        .post("event/substitutions/startingLineup", startingLineup, {
-          headers: authHeader(),
-        })
-        .catch((err) => {
-          console.log(err);
-        });
       const recordingState: RecordingProps = {
         matchId: this.props.location.state.matchId,
         teamId: this.props.location.state.teamId,

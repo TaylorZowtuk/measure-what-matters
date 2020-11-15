@@ -5,16 +5,18 @@ import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { TouchBackend } from "react-dnd-touch-backend";
 import axios from "axios";
+import authHeader from "../services/auth.header";
 
 import Button from "@material-ui/core/Button";
 import Team from "./Team";
 import Bench, { StartingPlayer } from "./Bench";
 import Field from "./Field";
 import Player from "./interfaces/player";
-import authHeader from "../services/auth.header";
 import CircularBuffer from "../util/circular-buffer";
 import RecordingProps from "./interfaces/props/recording-props";
 import { fullTimeDTO } from "./interfaces/fullTime";
+import { Col, Row } from "react-bootstrap";
+import { ShotFieldInfo, ShotResultPicker } from "./recording/ShotResultPicker";
 
 // Provide MatchId to each recording component which requires it through context
 export const MatchIdContext: React.Context<number> = React.createContext(0);
@@ -41,6 +43,8 @@ class Recording extends React.Component<
     subField: Player | undefined; // Player to remove from field
     subBench: Player | undefined; // Player to add to field from bench
     lineup: Player[]; // List of Players in this game for our team
+    shooting: boolean; // Whether we are in the, 'a shot is being taken' state
+    shotFieldInfo: ShotFieldInfo | undefined; // A collection on field information passed to ShotResultPicker
   }
 > {
   team_name: string = "Blue Blazers";
@@ -54,6 +58,8 @@ class Recording extends React.Component<
       subField: undefined,
       subBench: undefined,
       lineup: this.props.location.state.startingLineup,
+      shooting: false,
+      shotFieldInfo: undefined,
     };
     // TODO: add start match call
   }
@@ -91,6 +97,17 @@ class Recording extends React.Component<
     subBench: Player | undefined
   ): void => {
     this.setState({ subField: subField, subBench: subBench });
+  };
+
+  setShooting = (
+    shooting: boolean = false,
+    shotFieldInfo: ShotFieldInfo | undefined = undefined
+  ): void => {
+    if (shooting) {
+      this.setState({ shooting: shooting, shotFieldInfo: shotFieldInfo });
+    } else {
+      this.setState({ shooting: shooting, shotFieldInfo: undefined });
+    }
   };
 
   incrementScore = (
@@ -186,15 +203,36 @@ class Recording extends React.Component<
           value={Number(this.props.location.state.matchId)}
         >
           <h1>Recording</h1>
+          <Row>
+            <Col md="auto">
+              <Team name={this.team_name} score={this.state.goals_for} />
+            </Col>
+            <Col md="auto">
+              <Team name={this.opp_name} score={this.state.goals_against} />
+            </Col>
+          </Row>
           <Bench
             getStartingBench={this.provideStartingBench}
             notifyOfSubs={this.setSubs}
+            inShootingState={this.state.shooting}
           ></Bench>
-          <Team name={this.team_name} score={this.state.goals_for} />
-          <Team name={this.opp_name} score={this.state.goals_against} />
+          {this.state.shotFieldInfo ? (
+            <ShotResultPicker
+              shooting={this.state.shooting}
+              propsIfGoal={{
+                fieldInfo: this.state.shotFieldInfo,
+                matchId: Number(this.props.location.state.matchId),
+                incrementScore: this.incrementScore,
+                exitShootingState: this.setShooting,
+              }}
+            />
+          ) : null}
+
           <Field
+            matchId={Number(this.props.location.state.matchId)}
             getStartingLine={this.provideStartingLine}
-            incrementScore={this.incrementScore}
+            inShootingState={this.state.shooting}
+            enterShootingState={this.setShooting}
             removeFromField={this.state.subField}
             addToField={this.state.subBench}
             resetSubs={this.setSubs}
