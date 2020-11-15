@@ -48,7 +48,7 @@ interface CreatePlayerDTO {
 
 const tableStyling: CSS.Properties = {
   height: "70vh",
-  width: "40vw",
+  width: "60vw",
   margin: "auto",
 };
 
@@ -102,7 +102,10 @@ class Roster extends React.Component<
         headers: authHeader(),
       })
       .then((res) => {
-        this.setState({ players: res.data });
+        const players: Player[] = res.data;
+        this.setState({
+          players: players.sort((a, b) => (a.jerseyNum > b.jerseyNum ? 1 : -1)),
+        });
       })
       .catch((err) => {
         console.log(err);
@@ -143,6 +146,9 @@ class Roster extends React.Component<
         .post("/players/edit", this.state.playerToAction, {
           headers: authHeader(),
         })
+        .then(() => {
+          this.getPlayers();
+        })
         .catch((err) => {
           console.log(err);
         });
@@ -157,11 +163,13 @@ class Roster extends React.Component<
         .post("/players", [dto], {
           headers: authHeader(),
         })
+        .then(() => {
+          this.getPlayers();
+        })
         .catch((err) => {
           console.log(err);
         });
     }
-    this.getPlayers();
     this.setStateDefaults();
   };
 
@@ -174,11 +182,13 @@ class Roster extends React.Component<
         .delete(`/players?playerId=${this.state.playerToAction.playerId}`, {
           headers: authHeader(),
         })
+        .then(() => {
+          this.getPlayers();
+        })
         .catch((err) => {
           console.log(err);
         });
     }
-    this.getPlayers();
     this.setStateDefaults();
   };
 
