@@ -28,7 +28,7 @@ class CreateMatch extends React.Component<{}, matchState> {
       opponent: "",
       isHomeTeam: true,
       scheduledTime: "",
-      time: Date.parse("2020-11-01T10:30"),
+      time: Date.parse("2020-11-01T10:30") / 1000,
       teams: [],
       errorMessage: "",
     };
@@ -44,7 +44,7 @@ class CreateMatch extends React.Component<{}, matchState> {
   }
 
   handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ time: Date.parse(e.target.value) });
+    this.setState({ time: Date.parse(e.target.value) / 1000 });
   };
 
   handleHomeTeamChange = (
@@ -73,9 +73,20 @@ class CreateMatch extends React.Component<{}, matchState> {
     } else if (this.state.opponent.trim() === "") {
       this.setState({ errorMessage: "Please enter opponent name" });
     } else {
-      //TODO: make post request
-      console.log("create match");
-      window.location.href = "/dashboard";
+      axios
+        .post(
+          "/match/create",
+          {
+            teamId: this.state.teamId,
+            scheduledTime: this.state.time,
+            opponentTeamName: this.state.opponent,
+            isHomeTeam: this.state.isHomeTeam,
+          },
+          { headers: authHeader() }
+        )
+        .then((rsponse) => {
+          window.location.href = "/dashboard";
+        });
     }
   };
 
