@@ -3,6 +3,7 @@ import TeamComponent from "../TeamComponent/TeamComponent";
 import Button from "@material-ui/core/Button";
 import { Link } from "react-router-dom";
 import { Container, Row, Col } from "react-bootstrap";
+import RosterProps from "../interfaces/props/roster-props";
 
 interface teamState {
   teamList: Team[];
@@ -19,6 +20,10 @@ interface Player {
   number: number;
   playerId: number;
 }
+
+const rosterProps: RosterProps = {
+  teamId: 1,
+};
 
 class Teams extends React.Component<{}, teamState> {
   constructor(props: {}) {
@@ -83,7 +88,19 @@ class Teams extends React.Component<{}, teamState> {
               <Col>
                 {team.teamName}
                 <TeamComponent playerList={team.playerList}></TeamComponent>
-                {/* <Button variant="contained">Edit Team</Button> */}
+                <Link
+                  to={{
+                    pathname: "/teams/roster",
+                    state: rosterProps,
+                  }}
+                >
+                  <Button
+                    style={{ marginTop: "10px", marginBottom: "35px" }}
+                    variant="contained"
+                  >
+                    Edit Roster
+                  </Button>
+                </Link>
               </Col>
             </Row>
           );
