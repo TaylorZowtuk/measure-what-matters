@@ -5,13 +5,13 @@ import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { TouchBackend } from "react-dnd-touch-backend";
 import axios from "axios";
+import authHeader from "../services/auth.header";
 
 import Button from "@material-ui/core/Button";
 import Team from "./Team";
 import Bench, { StartingPlayer } from "./Bench";
 import Field from "./Field";
 import Player from "./interfaces/player";
-import authHeader from "../services/auth.header";
 import CircularBuffer from "../util/circular-buffer";
 import RecordingProps from "./interfaces/props/recording-props";
 import { fullTimeDTO } from "./interfaces/fullTime";
@@ -221,6 +221,7 @@ class Recording extends React.Component<
               shooting={this.state.shooting}
               propsIfGoal={{
                 fieldInfo: this.state.shotFieldInfo,
+                matchId: Number(this.props.location.state.matchId),
                 incrementScore: this.incrementScore,
                 exitShootingState: this.setShooting,
               }}

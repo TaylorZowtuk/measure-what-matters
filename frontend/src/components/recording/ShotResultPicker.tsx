@@ -1,7 +1,12 @@
 import React from "react";
 import { Button, Col, Row } from "react-bootstrap";
+import axios from "axios";
+import authHeader from "../../services/auth.header";
+
 import CircularBuffer from "../../util/circular-buffer";
 import Player from "../interfaces/player";
+import { ShotDTO } from "../interfaces/shot";
+import { MatchIdContext } from "../Recording.page";
 
 type ShotResultPickerProps = {
   shooting: boolean;
@@ -15,29 +20,60 @@ export function ShotResultPicker(props: ShotResultPickerProps) {
   }
 
   return (
-    <div>
-      <Row>
-        <h6>Make a selection for the result of the shot</h6>
-      </Row>
-      <Row>
-        <Col>
-          <Button variant="danger">Miss</Button>
-        </Col>
-        <Col>
-          <Button variant="warning">Save</Button>
-        </Col>
-        <Col>
-          <Button
-            variant="success"
-            onClick={() => goalOnClick(props.propsIfGoal)}
-          >
-            Goal
-          </Button>
-        </Col>
-      </Row>
-    </div>
+    <MatchIdContext.Consumer>
+      {(matchId) => (
+        <div>
+          <Row>
+            <h6>Make a selection for the result of the shot</h6>
+          </Row>
+          {/* Display a button for each possible outcome of a shot */}
+
+          <Row>
+            <Col>
+              <Button
+                variant="danger"
+                onClick={() =>
+                  shotOnClick({
+                    onTarget: false,
+                    shooter: props.propsIfGoal.fieldInfo.shooter,
+                    matchId: matchId,
+                    exitShootingState: props.propsIfGoal.exitShootingState,
+                  })
+                }
+              >
+                Miss
+              </Button>
+            </Col>
+            <Col>
+              <Button
+                variant="warning"
+                onClick={() =>
+                  shotOnClick({
+                    onTarget: true,
+                    shooter: props.propsIfGoal.fieldInfo.shooter,
+                    matchId: matchId,
+                    exitShootingState: props.propsIfGoal.exitShootingState,
+                  })
+                }
+              >
+                Save
+              </Button>
+            </Col>
+            <Col>
+              <Button
+                variant="success"
+                onClick={() => goalOnClick(props.propsIfGoal)}
+              >
+                Goal
+              </Button>
+            </Col>
+          </Row>
+        </div>
+      )}
+    </MatchIdContext.Consumer>
   );
 }
+
 export type ShotFieldInfo = {
   shooter: Player;
   previousPossessions: CircularBuffer<number>;
@@ -46,6 +82,7 @@ export type ShotFieldInfo = {
 
 type GoalOnClickProps = {
   fieldInfo: ShotFieldInfo;
+  matchId: number;
   incrementScore: Function;
   exitShootingState: Function;
 };
@@ -58,5 +95,43 @@ function goalOnClick(props: GoalOnClickProps) {
     props.fieldInfo.previousPossessions,
     props.fieldInfo.getLineup()
   );
+
+  // Call shot endpoint
+  shotOnClick({
+    onTarget: true,
+    shooter: props.fieldInfo.shooter,
+    matchId: props.matchId,
+
+    exitShootingState: props.exitShootingState,
+  });
+  props.exitShootingState();
+}
+
+type ShotOnClickProps = {
+  onTarget: boolean;
+  shooter: Player;
+  matchId: number;
+  exitShootingState: Function;
+};
+
+// This on click handler can be used by either misses or saves because
+// they only differ by props.onTarget bool
+function shotOnClick(props: ShotOnClickProps) {
+  if (props.shooter.playerId !== -1) {
+    // If the shooter was our player, send a post to the shot endpoint
+    let shot: ShotDTO = {
+      matchId: props.matchId,
+      time: Date.now() / 100000,
+      playerId: props.shooter.playerId,
+      onTarget: props.onTarget,
+    };
+
+    axios.post(`/event/shots`, shot, { headers: authHeader() }).then((res) => {
+      console.log("Post shot response:", res); // TODO: catch error and handle if needed
+    });
+  }
+
+  // TODO: handle player who took a shot being able to shoot again because we cant reset
+  // previous possession on a miss
   props.exitShootingState();
 }
