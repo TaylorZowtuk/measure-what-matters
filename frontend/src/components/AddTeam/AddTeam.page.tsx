@@ -6,6 +6,7 @@ import Player from "./Player";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import authHeader from "../../services/auth.header";
+import { Row } from "react-bootstrap";
 
 interface createTeamState {
   teamName: string;
@@ -214,26 +215,6 @@ class AddTeam extends React.Component<{}, createTeamState> {
           value={this.state.teamName}
         />
         <h3>{this.state.teamName}</h3>
-        <table>
-          <thead>
-            <tr>
-              <th>Player Name</th>
-              <th>Player Number</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {this.state.playerList.map((player) => {
-              return (
-                <Player
-                  player={player}
-                  onRemove={this.onRemovePlayer}
-                  key={player.number}
-                ></Player>
-              );
-            })}
-          </tbody>
-        </table>
         <form
           style={{
             width: "fit-content",
@@ -271,12 +252,32 @@ class AddTeam extends React.Component<{}, createTeamState> {
             onChange={this.handlePlayerNumberChange}
           />
           <br />
-          <div style={{ textAlign: "right" }}>
+          <div>
             <Button variant="contained" onClick={this.onAddPlayer}>
               ADD PLAYER
             </Button>
           </div>
         </form>
+        <table style={{ margin: "20px auto" }}>
+          <thead>
+            <tr>
+              <th style={{ padding: "10px" }}>Player Name</th>
+              <th style={{ padding: "10px" }}>Player Number</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {this.state.playerList.map((player) => {
+              return (
+                <Player
+                  player={player}
+                  onRemove={this.onRemovePlayer}
+                  key={player.number}
+                ></Player>
+              );
+            })}
+          </tbody>
+        </table>
         <Button
           variant="contained"
           style={{ marginBottom: 10 }}
