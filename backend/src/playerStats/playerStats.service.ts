@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Goal } from '../db/entities/events/goal.entity';
 import { Substitution } from '../db/entities/events/substitution.entity';
@@ -7,12 +11,19 @@ import { PlayerDTO } from '../dto/player/player.dto';
 import { Repository } from 'typeorm';
 import { PlayerTimeDTO } from 'src/dto/stats/playerTime.dto';
 import { Match } from '../db/entities/match.entity';
+import { Lineup } from '../db/entities/lineup.entity';
+import { PlusMinusDTO } from 'src/dto/stats/plusMinus.dto';
+import { Possession } from 'src/db/entities/events/possession.entity';
+import { PlayerTouchesDTO } from 'src/dto/stats/playerTouches.dto';
+import { ReturnTouchesDTO } from 'src/dto/stats/returnTouches.dto';
 @Injectable()
 export class PlayerStatsService {
   subRepo: Repository<any>;
   goalRepo: Repository<any>;
   playerRepo: Repository<any>;
   matchRepo: Repository<any>;
+  lineupRepo: Repository<any>;
+  possRepo: Repository<any>;
 
   constructor(
     @InjectRepository(Substitution)
@@ -23,11 +34,17 @@ export class PlayerStatsService {
     playerRepo: Repository<Player>,
     @InjectRepository(Match)
     matchRepo: Repository<Match>,
+    @InjectRepository(Lineup)
+    lineupRepo: Repository<Lineup>,
+    @InjectRepository(Possession)
+    possRepo: Repository<Possession>,
   ) {
     this.subRepo = subRepo;
     this.goalRepo = goalRepo;
     this.playerRepo = playerRepo;
     this.matchRepo = matchRepo;
+    this.lineupRepo = lineupRepo;
+    this.possRepo = possRepo;
   }
 
   /**
@@ -52,8 +69,11 @@ export class PlayerStatsService {
     matchId: number,
   ): Promise<number> {
     let timeOnField = 0;
+    if (matchId === null) {
+      throw new BadRequestException('matchId cannot be null');
+    }
     const match = await this.matchRepo.findOne({ where: { matchId } });
-    const matchFinishTime = match.finishTime;
+    const matchFinishTime = match.fullTime;
 
     const query1 = this.subRepo.createQueryBuilder('substitution');
 
@@ -67,6 +87,9 @@ export class PlayerStatsService {
 
       // if time_off is null, that means they were the last sub of the game
       if (time_off == null) {
+        if (!matchFinishTime) {
+          throw new NotFoundException('Match does not have finish time');
+        }
         time_off = matchFinishTime;
       }
       timeOnField += time_off - time_on;
@@ -77,10 +100,24 @@ export class PlayerStatsService {
 
   async getPlayersTimes(matchId: number): Promise<PlayerTimeDTO[]> {
     const playerTimeDtos: PlayerTimeDTO[] = [];
+    if (matchId === null) {
+      throw new BadRequestException('matchId cannot be null');
+    }
     const match = await this.matchRepo.findOne({ where: { matchId: matchId } });
     const teamId = match.teamId.teamId;
 
-    const players = await this.playerRepo.find({ where: { teamId: teamId } });
+    const lineup: Lineup = await this.lineupRepo.findOneOrFail({
+      where: { matchId },
+    });
+    const players: Player[] = [];
+
+    for (let i = 0; i < lineup.lineup.length; i++) {
+      players.push(
+        await this.playerRepo.findOne({
+          where: { playerId: lineup.lineup[i] },
+        }),
+      );
+    }
 
     for (let i = 0; i < players.length; i++) {
       const playerId = players[i].playerId;
@@ -130,7 +167,169 @@ export class PlayerStatsService {
       players.push(player);
     }
 
-    return this.convertToPlayerDto(players);
+    return this.convertToPlayersDtos(players);
+  }
+
+  /**
+   * Retrieves plus minus of all players on for a match
+   *
+   * @param matchId - The id for the match
+   *
+   * @returns the DTO array of players and their plus minus for a given match
+   */
+  async plusMinus(matchId: number): Promise<PlusMinusDTO[]> {
+    const lineup: Lineup = await this.lineupRepo.findOneOrFail({
+      where: { matchId },
+    });
+    const players: Player[] = [];
+
+    for (let i = 0; i < lineup.lineup.length; i++) {
+      players.push(
+        await this.playerRepo.findOne({
+          where: { playerId: lineup.lineup[i] },
+        }),
+      );
+    }
+    const playerDtos: PlayerDTO[] = this.convertToPlayersDtos(players);
+
+    const goals: Goal[] = await this.goalRepo.find({ where: { matchId } });
+
+    const plusMinusArray: PlusMinusDTO[] = [];
+
+    for (let i = 0; i < playerDtos.length; i++) {
+      let plusMinus = 0;
+      for (let j = 0; j < goals.length; j++) {
+        if (goals[j].lineup.includes(playerDtos[i].playerId)) {
+          if (goals[j].playerId === null) {
+            plusMinus--;
+          } else {
+            plusMinus++;
+          }
+        }
+      }
+      plusMinusArray.push({
+        player: playerDtos[i],
+        plusMinus: plusMinus,
+      });
+    }
+
+    return plusMinusArray;
+  }
+
+  /**
+   * Retrieves the touches for all players of a given match
+   *
+   * @param matchId - The id for the match
+   *
+   * @returns the DTO array of players and their touches for a given match
+   */
+  async touchesPlayersForMatch(matchId: number) {
+    const lineup: Lineup = await this.lineupRepo.findOneOrFail({
+      where: { matchId },
+    });
+    const players: Player[] = [];
+
+    const match: Match = await this.matchRepo.findOneOrFail({
+      where: { matchId },
+    });
+    // need halfTime to do by half
+    const halfTime = match.halfTime;
+
+    for (let i = 0; i < lineup.lineup.length; i++) {
+      players.push(
+        await this.playerRepo.findOne({
+          where: { playerId: lineup.lineup[i] },
+        }),
+      );
+    }
+    const playerDtos: PlayerDTO[] = this.convertToPlayersDtos(players);
+
+    const possessions: Possession[] = await this.possRepo.find({
+      where: { matchId },
+    });
+
+    const firstHalfTouches = this.touchesCalculation(
+      1,
+      halfTime,
+      playerDtos,
+      possessions,
+    );
+    const secondHalfTouches = this.touchesCalculation(
+      2,
+      halfTime,
+      playerDtos,
+      possessions,
+    );
+    const fullGameTouches = this.touchesCalculation(
+      3,
+      halfTime,
+      playerDtos,
+      possessions,
+    );
+
+    const gameTouches: ReturnTouchesDTO = {
+      firstHalfTouches,
+      secondHalfTouches,
+      fullGameTouches,
+    };
+
+    return gameTouches;
+  }
+
+  // half is either 1 for first half, 2 for second half or 3 for full game match touches
+  private touchesCalculation(
+    half: number,
+    halfTime: number,
+    playerDtos: PlayerDTO[],
+    possessions: Possession[],
+  ) {
+    const possessionsFiltered = this.filterPossessions(
+      half,
+      halfTime,
+      possessions,
+    );
+    const touchesMatch: PlayerTouchesDTO[] = [];
+    let oppTouches = 0;
+    for (let i = 0; i < playerDtos.length; i++) {
+      let touches = 0;
+      for (let j = 0; j < possessionsFiltered.length; j++) {
+        if (possessionsFiltered[j].playerId === playerDtos[i].playerId) {
+          touches++;
+        }
+      }
+      touchesMatch.push({
+        player: playerDtos[i],
+        touches: touches,
+      });
+    }
+    for (let i = 0; i < possessionsFiltered.length; i++) {
+      if (possessionsFiltered[i].playerId === null) {
+        oppTouches++;
+      }
+    }
+
+    touchesMatch.push({
+      player: null,
+      touches: oppTouches,
+    });
+    return touchesMatch;
+  }
+
+  private filterPossessions(
+    half: number,
+    halfTime: number,
+    possessions: Possession[],
+  ): Possession[] {
+    if (half === 1) {
+      possessions = possessions.filter(
+        possession => possession.time < halfTime,
+      );
+    } else if (half == 2) {
+      possessions = possessions.filter(
+        possession => possession.time >= halfTime,
+      );
+    }
+    return possessions;
   }
 
   /**
@@ -141,7 +340,7 @@ export class PlayerStatsService {
    * @returns A list of player dtos converted from an entity
    */
 
-  private convertToPlayerDto(players: any[]) {
+  private convertToPlayersDtos(players: any[]) {
     const playerDtos: PlayerDTO[] = [];
     players.forEach(element => {
       const playerDto: PlayerDTO = {
