@@ -88,6 +88,10 @@ class Bench extends React.Component<
     this.setState({ substituteFor: undefined });
   };
 
+  // Make a substitution for a player on the bench and a player on the field
+  // The result of this call is that a player object will be removed from the bench (no longer rendered there)
+  // and sent to the field to be rendered while a the player that we recieved from the field will be rendered on
+  // the bench
   substitute = (playerId: number, matchId: number): void => {
     if (this.state.substituteFor === undefined) {
       console.log("Error: substituteFor is undefined");
@@ -112,8 +116,6 @@ class Bench extends React.Component<
     this.clearSubstituteFor();
     this.toggleIsExpanded(); // Close the bench
   };
-
-  componentDidUpdate(_prevProps: any, _prevState: any) {}
 
   render() {
     if (this.props.inShootingState) return null; // If were in the shooting state, hide the bench
@@ -167,6 +169,8 @@ type OpenBenchProps = {
 
 export function OpenBench(props: OpenBenchProps) {
   return (
+    // Make a side scrollable container with each player from the lineup that is not on the field
+    // as a clickable button
     <Table responsive borderless>
       <tbody>
         <tr>
