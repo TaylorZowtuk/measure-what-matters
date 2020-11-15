@@ -22,22 +22,22 @@ const Dashboard = () => (
 
     {/* Reports */}
     <Container style={{ backgroundColor: "#282c34" }}>
-      <Row>
+      <Row style={{ margin: "20px" }}>
         <Col>
           <PossessionCircular />
         </Col>
       </Row>
-      <Row>
+      <Row style={{ margin: "20px" }}>
         <Col>
           <TouchesBar />
         </Col>
       </Row>
-      <Row>
+      <Row style={{ margin: "20px" }}>
         <Col>
           <TimeOnField />
         </Col>
       </Row>
-      <Row>
+      <Row style={{ margin: "20px" }}>
         <Col>
           <PlusMinusComponent />
         </Col>
