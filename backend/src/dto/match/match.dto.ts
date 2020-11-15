@@ -25,13 +25,13 @@ export class MatchDTO {
 
   @ApiProperty({
     format: 'int',
-    description: 'The epoch time that the recording session began.',
+    description: 'The game time that halftime occurred.',
   })
   halfTime: number;
 
   @ApiProperty({
     format: 'int',
-    description: 'The epoch time that the recording session began.',
+    description: 'The game time in milliseconds that the game concluded.',
   })
   fullTime: number;
 
