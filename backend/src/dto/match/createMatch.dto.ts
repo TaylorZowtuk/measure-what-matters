@@ -8,7 +8,7 @@ export class CreateMatchDTO {
 
   @ApiProperty({
     format: 'int',
-    description: 'The epoch time that that the game started.',
+    description: 'The epoch time that the game is scheduled to begin.',
   })
   @IsNotEmpty()
   scheduledTime: number;

@@ -7,7 +7,7 @@ export class StartMatchDTO {
   matchId: number;
 
   @ApiProperty({
-    description: 'The epoch timestamp that the game recording session began.',
+    description: 'The epoch timestamp the game recording session began.',
   })
   @IsNotEmpty()
   time: number;
