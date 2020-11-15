@@ -7,8 +7,8 @@ VALUES (1, 'team', 1);
 INSERT INTO public.team ("teamId", "name", "userId")
 VALUES (22, 'team22', 1);
 
-INSERT INTO public.match ("teamIdTeamId", "startTime", "isHomeTeam")
-VALUES (1, 46544654, true);
+INSERT INTO public.match ("teamId", "scheduledTime", "isHomeTeam", "opponentTeamName")
+VALUES (1, 46544654, true, 46544655);
 
 INSERT INTO public.player ("playerId", "teamIdTeamId", "firstName", "lastName", "jerseyNum")
 VALUES (1, 1, 'Aaminah', 'Hood', 1);

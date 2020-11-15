@@ -28,11 +28,11 @@ export class Match extends BaseEntity {
 
   // Epoch time of game date/time
   @Column({ type: 'int' })
-  startDate: number;
+  scheduledTime: number;
 
-  // Epoch time of time recorded
-  @Column()
-  recordingStartTime: number;
+  // Epoch time of date/time recording began
+  @Column({ type: 'int', nullable: true })
+  startTime: number;
 
   @Column({ nullable: true })
   halfTime: number;
