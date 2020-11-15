@@ -8,6 +8,7 @@ import AddTeam from "./components/AddTeam/AddTeam.page";
 import Signup from "./components/Signup/Signup.page";
 import MatchSelection from "./components/recording/MatchSelection.page";
 import LineupComponent from "./components/Lineup/Lineup.page";
+import Roster from "./components/Roster/Roster";
 
 const Router = () => {
   return (
@@ -22,6 +23,7 @@ const Router = () => {
       <Route exact path="/match/lineup" component={LineupComponent}></Route>
       <Route exact path="/match/recording" component={Recording}></Route>
       <Route exact path="/signup" component={Signup}></Route>
+      <Route exact path="/teams/roster" component={Roster}></Route>
     </Switch>
   );
 };
