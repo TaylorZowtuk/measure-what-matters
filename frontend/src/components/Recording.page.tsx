@@ -16,6 +16,7 @@ import CircularBuffer from "../util/circular-buffer";
 import RecordingProps from "./interfaces/props/recording-props";
 import { fullTimeDTO } from "./interfaces/fullTime";
 import { Col, Row } from "react-bootstrap";
+import { ShotResultPicker } from "./recording/ShotResultPicker";
 
 // Provide MatchId to each recording component which requires it through context
 export const MatchIdContext: React.Context<number> = React.createContext(0);
@@ -42,6 +43,7 @@ class Recording extends React.Component<
     subField: Player | undefined; // Player to remove from field
     subBench: Player | undefined; // Player to add to field from bench
     lineup: Player[]; // List of Players in this game for our team
+    shooting: boolean; // Whether we are in the, 'a shot is being taken' state
   }
 > {
   team_name: string = "Blue Blazers";
@@ -55,6 +57,7 @@ class Recording extends React.Component<
       subField: undefined,
       subBench: undefined,
       lineup: this.props.location.state.startingLineup,
+      shooting: false,
     };
     // TODO: add start match call
   }
@@ -92,6 +95,10 @@ class Recording extends React.Component<
     subBench: Player | undefined
   ): void => {
     this.setState({ subField: subField, subBench: subBench });
+  };
+
+  setShooting = (shooting: boolean): void => {
+    this.setState({ shooting: shooting });
   };
 
   incrementScore = (
@@ -199,6 +206,7 @@ class Recording extends React.Component<
             getStartingBench={this.provideStartingBench}
             notifyOfSubs={this.setSubs}
           ></Bench>
+          <ShotResultPicker shooting={this.state.shooting} />
           <Field
             matchId={Number(this.props.location.state.matchId)}
             getStartingLine={this.provideStartingLine}
