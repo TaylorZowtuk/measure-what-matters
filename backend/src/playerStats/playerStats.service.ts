@@ -378,13 +378,15 @@ export class PlayerStatsService {
     possessions.sort(function(a, b) {
       return a.time - b.time;
     });
-    possessions.filter(possession => (possession.neutral = false));
+    const possessionsFilt = possessions.filter(
+      possession => possession.neutral === false,
+    );
 
     const firstHalfPossessionsPlayer: PlayerPossessionStatDTO[] = this.playersPossessionsCalculate(
       1,
       halfTime,
       fullTime,
-      possessions,
+      possessionsFilt,
       playerDtos,
     );
 
@@ -392,14 +394,14 @@ export class PlayerStatsService {
       2,
       halfTime,
       fullTime,
-      possessions,
+      possessionsFilt,
       playerDtos,
     );
     const fullGamePossessionsPlayer: PlayerPossessionStatDTO[] = this.playersPossessionsCalculate(
       3,
       halfTime,
       fullTime,
-      possessions,
+      possessionsFilt,
       playerDtos,
     );
 
