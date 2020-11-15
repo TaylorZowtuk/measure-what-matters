@@ -8,7 +8,7 @@ import Player from "../interfaces/player";
 import { ShotDTO } from "../interfaces/shot";
 import { MatchIdContext } from "./Recording.page";
 
-type ShotResultPickerProps = {
+export type ShotResultPickerProps = {
   shooting: boolean;
   propsIfGoal: GoalOnClickProps;
 };
@@ -80,7 +80,7 @@ export type ShotFieldInfo = {
   getLineup: Function;
 };
 
-type GoalOnClickProps = {
+export type GoalOnClickProps = {
   fieldInfo: ShotFieldInfo;
   matchId: number;
   incrementScore: Function;
