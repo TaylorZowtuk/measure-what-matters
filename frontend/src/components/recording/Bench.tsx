@@ -1,10 +1,10 @@
 import React from "react";
-import { DraggableTypes } from "../constants";
+import { DraggableTypes } from "../../constants";
 import { DropTargetMonitor, useDrop } from "react-dnd";
 
 import { Button, Table } from "react-bootstrap";
 
-import authHeader from "../services/auth.header";
+import authHeader from "../../services/auth.header";
 import axios from "axios";
 
 import Player from "./Player";

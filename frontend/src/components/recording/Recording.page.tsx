@@ -5,18 +5,18 @@ import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { TouchBackend } from "react-dnd-touch-backend";
 import axios from "axios";
-import authHeader from "../services/auth.header";
+import authHeader from "../../services/auth.header";
 
 import Button from "@material-ui/core/Button";
 import Team from "./Team";
 import Bench, { StartingPlayer } from "./Bench";
 import Field from "./Field";
-import Player from "./interfaces/player";
-import CircularBuffer from "../util/circular-buffer";
-import RecordingProps from "./interfaces/props/recording-props";
-import { fullTimeDTO } from "./interfaces/fullTime";
+import Player from "../interfaces/player";
+import CircularBuffer from "../../util/circular-buffer";
+import RecordingProps from "../interfaces/props/recording-props";
+import { fullTimeDTO } from "../interfaces/fullTime";
 import { Col, Row } from "react-bootstrap";
-import { ShotFieldInfo, ShotResultPicker } from "./recording/ShotResultPicker";
+import { ShotFieldInfo, ShotResultPicker } from "./ShotResultPicker";
 
 // Provide MatchId to each recording component which requires it through context
 export const MatchIdContext: React.Context<number> = React.createContext(0);
