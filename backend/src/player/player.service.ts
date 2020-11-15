@@ -66,9 +66,11 @@ export class PlayerService {
    */
 
   async getPlayersByTeamId(teamId: number): Promise<PlayerDTO[]> {
-    const players: Player[] = await this.playerRepo.find({
+    let players: Player[] = await this.playerRepo.find({
       where: { teamId: teamId },
     });
+
+    players = players.filter(player => player.archived == false);
 
     return this.convertToDto(players);
   }
@@ -87,7 +89,9 @@ export class PlayerService {
       const player: Player = await this.playerRepo.findOne({
         where: { playerId: playerIds[i] },
       });
-      players.push(player);
+      if (player.archived == false) {
+        players.push(player);
+      }
     }
     return players;
   }
@@ -97,17 +101,13 @@ export class PlayerService {
    *
    * @param playerId: ID of the player to be deleted
    *
-   * @returns a void promise
+   * @returns updated player object with archived true (we are keeping removed objects in database with different flag)
    */
 
-  async removePlayerById(playerId: number): Promise<void> {
-    const result = await this.playerRepo.delete(playerId);
-
-    if (result.affected === 0) {
-      throw new NotFoundException(
-        'Player with playerId ' + playerId + ' not found',
-      );
-    }
+  async removePlayerById(playerId: number): Promise<Player> {
+    const playerRemove = await this.playerRepo.findOneOrFail({ playerId });
+    playerRemove.archived = true;
+    return this.playerRepo.save(playerRemove);
   }
 
   /**
@@ -123,16 +123,18 @@ export class PlayerService {
     const player = await this.playerRepo.findOneOrFail({
       where: { playerId: updatePlayer.playerId },
     });
-    const notUnique = await this.uniqueJerseyTeam(player.teamId, jerseyNums);
-    if (notUnique != null) {
-      throw new BadRequestException(
-        'Jersey number ' + notUnique + ' is already taken',
-      );
+    if (updatePlayer.jerseyNum !== player.jerseyNum) {
+      const notUnique = await this.uniqueJerseyTeam(player.teamId, jerseyNums);
+      if (notUnique != null) {
+        throw new BadRequestException(
+          'Jersey number ' + notUnique + ' is already taken',
+        );
+      }
+      player.jerseyNum = updatePlayer.jerseyNum;
     }
     player.teamId = updatePlayer.teamId;
     player.firstName = updatePlayer.firstName;
     player.lastName = updatePlayer.lastName;
-    player.jerseyNum = updatePlayer.jerseyNum;
     return this.playerRepo.save(player);
   }
 

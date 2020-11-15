@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Match } from '../db/entities/match.entity';
 import { MatchDTO } from '../dto/match/match.dto';
@@ -9,101 +9,64 @@ import { CreateMatchDTO } from '../dto/match/createMatch.dto';
 
 @Injectable()
 export class MatchService {
-  matchRepo: Repository<any>;
-
   constructor(
     @InjectRepository(Match)
-    matchRepo: Repository<Match>,
-  ) {
-    this.matchRepo = matchRepo;
-  }
+    private readonly matchRepo: Repository<Match>,
+  ) {}
 
-  /**
-   * Saves a newly created match to the DB.
-   *
-   * @param match - The beginning of a new match session to be saved to database
-   */
-
-  async saveMatch(match: CreateMatchDTO): Promise<Match> {
+  // Create a match (scheduled)
+  async createMatch(
+    teamId: number,
+    scheduledTime: number,
+    opponentTeamName: string,
+    isHomeTeam: boolean,
+  ): Promise<Match> {
+    const match = this.matchRepo.create({
+      teamId,
+      scheduledTime,
+      opponentTeamName,
+      isHomeTeam,
+    });
     return this.matchRepo.save(match);
   }
 
-  /**
-   * Retrieves a list of matches played by a team.
-   *
-   * @param teamId the id of the team we want to return matches for
-   *
-   * @returns A promise of a list of matches
-   */
-
-  async getMatches(teamId: number): Promise<MatchDTO[]> {
-    const matches: Match[] = await this.matchRepo.find({ where: { teamId } });
-
-    return this.convertToDto(matches);
+  // Start a match recording session
+  async startMatch(matchId: number, startTime: number): Promise<Match> {
+    if (!matchId) throw new Error('matchId cannot be null');
+    const match: Match = await this.matchRepo.findOneOrFail({ matchId });
+    match.startTime = startTime;
+    return this.matchRepo.save(match);
   }
 
-  /**
-   * Sets the timer time that halftime occured
-   *
-   * @param matchHalfTime DTO containing matchId and halfTime on timer
-   *
-   * @returns A promise of the match DTO of the newly updated match
-   */
+  async getMatches(teamId: number): Promise<Match[]> {
+    const matches: Match[] = await this.matchRepo.find({ where: { teamId } });
+    Logger.log(matches);
 
-  async addHalfTime(matchHalfTime: HalfTimeDTO): Promise<MatchDTO> {
-    const match = await this.matchRepo.findOneOrFail({
-      where: { matchId: matchHalfTime.matchId },
-    });
-    if (matchHalfTime.halfTime < 0) {
+    // return this.convertToDto(matches);
+    return matches;
+  }
+
+  // Add the time that the halftime began
+  async addHalfTime(matchId: number, time: number): Promise<Match> {
+    if (!matchId) throw new Error('matchId cannot be null');
+    const match = await this.matchRepo.findOneOrFail({ matchId });
+    if (time < 0) {
       throw new BadRequestException('Halftime cannot be a negative value');
     }
-    const matchUpdate = { ...match, halfTime: matchHalfTime.halfTime };
+    const matchUpdate = { ...match, halfTime: time };
     return this.matchRepo.save(matchUpdate);
   }
 
-  /**
-   * Sets the timer time that fulltime occured
-   *
-   * @param matchHalfTime DTO containing matchId and fullTime on timer
-   *
-   * @returns A promise of the match DTO of the newly updated match
-   */
-
-  async addFullTime(matchFullTime: FullTimeDTO): Promise<MatchDTO> {
-    const match = await this.matchRepo.findOneOrFail({
-      where: { matchId: matchFullTime.matchId },
-    });
-    if (matchFullTime.fullTime < match.halfTime) {
+  // Add the time that the game concluded
+  async addFullTime(matchId: number, time: number): Promise<Match> {
+    const match = await this.matchRepo.findOneOrFail({ matchId });
+    if (time < match.halfTime) {
       throw new BadRequestException('Fulltime cannot be smaller than halftime');
     }
-    if (matchFullTime.fullTime < 0) {
+    if (time < 0) {
       throw new BadRequestException('Fulltime cannot be a negative value');
     }
-    const matchUpdate = { ...match, fullTime: matchFullTime.fullTime };
+    const matchUpdate = { ...match, fullTime: time };
     return this.matchRepo.save(matchUpdate);
-  }
-
-  /**
-   * Converts a list of match entities to a list of match dtos
-   *
-   * @param matches - The list of match entities we want to convert to a list of match DTOs
-   *
-   * @returns A list of match dtos converted from an entity
-   */
-
-  private convertToDto(matches: any[]) {
-    const matchDtos: MatchDTO[] = [];
-    matches.forEach(element => {
-      const matchDto: MatchDTO = {
-        matchId: element.matchId,
-        teamId: element.teamId.teamId,
-        startTime: element.startTime,
-        isHomeTeam: element.isHomeTeam,
-        halfTime: element.halfTime,
-        fullTime: element.fullTime,
-      };
-      matchDtos.push(matchDto);
-    });
-    return matchDtos;
   }
 }

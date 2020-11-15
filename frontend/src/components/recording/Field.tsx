@@ -1,19 +1,22 @@
 import React from "react";
-import { DraggableTypes } from "../constants";
+import { DraggableTypes } from "../../constants";
 import { useDrop } from "react-dnd";
 import { Container, Row, Col } from "react-bootstrap";
 import { cloneDeep } from "lodash";
-import { CircularBuffer } from "../util/circular-buffer";
+import { CircularBuffer } from "../../util/circular-buffer";
 import axios from "axios";
 
 import { createPlayerDraggable, createPlayerDraggables } from "./Player";
-import Player from "./interfaces/player";
-import authHeader from "../services/auth.header";
-import { NeutralPossessionDTO } from "./interfaces/neutralPossession";
+import Player from "../interfaces/player";
+import authHeader from "../../services/auth.header";
+import { NeutralPossessionDTO } from "../interfaces/neutralPossession";
+import { ShotFieldInfo } from "./ShotResultPicker";
+
 type FieldProps = {
   matchId: number;
   getStartingLine: Function;
-  incrementScore: Function;
+  inShootingState: boolean;
+  enterShootingState: Function;
   removeFromField: Player | undefined;
   addToField: Player | undefined;
   resetSubs: Function;
@@ -181,9 +184,14 @@ class Field extends React.Component<
   }
 
   render() {
+    if (this.props.inShootingState) {
+      // If were in the shooting state hide the field
+      return null;
+    }
+
     return (
       <FieldTarget
-        incrementScore={this.props.incrementScore}
+        enterShootingState={this.props.enterShootingState}
         draggablePlayers={this.state.onField}
         previousPossessions={this.previousPossessions}
         resetPlayerWithPossession={this.resetPlayerWithPossession}
@@ -194,7 +202,7 @@ class Field extends React.Component<
 }
 
 type FieldTargetProps = {
-  incrementScore: Function;
+  enterShootingState: Function;
   draggablePlayers: any[];
   previousPossessions: CircularBuffer<number>;
   resetPlayerWithPossession: Function;
@@ -205,16 +213,16 @@ export function FieldTarget(props: FieldTargetProps) {
   const [, drop] = useDrop({
     accept: DraggableTypes.PLAYER,
     drop: (item: any, monitor) => {
+      // A shot was taken
       if (item.player.playerId === props.previousPossessions.peekBack()) {
         // Only allow the player who currently has the ball to 'shoot'
         props.resetPlayerWithPossession();
-        const ourGoal: Boolean = item.player.teamId !== -1 ? true : false;
-        props.incrementScore(
-          ourGoal,
-          item.player,
-          props.previousPossessions,
-          props.getLineup()
-        );
+        let shotFieldInfo: ShotFieldInfo = {
+          shooter: item.player,
+          previousPossessions: props.previousPossessions,
+          getLineup: props.getLineup,
+        };
+        props.enterShootingState(true, shotFieldInfo);
       }
     },
   });

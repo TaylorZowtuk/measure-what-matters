@@ -8,8 +8,6 @@ import {
   Post,
   UseGuards,
   Request,
-  UsePipes,
-  ValidationPipe,
   NotFoundException,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -95,7 +93,6 @@ export class TeamController {
     status: 404,
     description: 'Team does not exist in database',
   })
-  @UsePipes(ValidationPipe)
   async upDateTeamName(@Body() updateTeam: TeamDTO) {
     try {
       return await this.teamService.updateTeamName(updateTeam);

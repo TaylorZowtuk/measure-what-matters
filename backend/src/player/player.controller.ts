@@ -7,8 +7,6 @@ import {
   UseGuards,
   BadRequestException,
   InternalServerErrorException,
-  UsePipes,
-  ValidationPipe,
   ParseIntPipe,
   Delete,
   NotFoundException,
@@ -40,7 +38,6 @@ export class PlayerController {
     type: CreatePlayerDTO,
     isArray: true,
   })
-  @UsePipes(ValidationPipe)
   async createPlayers(@Body() players: CreatePlayerDTO[]) {
     try {
       return await this.playerService.savePlayer(players);
@@ -83,34 +80,24 @@ export class PlayerController {
       }
     }
   }
-  @Delete('/delete')
+
   @ApiResponse({
     status: 200,
-    description: 'Player entity removed successfully',
+    description: 'Player removed from database.',
   })
   @ApiResponse({
     status: 400,
-    description: 'Not a number, number expected',
+    description: 'Player with given Id was not found or was null',
   })
-  @ApiResponse({
-    status: 404,
-    description: 'Player does not exist in database',
-  })
-  @ApiResponse({
-    status: 500,
-    description: 'Unknown error occured',
-  })
-  async delete(
-    @Query('playerId', ParseIntPipe) playerId: number,
-  ): Promise<void> {
+  @Delete('/')
+  async removePlayerEntity(@Query('playerId', ParseIntPipe) playerId: number) {
     try {
       return await this.playerService.removePlayerById(playerId);
     } catch (error) {
-      if (error.message.includes('not found')) {
-        throw error;
-      } else {
-        throw new InternalServerErrorException('Unknown error occured');
+      if (error instanceof QueryFailedError) {
+        throw new BadRequestException('Player with given Id was not found');
       }
+      throw new InternalServerErrorException('Unknown error occurred');
     }
   }
 
@@ -127,7 +114,6 @@ export class PlayerController {
     status: 404,
     description: 'Player does not exist in database',
   })
-  @UsePipes(ValidationPipe)
   async updatePlayer(@Body() updatePlayer: UpdatePlayerDTO) {
     try {
       return await this.playerService.updatePlayer(updatePlayer);
