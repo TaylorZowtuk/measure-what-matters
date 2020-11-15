@@ -5,7 +5,7 @@ import { DropTargetMonitor, useDrop } from "react-dnd";
 import { Theme, createStyles, makeStyles } from "@material-ui/core/styles";
 import GridList from "@material-ui/core/GridList";
 import GridListTile from "@material-ui/core/GridListTile";
-import { Button } from "react-bootstrap";
+import { Button, Table } from "react-bootstrap";
 
 import authHeader from "../services/auth.header";
 import axios from "axios";
@@ -194,26 +194,29 @@ type OpenBenchProps = {
 
 export function OpenBench(props: OpenBenchProps) {
   const classes = useStyles();
+
   return (
-    <div className={classes.root}>
-      <GridList className={classes.gridList} cols={10} cellHeight={"auto"}>
-        {props.players.map((player: Player) => (
-          <GridListTile key={player.playerId}>
-            <MatchIdContext.Consumer>
-              {(matchId) => (
-                <Button
-                  key={player.playerId}
-                  variant="dark"
-                  onClick={() => props.substitute(player.playerId, matchId)}
-                >
-                  {player.jerseyNum} {player.firstName} {player.lastName}
-                </Button>
-              )}
-            </MatchIdContext.Consumer>
-          </GridListTile>
-        ))}
-      </GridList>
-    </div>
+    <Table responsive borderless>
+      <tbody>
+        <tr>
+          {props.players.map((player: Player) => (
+            <td>
+              <MatchIdContext.Consumer>
+                {(matchId) => (
+                  <Button
+                    key={player.playerId}
+                    variant="dark"
+                    onClick={() => props.substitute(player.playerId, matchId)}
+                  >
+                    {player.jerseyNum} {player.firstName} {player.lastName}
+                  </Button>
+                )}
+              </MatchIdContext.Consumer>
+            </td>
+          ))}
+        </tr>
+      </tbody>
+    </Table>
   );
 }
 
