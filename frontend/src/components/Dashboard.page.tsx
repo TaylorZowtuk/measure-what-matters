@@ -5,6 +5,7 @@ import TimeOnField from "./reports/TimeOnField";
 import { Col, Container, Row } from "react-bootstrap";
 import PossessionCircular from "./reports/Possession";
 import TouchesBar from "./reports/Touches";
+import MatchDropdown from "./MatchDropdown/MatchDropdown";
 
 const Dashboard = () => (
   <div className="dashboard">
@@ -12,6 +13,7 @@ const Dashboard = () => (
     <br></br>
 
     {/* Navigation */}
+    <MatchDropdown />
     <Link to="/matches/upcoming">
       <Button variant="contained">Recording</Button>
     </Link>
