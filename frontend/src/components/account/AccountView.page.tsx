@@ -32,7 +32,6 @@ class AccountView extends React.Component<{}, accountState> {
     // get user profile
     axios.get("/users/profile", { headers: authHeader() }).then((response) => {
       if (response.data) {
-        console.log(response.data);
         let splitted = response.data.name.split(" ");
         this.setState({
           firstName: splitted[0],
@@ -53,7 +52,6 @@ class AccountView extends React.Component<{}, accountState> {
     if (this.state.firstDisable) {
       this.setState({ firstDisable: false });
     }
-    console.log("clicked");
   };
 
   handleLastEdit = (e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -64,7 +62,6 @@ class AccountView extends React.Component<{}, accountState> {
     if (this.state.lastDisable) {
       this.setState({ lastDisable: false });
     }
-    console.log("clicked");
   };
 
   handleFirstSave = (): void => {
@@ -84,9 +81,7 @@ class AccountView extends React.Component<{}, accountState> {
           { headers: authHeader() }
         )
         .then(
-          (response) => {
-            console.log(response);
-          },
+          (response) => {},
           (error) => {
             console.log(error);
           }
@@ -120,9 +115,7 @@ class AccountView extends React.Component<{}, accountState> {
           { headers: authHeader() }
         )
         .then(
-          (response) => {
-            console.log(response);
-          },
+          (response) => {},
           (error) => {
             console.log(error);
           }
