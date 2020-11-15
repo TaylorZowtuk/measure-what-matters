@@ -20,6 +20,7 @@ import { QueryFailedError } from 'typeorm';
 import { CreateMatchDTO } from '../dto/match/createMatch.dto';
 import { HalfTimeDTO } from '../dto/match/halfTime.dto';
 import { FullTimeDTO } from '../dto/match/fullTime.dto';
+import { MatchDTO } from 'src/dto/match/match.dto';
 
 @ApiTags('Matches')
 @ApiBearerAuth()
@@ -60,7 +61,7 @@ export class MatchController {
   @Get('/teamId')
   @ApiResponse({
     status: 200,
-    type: Match,
+    type: MatchDTO,
     isArray: true,
     description: 'Returns a list of matches for the given teamId',
   })

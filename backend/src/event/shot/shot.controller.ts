@@ -11,6 +11,7 @@ import {
   Query,
 } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ShotDTO } from 'src/dto/events/shot/shot.dto';
 import { CreateShotDTO } from '../../dto/events/shot/createShot.dto';
 import { ShotService } from './shot.service';
 
@@ -44,6 +45,8 @@ export class ShotController {
   @Get('/')
   @ApiResponse({
     status: 200,
+    type: ShotDTO,
+    isArray: true,
     description: 'Returns all shot events for a given match',
   })
   @ApiResponse({
