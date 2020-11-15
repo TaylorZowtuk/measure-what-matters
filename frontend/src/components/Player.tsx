@@ -6,27 +6,12 @@ import axios from "axios";
 import authHeader from "../services/auth.header";
 import { MatchIdContext } from "./Recording.page";
 import Player from "./interfaces/player";
+import { OppositionPossessionDTO } from "./interfaces/oppositionPossession";
+import { PlayerPossessionDTO } from "./interfaces/playerPossession";
 
 type Possession = {
   hasPossession: boolean; // Whether or not the the player has possession of the ball
   notifyOfPossessionChange: Function; // A callback to notify Field of possession change
-};
-
-// API DTO's
-type OppositionPossessionDTO = {
-  matchId: number;
-  time: number;
-};
-
-type PlayerPossessionDTO = {
-  matchId: number;
-  time: number;
-  playerId: number;
-};
-
-export type NeutralPossessionDTO = {
-  matchId: number;
-  time: number;
 };
 
 type DraggableProps = {
@@ -118,6 +103,7 @@ function changePossession(
       matchId: matchId,
       time: Date.now() % 10000, // TODO: switch to game time
     };
+    console.log("Their possession", possessionEvent);
     axios
       .post(`/event/possession/opposition`, possessionEvent, {
         headers: authHeader(),

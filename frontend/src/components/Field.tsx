@@ -6,13 +6,10 @@ import { cloneDeep } from "lodash";
 import { CircularBuffer } from "../util/circular-buffer";
 import axios from "axios";
 
-import {
-  createPlayerDraggable,
-  createPlayerDraggables,
-  NeutralPossessionDTO,
-} from "./Player";
+import { createPlayerDraggable, createPlayerDraggables } from "./Player";
 import Player from "./interfaces/player";
 import authHeader from "../services/auth.header";
+import { NeutralPossessionDTO } from "./interfaces/neutralPossession";
 type FieldProps = {
   matchId: number;
   getStartingLine: Function;
