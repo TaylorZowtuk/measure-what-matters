@@ -6,7 +6,6 @@ import Player from "./Player";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import authHeader from "../../services/auth.header";
-import { Row } from "react-bootstrap";
 
 interface createTeamState {
   teamName: string;
