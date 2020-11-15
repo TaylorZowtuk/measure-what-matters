@@ -13,6 +13,9 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { PlayerStatsService } from './playerStats.service';
 import { PlayerDTO } from '../dto/player/player.dto';
 import { QueryFailedError } from 'typeorm';
+import { PlusMinusDTO } from '../dto/stats/plusMinus.dto';
+import { PlayerTouchesDTO } from '../dto/stats/playerTouches.dto';
+import { ReturnTouchesDTO } from 'src/dto/stats/returnTouches.dto';
 
 @ApiTags('Player Stats')
 @ApiBearerAuth()
@@ -21,7 +24,7 @@ import { QueryFailedError } from 'typeorm';
 export class PlayerStatsController {
   constructor(private readonly playerStatsService: PlayerStatsService) {}
 
-  @Get('timeOnField')
+  @Get('/timeOnField')
   @ApiResponse({
     status: 200,
     type: PlayerTimeDTO,
@@ -33,30 +36,31 @@ export class PlayerStatsController {
   @ApiResponse({ status: 500, description: 'Unknown error occured' })
   async getTimeOnField(@Query('matchId', ParseIntPipe) matchId: number) {
     try {
-      matchId = +matchId;
       return await this.playerStatsService.getPlayersTimes(matchId);
     } catch (error) {
       if (error instanceof TypeError) {
         if (error.message.includes('Cannot read property')) {
           throw new BadRequestException('matchId does not exist in database');
         }
+      } else if (error.message.includes('Match does not have finish time')) {
+        throw error;
       }
       return new InternalServerErrorException('Unknown error occured');
     }
   }
 
   @ApiResponse({
-    status: 201,
+    status: 200,
     type: PlayerDTO,
     isArray: true,
-    description: 'Creates the starting lineup substitutions',
+    description: 'Returns an array of players that were on for a given goal',
   })
   @ApiResponse({
     status: 400,
     description: 'Invalid integer entered for goalId or matchId does not exist',
   })
   @ApiResponse({ status: 500, description: 'Unknown error occured' })
-  @Get('onForGoal')
+  @Get('/onForGoal')
   async getPlayersOnForGoal(@Query('goalId', ParseIntPipe) goalId: number) {
     try {
       goalId = +goalId;
@@ -74,6 +78,70 @@ export class PlayerStatsController {
         }
       } else {
         return new InternalServerErrorException('Unknown error occured');
+      }
+    }
+  }
+  @ApiResponse({
+    status: 200,
+    type: PlusMinusDTO,
+    isArray: true,
+    description:
+      'Returns an array of all players and their plus minus for a given match',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'No lineup in database for this given match',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Query needs to be an integer',
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Unknown error occurred',
+  })
+  @Get('/plus_minus')
+  async getPlusMinusMatch(@Query('matchId', ParseIntPipe) matchId: number) {
+    try {
+      return await this.playerStatsService.plusMinus(matchId);
+    } catch (error) {
+      if (error.message.includes('Could not find any entity')) {
+        throw new BadRequestException('No lineup for this match');
+      } else {
+        throw new InternalServerErrorException('Unknown error occurred');
+      }
+    }
+  }
+  @ApiResponse({
+    status: 200,
+    type: PlayerTouchesDTO,
+    isArray: true,
+    description:
+      'Returns an array of all players and their touches for a given match',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'No lineup in database for this given match',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Query needs to be an integer',
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Unknown error occurred',
+  })
+  @Get('/touches')
+  async getPlayerTouchesForMatch(
+    @Query('matchId', ParseIntPipe) matchId: number,
+  ): Promise<ReturnTouchesDTO> {
+    try {
+      return await this.playerStatsService.touchesPlayersForMatch(matchId);
+    } catch (error) {
+      if (error.message.includes('Could not find any entity')) {
+        throw new BadRequestException('No lineup for this match');
+      } else {
+        throw new InternalServerErrorException('Unknown error occurred');
       }
     }
   }
