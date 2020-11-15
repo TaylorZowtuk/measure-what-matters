@@ -69,6 +69,9 @@ export class PlayerStatsService {
     matchId: number,
   ): Promise<number> {
     let timeOnField = 0;
+    if (matchId === null) {
+      throw new BadRequestException('matchId cannot be null');
+    }
     const match = await this.matchRepo.findOne({ where: { matchId } });
     const matchFinishTime = match.fullTime;
 
@@ -97,6 +100,9 @@ export class PlayerStatsService {
 
   async getPlayersTimes(matchId: number): Promise<PlayerTimeDTO[]> {
     const playerTimeDtos: PlayerTimeDTO[] = [];
+    if (matchId === null) {
+      throw new BadRequestException('matchId cannot be null');
+    }
     const match = await this.matchRepo.findOne({ where: { matchId: matchId } });
     const teamId = match.teamId.teamId;
 

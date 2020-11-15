@@ -13,14 +13,13 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { Match } from '../db/entities/match.entity';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { MatchService } from './match.service';
 import { QueryFailedError } from 'typeorm';
 import { CreateMatchDTO } from '../dto/match/createMatch.dto';
 import { HalfTimeDTO } from '../dto/match/halfTime.dto';
 import { FullTimeDTO } from '../dto/match/fullTime.dto';
-import { MatchDTO } from 'src/dto/match/match.dto';
+import { MatchDTO } from '../dto/match/match.dto';
 
 @ApiTags('Matches')
 @ApiBearerAuth()
