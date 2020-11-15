@@ -16,7 +16,7 @@ import CircularBuffer from "../util/circular-buffer";
 import RecordingProps from "./interfaces/props/recording-props";
 import { fullTimeDTO } from "./interfaces/fullTime";
 import { Col, Row } from "react-bootstrap";
-import { ShotResultPicker } from "./recording/ShotResultPicker";
+import { ShotFieldInfo, ShotResultPicker } from "./recording/ShotResultPicker";
 
 // Provide MatchId to each recording component which requires it through context
 export const MatchIdContext: React.Context<number> = React.createContext(0);
@@ -44,6 +44,7 @@ class Recording extends React.Component<
     subBench: Player | undefined; // Player to add to field from bench
     lineup: Player[]; // List of Players in this game for our team
     shooting: boolean; // Whether we are in the, 'a shot is being taken' state
+    shotFieldInfo: ShotFieldInfo | undefined; // A collection on field information passed to ShotResultPicker
   }
 > {
   team_name: string = "Blue Blazers";
@@ -58,6 +59,7 @@ class Recording extends React.Component<
       subBench: undefined,
       lineup: this.props.location.state.startingLineup,
       shooting: false,
+      shotFieldInfo: undefined,
     };
     // TODO: add start match call
   }
@@ -97,8 +99,15 @@ class Recording extends React.Component<
     this.setState({ subField: subField, subBench: subBench });
   };
 
-  setShooting = (shooting: boolean): void => {
-    this.setState({ shooting: shooting });
+  setShooting = (
+    shooting: boolean = false,
+    shotFieldInfo: ShotFieldInfo | undefined = undefined
+  ): void => {
+    if (shooting) {
+      this.setState({ shooting: shooting, shotFieldInfo: shotFieldInfo });
+    } else {
+      this.setState({ shooting: shooting, shotFieldInfo: undefined });
+    }
   };
 
   incrementScore = (
@@ -205,12 +214,24 @@ class Recording extends React.Component<
           <Bench
             getStartingBench={this.provideStartingBench}
             notifyOfSubs={this.setSubs}
+            inShootingState={this.state.shooting}
           ></Bench>
-          <ShotResultPicker shooting={this.state.shooting} />
+          {this.state.shotFieldInfo ? (
+            <ShotResultPicker
+              shooting={this.state.shooting}
+              propsIfGoal={{
+                fieldInfo: this.state.shotFieldInfo,
+                incrementScore: this.incrementScore,
+                exitShootingState: this.setShooting,
+              }}
+            />
+          ) : null}
+
           <Field
             matchId={Number(this.props.location.state.matchId)}
             getStartingLine={this.provideStartingLine}
-            incrementScore={this.incrementScore}
+            inShootingState={this.state.shooting}
+            enterShootingState={this.setShooting}
             removeFromField={this.state.subField}
             addToField={this.state.subBench}
             resetSubs={this.setSubs}

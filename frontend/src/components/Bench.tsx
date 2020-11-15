@@ -31,6 +31,7 @@ type Substitution = {
 type BenchProps = {
   getStartingBench: Function;
   notifyOfSubs: Function;
+  inShootingState: boolean;
 };
 
 class Bench extends React.Component<
@@ -118,6 +119,8 @@ class Bench extends React.Component<
   componentDidUpdate(_prevProps: any, _prevState: any) {}
 
   render() {
+    if (this.props.inShootingState) return null; // If were in the shooting state, hide the bench
+
     if (this.state.isExpanded) {
       return (
         <OpenBench players={this.state.onBench} substitute={this.substitute} />
