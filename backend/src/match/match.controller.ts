@@ -4,13 +4,10 @@ import {
   Controller,
   Get,
   InternalServerErrorException,
-  NotFoundException,
   ParseIntPipe,
   Post,
   Query,
   UseGuards,
-  UsePipes,
-  ValidationPipe,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -20,28 +17,35 @@ import { CreateMatchDTO } from '../dto/match/createMatch.dto';
 import { HalfTimeDTO } from '../dto/match/halfTime.dto';
 import { FullTimeDTO } from '../dto/match/fullTime.dto';
 import { MatchDTO } from '../dto/match/match.dto';
+import { Match } from '../db/entities/match.entity';
+import { StartMatchDTO } from '../dto/match/startMatch.dto';
 
 @ApiTags('Matches')
+@ApiResponse({ status: 500, description: 'Unknown error occurred' })
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
 @Controller('match')
 export class MatchController {
   constructor(private readonly matchService: MatchService) {}
 
-  @Post('start')
   @ApiResponse({ status: 201, description: 'Creates a new match' })
-  @ApiResponse({
-    status: 400,
-    description: 'Violates foreign key, or null value entered',
-  })
-  @ApiResponse({ status: 500, description: 'Unknown error occured' })
-  @UsePipes(ValidationPipe)
-  async startMatch(@Body() match: CreateMatchDTO) {
+  @Post('/create')
+  async createMatch(@Body() match: CreateMatchDTO): Promise<Match> {
+    const { teamId, scheduledTime, opponentTeamName, isHomeTeam } = match;
+    return await this.matchService.createMatch(
+      teamId,
+      scheduledTime,
+      opponentTeamName,
+      isHomeTeam,
+    );
+  }
+
+  @Post('/start')
+  @ApiResponse({ status: 201, description: 'Starts a match recording session' })
+  async startMatch(@Body() data: StartMatchDTO): Promise<Match> {
+    const { matchId, time } = data;
     try {
-      if (!match.teamId) {
-        throw new BadRequestException('TeamId cannot be null');
-      }
-      return await this.matchService.saveMatch(match);
+      return await this.matchService.startMatch(matchId, time);
     } catch (error) {
       if (error instanceof QueryFailedError) {
         if (error.message.includes('violates foreign key constraint')) {
@@ -64,9 +68,9 @@ export class MatchController {
     isArray: true,
     description: 'Returns a list of matches for the given teamId',
   })
-  @ApiResponse({ status: 400, description: 'Invalid integer entered' })
-  @ApiResponse({ status: 500, description: 'Unknown error occured' })
-  async getMatchesByTeamId(@Query('teamId', ParseIntPipe) teamId: number) {
+  async getMatchesByTeamId(
+    @Query('teamId', ParseIntPipe) teamId: number,
+  ): Promise<Match[]> {
     try {
       return await this.matchService.getMatches(teamId);
     } catch (error) {
@@ -75,7 +79,7 @@ export class MatchController {
           throw new BadRequestException('Please enter a valid integer');
         }
       } else {
-        throw new InternalServerErrorException('Unknown problem occured');
+        throw new InternalServerErrorException('Unknown problem occurred');
       }
     }
   }
@@ -87,18 +91,15 @@ export class MatchController {
   })
   @ApiResponse({
     status: 400,
-    description: 'Both fields should  be integers',
+    description: 'MatchId or time is not valid',
   })
-  @ApiResponse({
-    status: 404,
-    description: 'MatchId requested for is not in database',
-  })
-  async updateHalfTimeMatch(@Body() matchHalfTime: HalfTimeDTO) {
+  async updateHalfTimeMatch(@Body() data: HalfTimeDTO) {
+    const { matchId, time } = data;
     try {
-      return await this.matchService.addHalfTime(matchHalfTime);
+      return await this.matchService.addHalfTime(matchId, time);
     } catch (error) {
       if (error.message.includes('Could not find any entity')) {
-        throw new NotFoundException('Match does not exist in database');
+        throw new BadRequestException('Match does not exist in database');
       } else if (error instanceof QueryFailedError) {
         if (error.message.includes('invalid input syntax for type integer')) {
           throw new BadRequestException(
@@ -110,7 +111,7 @@ export class MatchController {
       ) {
         throw error;
       } else {
-        throw new InternalServerErrorException('Unknown error occured');
+        throw new InternalServerErrorException('Unknown error occurred');
       }
     }
   }
@@ -122,22 +123,16 @@ export class MatchController {
   })
   @ApiResponse({
     status: 400,
-    description: 'Both fields should  be integers',
+    description:
+      'Fulltime cannot be smaller than halftime, or MatchId is not valid',
   })
-  @ApiResponse({
-    status: 400,
-    description: 'Fulltime cannot be smaller than halftime',
-  })
-  @ApiResponse({
-    status: 404,
-    description: 'MatchId requested for is not in database',
-  })
-  async updateFullTimeMatch(@Body() matchFullTime: FullTimeDTO) {
+  async updateFullTimeMatch(@Body() data: FullTimeDTO) {
+    const { matchId, time } = data;
     try {
-      return await this.matchService.addFullTime(matchFullTime);
+      return await this.matchService.addFullTime(matchId, time);
     } catch (error) {
       if (error.message.includes('Could not find any entity')) {
-        throw new NotFoundException('Match does not exist in database');
+        throw new BadRequestException('Match does not exist in database');
       } else if (error instanceof QueryFailedError) {
         if (error.message.includes('invalid input syntax for type integer')) {
           throw new BadRequestException(
@@ -150,7 +145,7 @@ export class MatchController {
       ) {
         throw error;
       } else {
-        throw new InternalServerErrorException('Unknown error occured');
+        throw new InternalServerErrorException('Unknown error occurred');
       }
     }
   }

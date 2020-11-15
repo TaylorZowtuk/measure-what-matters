@@ -20,20 +20,31 @@ export class Match extends BaseEntity {
     team => team.teamId,
     { eager: true },
   )
-  @JoinColumn()
-  teamId: number;
-
-  @Column({ type: 'bigint' })
-  startTime: number;
+  @JoinColumn({ name: 'teamId' })
+  team: Team;
 
   @Column()
-  isHomeTeam: boolean;
+  teamId: number;
+
+  // Epoch time of game date/time
+  @Column({ type: 'int' })
+  scheduledTime: number;
+
+  // Epoch time of date/time recording began
+  @Column({ type: 'int', nullable: true })
+  startTime: number;
 
   @Column({ nullable: true })
   halfTime: number;
 
   @Column({ nullable: true })
   fullTime: number;
+
+  @Column()
+  opponentTeamName: string;
+
+  @Column()
+  isHomeTeam: boolean;
 
   @CreateDateColumn()
   createdDate: Date;

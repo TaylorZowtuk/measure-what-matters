@@ -1,14 +1,14 @@
 import React from "react";
 import { Switch, Route } from "react-router-dom";
 import Dashboard from "./components/Dashboard.page";
-import Recording from "./components/Recording.page";
+import Recording from "./components/recording/Recording.page";
 import Login from "./components/Login/Login.page";
 import Teams from "./components/Teams/Teams.page";
 import AddTeam from "./components/AddTeam/AddTeam.page";
 import Signup from "./components/Signup/Signup.page";
 import MatchSelection from "./components/recording/MatchSelection.page";
-import LineupComponent from "./components/Lineup/Lineup.page";
 import AccountView from "./components/account/AccountView.page";
+import LineupComponent from "./components/recording/Lineup.page";
 
 const Router = () => {
   return (

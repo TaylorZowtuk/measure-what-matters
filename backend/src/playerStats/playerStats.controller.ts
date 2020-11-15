@@ -16,6 +16,9 @@ import { QueryFailedError } from 'typeorm';
 import { PlusMinusDTO } from '../dto/stats/plusMinus.dto';
 import { PlayerTouchesDTO } from '../dto/stats/playerTouches.dto';
 import { ReturnTouchesDTO } from 'src/dto/stats/returnTouches.dto';
+import { PlayerPossessionStatDTO } from 'src/dto/stats/possession/playerPossessionStat.dto';
+import { PlayerPossessionsReturnDTO } from 'src/dto/stats/possession/playerPossessionReturn.dto';
+import { TeamPossessionSummaryDTO } from 'src/dto/stats/possession/teamPossessionSummary.dto';
 
 @ApiTags('Player Stats')
 @ApiBearerAuth()
@@ -44,6 +47,10 @@ export class PlayerStatsController {
         }
       } else if (error.message.includes('Match does not have finish time')) {
         throw error;
+      } else if (error.message.includes('Could not find any entity')) {
+        throw new BadRequestException(
+          'No lineup for this match, or match does not exist',
+        );
       }
       throw new InternalServerErrorException('Unknown error occured');
     }
@@ -99,7 +106,7 @@ export class PlayerStatsController {
     status: 500,
     description: 'Unknown error occurred',
   })
-  @Get('/plus_minus')
+  @Get('/plus-minus')
   async getPlusMinusMatch(@Query('matchId', ParseIntPipe) matchId: number) {
     try {
       return await this.playerStatsService.plusMinus(matchId);
@@ -113,7 +120,7 @@ export class PlayerStatsController {
   }
   @ApiResponse({
     status: 200,
-    type: PlayerTouchesDTO,
+    type: ReturnTouchesDTO,
     isArray: true,
     description:
       'Returns an array of all players and their touches for a given match',
@@ -139,6 +146,80 @@ export class PlayerStatsController {
     } catch (error) {
       if (error.message.includes('Could not find any entity')) {
         throw new BadRequestException('No lineup for this match');
+      } else {
+        throw new InternalServerErrorException('Unknown error occurred');
+      }
+    }
+  }
+
+  @ApiResponse({
+    status: 200,
+    type: PlayerPossessionsReturnDTO,
+    isArray: true,
+    description:
+      'Returns an array of all players and their total possession time for a match',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'No lineup in database for this given match',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Query needs to be an integer',
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Unknown error occurred',
+  })
+  @Get('/player-possession')
+  async getPlayerPossessionsForMatch(
+    @Query('matchId', ParseIntPipe) matchId: number,
+  ) {
+    try {
+      return await this.playerStatsService.playerPossessionsStat(matchId);
+    } catch (error) {
+      if (error.message.includes('Could not find any entity')) {
+        throw new BadRequestException(
+          'No lineup for this match, or match does not exist',
+        );
+      } else {
+        throw new InternalServerErrorException('Unknown error occurred');
+      }
+    }
+  }
+
+  @ApiResponse({
+    status: 200,
+    type: TeamPossessionSummaryDTO,
+    isArray: true,
+    description:
+      'Returns an array of all players and their total possession time for a match',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'No lineup in database for this given match',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Query needs to be an integer',
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Unknown error occurred',
+  })
+  @Get('/team-possession')
+  async getTeamPossessionSummary(
+    @Query('matchId', ParseIntPipe) matchId: number,
+  ) {
+    try {
+      return await this.playerStatsService.teamPossessionSummaryForMatch(
+        matchId,
+      );
+    } catch (error) {
+      if (error.message.includes('Could not find any entity')) {
+        throw new BadRequestException(
+          'No lineup for this match, or match does not exist',
+        );
       } else {
         throw new InternalServerErrorException('Unknown error occurred');
       }

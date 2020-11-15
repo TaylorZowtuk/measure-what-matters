@@ -3,6 +3,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  Index,
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
@@ -12,6 +13,7 @@ import { IEvent } from './IEvent.interface';
 import { Match } from '../match.entity';
 import { Player } from '../player.entity';
 @Entity()
+@Index(['matchId', 'playerId', 'neutral'])
 export class Possession extends BaseEntity implements IEvent {
   @PrimaryGeneratedColumn()
   id: number;

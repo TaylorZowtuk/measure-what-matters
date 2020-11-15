@@ -6,8 +6,6 @@ import {
   InternalServerErrorException,
   ParseIntPipe,
   Post,
-  UsePipes,
-  ValidationPipe,
   Query,
 } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -29,7 +27,6 @@ export class ShotController {
     status: 400,
     description: 'Invalid parameter entered in DTO',
   })
-  @UsePipes(ValidationPipe)
   async saveShotEvent(@Body() createShot: CreateShotDTO) {
     try {
       return await this.shotService.saveShot(createShot);

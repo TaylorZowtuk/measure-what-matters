@@ -1,15 +1,22 @@
 import React from "react";
-import { DraggableTypes } from "../constants";
+import { DraggableTypes } from "../../constants";
 import { useDrop } from "react-dnd";
 import { Container, Row, Col } from "react-bootstrap";
 import { cloneDeep } from "lodash";
-import { CircularBuffer } from "../util/circular-buffer";
+import { CircularBuffer } from "../../util/circular-buffer";
+import axios from "axios";
 
 import { createPlayerDraggable, createPlayerDraggables } from "./Player";
-import Player from "./interfaces/player";
+import Player from "../interfaces/player";
+import authHeader from "../../services/auth.header";
+import { NeutralPossessionDTO } from "../interfaces/neutralPossession";
+import { ShotFieldInfo } from "./ShotResultPicker";
+
 type FieldProps = {
+  matchId: number;
   getStartingLine: Function;
-  incrementScore: Function;
+  inShootingState: boolean;
+  enterShootingState: Function;
   removeFromField: Player | undefined;
   addToField: Player | undefined;
   resetSubs: Function;
@@ -83,21 +90,21 @@ class Field extends React.Component<
   removeFromField = async (player: Player | undefined): Promise<number> => {
     var index = -1;
     if (player === undefined) {
-      console.log("Error: player to add to field was undefined");
+      console.log("Error: player to remove from field was undefined");
     } else {
       var onFieldCopy = [...this.state.onField];
       index = onFieldCopy.findIndex(
         (playerDraggable) =>
-          playerDraggable.props.player.jerseyNum === player.jerseyNum
+          playerDraggable.props.player.playerId === player.playerId
       );
       if (index !== -1) {
+        // If the player had the ball, call resetPlayerWithPossession but dont reset previous possessions
+        if (index === this.state.playerIndexWithPossession)
+          this.resetPlayerWithPossession();
         onFieldCopy.splice(index, 1);
         await this.setState({ onField: onFieldCopy });
       } else {
-        console.log(
-          "Error: no element in onField had num of",
-          player.jerseyNum
-        );
+        console.log("Error: no element in onField had num of", player.playerId);
       }
     }
     return index;
@@ -127,21 +134,43 @@ class Field extends React.Component<
       ] = playerDragWithoutPossession;
     }
 
-    // Find the player on the field with playerId
-    let index = onFieldCopy.findIndex(
-      (playerDraggable) => playerDraggable.props.player.playerId === playerId
-    );
+    let index = Number.NEGATIVE_INFINITY;
+    if (playerId !== Number.NEGATIVE_INFINITY) {
+      // Find the player on the field with playerId
+      index = onFieldCopy.findIndex(
+        (playerDraggable) => playerDraggable.props.player.playerId === playerId
+      );
 
-    // Replace the PlayerDraggable of that player with a new PlayerDraggable
-    // that indicates they have ball possesion
-    let playerDragWithPossession = createPlayerDraggable(
-      onFieldCopy[index].props.player,
-      true,
-      this.changePossession
-    );
-    onFieldCopy[index] = playerDragWithPossession;
+      // Replace the PlayerDraggable of that player with a new PlayerDraggable
+      // that indicates they have ball possesion
+      let playerDragWithPossession = createPlayerDraggable(
+        onFieldCopy[index].props.player,
+        true,
+        this.changePossession
+      );
+      onFieldCopy[index] = playerDragWithPossession;
+      this.previousPossessions.enqueue(playerId);
+    }
+    // Update players on field and player with possession
     this.setState({ onField: onFieldCopy, playerIndexWithPossession: index });
-    this.previousPossessions.enqueue(playerId);
+  };
+
+  resetPlayerWithPossession = (): void => {
+    // Reset possession state
+    this.changePossession(Number.NEGATIVE_INFINITY);
+
+    // Post to neutral ball endpoint
+    let possessionEvent: NeutralPossessionDTO = {
+      matchId: this.props.matchId,
+      time: Date.now() % 10000, // TODO: switch to game time
+    };
+    axios
+      .post(`/event/possession/neutral`, possessionEvent, {
+        headers: authHeader(),
+      })
+      .then((res) => {
+        console.log("Post neutral possession response:", res); // TODO: catch error and handle if needed
+      });
   };
 
   async componentDidUpdate(prevProps: any, _prevState: any) {
@@ -155,11 +184,17 @@ class Field extends React.Component<
   }
 
   render() {
+    if (this.props.inShootingState) {
+      // If were in the shooting state hide the field
+      return null;
+    }
+
     return (
       <FieldTarget
-        incrementScore={this.props.incrementScore}
+        enterShootingState={this.props.enterShootingState}
         draggablePlayers={this.state.onField}
         previousPossessions={this.previousPossessions}
+        resetPlayerWithPossession={this.resetPlayerWithPossession}
         getLineup={this.getOnField}
       />
     );
@@ -167,9 +202,10 @@ class Field extends React.Component<
 }
 
 type FieldTargetProps = {
-  incrementScore: Function;
+  enterShootingState: Function;
   draggablePlayers: any[];
   previousPossessions: CircularBuffer<number>;
+  resetPlayerWithPossession: Function;
   getLineup: Function;
 };
 
@@ -177,13 +213,17 @@ export function FieldTarget(props: FieldTargetProps) {
   const [, drop] = useDrop({
     accept: DraggableTypes.PLAYER,
     drop: (item: any, monitor) => {
-      const ourGoal: Boolean = item.player.teamId !== -1 ? true : false;
-      props.incrementScore(
-        ourGoal,
-        item.player,
-        props.previousPossessions,
-        props.getLineup()
-      );
+      // A shot was taken
+      if (item.player.playerId === props.previousPossessions.peekBack()) {
+        // Only allow the player who currently has the ball to 'shoot'
+        props.resetPlayerWithPossession();
+        let shotFieldInfo: ShotFieldInfo = {
+          shooter: item.player,
+          previousPossessions: props.previousPossessions,
+          getLineup: props.getLineup,
+        };
+        props.enterShootingState(true, shotFieldInfo);
+      }
     },
   });
 

@@ -5,12 +5,10 @@ import {
   Delete,
   Get,
   InternalServerErrorException,
-  Param,
   ParseIntPipe,
   Post,
   Query,
   UseGuards,
-  UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -34,7 +32,6 @@ export class AssistController {
     description: 'Violates foreign key, or null value entered',
   })
   @ApiResponse({ status: 500, description: 'Unknown error occurred' })
-  @UsePipes(ValidationPipe)
   async saveAssistEvent(@Body() assist: CreateAssistDTO) {
     try {
       return await this.assistService.saveAssist(assist);

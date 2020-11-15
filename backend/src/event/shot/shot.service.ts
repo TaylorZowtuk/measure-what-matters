@@ -33,7 +33,8 @@ export class ShotService {
 
   async getShotsByMatchId(matchId: number) {
     const shots: Shot[] = await this.shotRepo.find({ where: { matchId } });
-    return this.convertToDto(shots);
+    const shotsFilt = shots.filter(shot => shot.archived === false);
+    return this.convertToDto(shotsFilt);
   }
 
   /**
