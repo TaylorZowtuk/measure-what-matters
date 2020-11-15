@@ -2,7 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder } from '@nestjs/swagger/dist/document-builder';
 import { SwaggerModule } from '@nestjs/swagger/dist/swagger-module';
 import { AppModule } from './app.module';
-import { Logger } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -20,6 +20,8 @@ async function bootstrap() {
 
   // Cors
   app.enableCors({ origin: false }); // TODO create a cors policy once deployed
+
+  app.useGlobalPipes(new ValidationPipe());
 
   // Start the app
   await app.listen(APP_PORT);

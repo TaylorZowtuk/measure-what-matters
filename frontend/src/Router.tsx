@@ -8,6 +8,7 @@ import AddTeam from "./components/AddTeam/AddTeam.page";
 import Signup from "./components/Signup/Signup.page";
 import MatchSelection from "./components/recording/MatchSelection.page";
 import Roster from "./components/Roster/Roster";
+import AccountView from "./components/account/AccountView.page";
 import LineupComponent from "./components/recording/Lineup.page";
 
 const Router = () => {
@@ -24,6 +25,7 @@ const Router = () => {
       <Route exact path="/match/recording" component={Recording}></Route>
       <Route exact path="/signup" component={Signup}></Route>
       <Route exact path="/teams/roster" component={Roster}></Route>
+      <Route exact path="/view-account" component={AccountView}></Route>
     </Switch>
   );
 };
