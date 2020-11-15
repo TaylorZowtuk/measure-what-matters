@@ -5,6 +5,6 @@ export type MatchDTO = {
   isHomeTeam: boolean;
   halfTime: number | null;
   fullTime: number | null;
-  createdDate: number;
-  updatedDate: number;
+  createdDate: string;
+  updatedDate: string;
 };
