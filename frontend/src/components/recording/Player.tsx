@@ -1,27 +1,17 @@
 import React from "react";
 import { useDrag } from "react-dnd";
-import { DraggableTypes } from "../constants";
+import { DraggableTypes } from "../../constants";
 import { Button } from "react-bootstrap";
 import axios from "axios";
-import authHeader from "../services/auth.header";
+import authHeader from "../../services/auth.header";
 import { MatchIdContext } from "./Recording.page";
-import Player from "./interfaces/player";
+import Player from "../interfaces/player";
+import { OppositionPossessionDTO } from "../interfaces/oppositionPossession";
+import { PlayerPossessionDTO } from "../interfaces/playerPossession";
 
 type Possession = {
   hasPossession: boolean; // Whether or not the the player has possession of the ball
   notifyOfPossessionChange: Function; // A callback to notify Field of possession change
-};
-
-// API DTO's
-type OppositionPossessionDTO = {
-  matchId: number;
-  time: number;
-};
-
-type PlayerPossessionDTO = {
-  matchId: number;
-  time: number;
-  playerId: number;
 };
 
 type DraggableProps = {
