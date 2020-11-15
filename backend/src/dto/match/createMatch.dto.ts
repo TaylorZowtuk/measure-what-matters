@@ -7,11 +7,14 @@ export class CreateMatchDTO {
   teamId: number;
 
   @ApiProperty({
-    format: 'bigint',
+    format: 'int',
     description: 'The epoch time that that the game started.',
   })
   @IsNotEmpty()
-  startTime: number;
+  scheduledTime: number;
+
+  @ApiProperty()
+  opponentTeamName: string;
 
   @ApiProperty()
   @IsNotEmpty()

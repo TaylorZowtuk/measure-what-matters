@@ -7,8 +7,6 @@ import {
   UseGuards,
   BadRequestException,
   InternalServerErrorException,
-  UsePipes,
-  ValidationPipe,
   ParseIntPipe,
   Delete,
   NotFoundException,
@@ -40,7 +38,6 @@ export class PlayerController {
     type: CreatePlayerDTO,
     isArray: true,
   })
-  @UsePipes(ValidationPipe)
   async createPlayers(@Body() players: CreatePlayerDTO[]) {
     try {
       return await this.playerService.savePlayer(players);
@@ -127,7 +124,6 @@ export class PlayerController {
     status: 404,
     description: 'Player does not exist in database',
   })
-  @UsePipes(ValidationPipe)
   async updatePlayer(@Body() updatePlayer: UpdatePlayerDTO) {
     try {
       return await this.playerService.updatePlayer(updatePlayer);
