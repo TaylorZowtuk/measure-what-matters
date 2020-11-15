@@ -38,10 +38,10 @@ export class Substitution extends BaseEntity {
   @Column()
   matchId: number;
 
-  @Column({ type: 'bigint' })
+  @Column({ type: 'int' })
   timeOn: number;
 
-  @Column({ nullable: true, type: 'bigint' })
+  @Column({ nullable: true, type: 'int' })
   timeOff: number;
 
   @CreateDateColumn()

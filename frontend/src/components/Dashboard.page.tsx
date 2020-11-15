@@ -5,6 +5,7 @@ import TimeOnField from "./reports/TimeOnField";
 import { Col, Container, Row } from "react-bootstrap";
 import PossessionCircular, { fetchTimes } from "./reports/Possession";
 import TouchesBar, { fetchTouches } from "./reports/Touches";
+import PlusMinusComponent from "./reports/PlusMinus";
 
 const Dashboard = () => (
   <div className="dashboard">
@@ -18,22 +19,30 @@ const Dashboard = () => (
     <Link to="/teams">
       <Button variant="contained">Teams</Button>
     </Link>
+    <Link to="/view-account">
+      <Button variant="contained">Account</Button>
+    </Link>
 
     {/* Reports */}
     <Container style={{ backgroundColor: "#282c34" }}>
-      <Row>
+      <Row style={{ margin: "20px" }}>
         <Col>
           <PossessionCircular fetchTimes={fetchTimes} />
         </Col>
       </Row>
-      <Row>
+      <Row style={{ margin: "20px" }}>
         <Col>
           <TouchesBar fetchTouches={fetchTouches} />
         </Col>
       </Row>
-      <Row>
+      <Row style={{ margin: "20px" }}>
         <Col>
           <TimeOnField />
+        </Col>
+      </Row>
+      <Row style={{ margin: "20px" }}>
+        <Col>
+          <PlusMinusComponent />
         </Col>
       </Row>
     </Container>
