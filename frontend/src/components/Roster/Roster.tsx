@@ -22,6 +22,7 @@ import { Link, RouteComponentProps } from "react-router-dom";
 import { StaticContext } from "react-router";
 import RosterProps from "../interfaces/props/roster-props";
 import Player from "../interfaces/player";
+import CreatePlayerDTO from "../interfaces/createPlayer";
 
 interface State {
   players: Player[];
@@ -30,13 +31,6 @@ interface State {
   playerToAction: Player;
   action: Actions;
   teamId: number;
-}
-
-interface CreatePlayerDTO {
-  teamId: number;
-  firstName: string;
-  lastName: string;
-  jerseyNum: number;
 }
 
 const tableStyling: CSS.Properties = {
