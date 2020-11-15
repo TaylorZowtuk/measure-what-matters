@@ -15,12 +15,12 @@ interface Player {
 class TeamComponent extends React.Component<teamProps> {
   public render() {
     return (
-      <table style={{margin:"10px auto", color:"#282c34"}}>
+      <table style={{ margin: "10px auto", color: "#282c34" }}>
         <thead>
           <tr>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>Jersey Number</th>
+            <th style={{ padding: "10px" }}>First Name</th>
+            <th style={{ padding: "10px" }}>Last Name</th>
+            <th style={{ padding: "10px" }}>Jersey Number</th>
           </tr>
         </thead>
         <tbody>

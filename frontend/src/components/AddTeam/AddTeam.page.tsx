@@ -234,7 +234,13 @@ class AddTeam extends React.Component<{}, createTeamState> {
             })}
           </tbody>
         </table>
-        <form>
+        <form
+          style={{
+            width: "fit-content",
+            marginLeft: "auto",
+            marginRight: "auto",
+          }}
+        >
           <TextField
             style={{ marginRight: 10 }}
             id="outlined-required"
@@ -264,8 +270,12 @@ class AddTeam extends React.Component<{}, createTeamState> {
             value={this.state.newPlayerNumber}
             onChange={this.handlePlayerNumberChange}
           />
-
-          <button onClick={this.onAddPlayer}>add</button>
+          <br />
+          <div style={{ textAlign: "right" }}>
+            <Button variant="contained" onClick={this.onAddPlayer}>
+              ADD PLAYER
+            </Button>
+          </div>
         </form>
         <Button
           variant="contained"
