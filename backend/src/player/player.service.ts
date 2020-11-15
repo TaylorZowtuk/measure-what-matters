@@ -66,9 +66,11 @@ export class PlayerService {
    */
 
   async getPlayersByTeamId(teamId: number): Promise<PlayerDTO[]> {
-    const players: Player[] = await this.playerRepo.find({
+    let players: Player[] = await this.playerRepo.find({
       where: { teamId: teamId },
     });
+
+    players = players.filter(player => player.archived == false);
 
     return this.convertToDto(players);
   }
@@ -87,7 +89,7 @@ export class PlayerService {
       const player: Player = await this.playerRepo.findOne({
         where: { playerId: playerIds[i] },
       });
-      if (player.archived === false) {
+      if (player.archived == false) {
         players.push(player);
       }
     }
@@ -121,16 +123,18 @@ export class PlayerService {
     const player = await this.playerRepo.findOneOrFail({
       where: { playerId: updatePlayer.playerId },
     });
-    const notUnique = await this.uniqueJerseyTeam(player.teamId, jerseyNums);
-    if (notUnique != null) {
-      throw new BadRequestException(
-        'Jersey number ' + notUnique + ' is already taken',
-      );
+    if (updatePlayer.jerseyNum !== player.jerseyNum) {
+      const notUnique = await this.uniqueJerseyTeam(player.teamId, jerseyNums);
+      if (notUnique != null) {
+        throw new BadRequestException(
+          'Jersey number ' + notUnique + ' is already taken',
+        );
+      }
+      player.jerseyNum = updatePlayer.jerseyNum;
     }
     player.teamId = updatePlayer.teamId;
     player.firstName = updatePlayer.firstName;
     player.lastName = updatePlayer.lastName;
-    player.jerseyNum = updatePlayer.jerseyNum;
     return this.playerRepo.save(player);
   }
 
