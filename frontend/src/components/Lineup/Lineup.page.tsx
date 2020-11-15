@@ -123,7 +123,7 @@ class LineupComponent extends React.Component<
         teamId: this.props.location.state.teamId,
         startingLineup: this.state.lineup,
       };
-      this.props.history.push("/recording", recordingState);
+      this.props.history.push("/match/recording", recordingState);
     } else {
       alert("Must select at least 7 players."); // 6 on field plus one on the bench
     }
@@ -132,7 +132,7 @@ class LineupComponent extends React.Component<
   render() {
     return (
       <div className="Lineup" style={styling}>
-        <h1 style={textHeaderStyling}>Choose Your Starting Lineup</h1>
+        <h1 style={textHeaderStyling}>Choose Your Match Lineup</h1>
         <TableContainer component={Paper} style={tableStyling}>
           <Table stickyHeader>
             <TableHead>

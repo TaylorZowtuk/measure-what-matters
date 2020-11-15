@@ -1,6 +1,6 @@
 import { Button } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
@@ -11,6 +11,7 @@ import Avatar from "@material-ui/core/Avatar";
 import Typography from "@material-ui/core/Typography";
 import authHeader from "../../services/auth.header";
 import axios from "axios";
+import LineupProps from "../interfaces/props/lineup-props";
 
 // Icons from: https://icons8.com
 
@@ -176,7 +177,7 @@ type MatchAndTeam = {
 };
 
 // Get all the users upcoming matches for every team they are a part of
-async function fetchMatches(debug = true): Promise<MatchAndTeam[]> {
+async function fetchMatches(debug = false): Promise<MatchAndTeam[]> {
   let matches: MatchAndTeam[] = [];
 
   if (debug) {
@@ -275,6 +276,7 @@ const useStyles = makeStyles((theme) => ({
 
 export function AlignItemsList() {
   const classes = useStyles();
+  const history = useHistory();
 
   const [matches, setMatches] = useState<MatchAndTeam[] | null>(null);
   useEffect(() => {
@@ -289,8 +291,11 @@ export function AlignItemsList() {
     index: number,
     matchAndTeam: MatchAndTeam
   ) => {
-    console.log(matchAndTeam);
-    console.log(index);
+    const lineupProps: LineupProps = {
+      matchId: matchAndTeam.match.matchId.toString(),
+      teamId: matchAndTeam.match.teamId.toString(),
+    };
+    history.push("/match/lineup", lineupProps);
   };
 
   // If fetch request hasnt returned yet

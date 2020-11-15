@@ -9,7 +9,7 @@ const Dashboard = () => (
     <br></br>
 
     {/* Navigation */}
-    <Link to="/upcoming">
+    <Link to="/matches/upcoming">
       <Button variant="contained">Recording</Button>
     </Link>
     <Link to="/teams">
