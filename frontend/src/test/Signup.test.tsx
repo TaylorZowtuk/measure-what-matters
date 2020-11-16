@@ -8,7 +8,7 @@ afterEach(cleanup);
 test("renders signup header", () => {
   const { getByText } = render(<Signup />, { wrapper: BrowserRouter });
 
-  const headerElement = getByText(/Sign Up/i);
+  const headerElement = getByText(/Signup/i);
   expect(headerElement).toBeInTheDocument();
 });
 
