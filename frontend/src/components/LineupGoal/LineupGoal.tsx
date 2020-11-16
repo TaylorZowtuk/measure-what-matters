@@ -6,12 +6,12 @@ import { Collapse, List, ListItem, ListItemText } from "@material-ui/core";
 import { ExpandLess, ExpandMore } from "@material-ui/icons";
 
 interface LineupState {
-  lineupList: teamLineup[];
+  lineupList: TeamLineup[];
   finishLoading: boolean;
   open: boolean;
 }
 
-interface teamLineup {
+interface TeamLineup {
   team: string;
   teamId: number;
   matchList: {
@@ -52,7 +52,7 @@ class LineupGoal extends React.Component<any, LineupState> {
     this.setState({ open: !this.state.open });
   };
 
-  getLineup = async (): Promise<teamLineup[]> => {
+  getLineup = async (): Promise<TeamLineup[]> => {
     const res = await axios.get("/teams", { headers: authHeader() });
     if (res.data) {
       const tempTeamList: any = [];
@@ -93,7 +93,7 @@ class LineupGoal extends React.Component<any, LineupState> {
 
   componentDidMount() {
     if (!this.state.finishLoading) {
-      this.getLineup().then((lineup: teamLineup[]) => {
+      this.getLineup().then((lineup: TeamLineup[]) => {
         this.setState({ lineupList: lineup, finishLoading: true });
       });
     }
@@ -115,7 +115,6 @@ class LineupGoal extends React.Component<any, LineupState> {
         </div>
       );
     } else {
-      console.log(this.state);
       return (
         <div
           style={{
