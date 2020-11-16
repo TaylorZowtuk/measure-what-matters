@@ -5,16 +5,16 @@ import { BrowserRouter } from "react-router-dom";
 
 afterEach(cleanup);
 
-test("renders login header", () => {
+test("renders signup header", () => {
   const { getByText } = render(<Signup />, { wrapper: BrowserRouter });
 
   const headerElement = getByText(/Sign Up/i);
   expect(headerElement).toBeInTheDocument();
 });
 
-test("renders login button on login page", () => {
+test("renders signup button on signup page", () => {
   const { getByText } = render(<Signup />, { wrapper: BrowserRouter });
 
-  const loginButton = getByText(/Sign up/i);
-  expect(loginButton).toBeInTheDocument();
+  const signupButton = getByText(/Sign up/i);
+  expect(signupButton).toBeInTheDocument();
 });
