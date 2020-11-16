@@ -45,6 +45,9 @@ const defaultPlayer: Player = {
   firstName: "",
   lastName: "",
   jerseyNum: -1,
+  archived: false,
+  createdDate: "",
+  updatedDate: "",
 };
 
 enum Actions {

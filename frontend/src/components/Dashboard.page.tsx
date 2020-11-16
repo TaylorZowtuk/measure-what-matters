@@ -25,7 +25,6 @@ const Dashboard = () => (
     </Link>
 
     {/* Reports */}
-    <TimeOnField />
     <Container style={{ backgroundColor: "#282c34" }}>
       <Row style={{ margin: "20px" }}>
         <Col>

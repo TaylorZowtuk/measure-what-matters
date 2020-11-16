@@ -1,5 +1,4 @@
 import React from "react";
-import "./Lineup.css";
 import axios from "axios";
 import authHeader from "../../services/auth.header";
 import { Collapse, List, ListItem, ListItemText } from "@material-ui/core";
