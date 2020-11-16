@@ -93,7 +93,7 @@ class CreateMatch extends React.Component<{}, matchState> {
   render() {
     return (
       <div>
-        <h3>Create Match</h3>
+        <h3>Create A Match</h3>
         <form
           style={{
             backgroundColor: "whitesmoke",
@@ -123,6 +123,9 @@ class CreateMatch extends React.Component<{}, matchState> {
               value={this.state.teamId}
               onChange={this.handleTeamChange}
             >
+              <MenuItem value={-1}>
+                <em>None</em>
+              </MenuItem>
               {this.state.teams.map((team) => {
                 return (
                   <MenuItem value={team.teamId} key={team.teamId}>
@@ -170,7 +173,7 @@ class CreateMatch extends React.Component<{}, matchState> {
             style={{ marginLeft: "auto", marginRight: "auto", width: "100%" }}
             onClick={this.onCreateMatch}
           >
-            Create Team
+            Create Match
           </Button>
         </form>
       </div>

@@ -1,6 +1,6 @@
 import React from "react";
 import { cleanup, render } from "@testing-library/react";
-import Login from "../components/Login/Login.page";
+import Login from "../components/account/Login.page";
 import { BrowserRouter } from "react-router-dom";
 
 afterEach(cleanup);
