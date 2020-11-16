@@ -6,11 +6,43 @@ import { GoalService } from 'src/event/goal/goal.service';
 import { SubstitutionController } from './substitution/substitution.controller';
 import { SubstitutionService } from './substitution/substitution.service';
 import { Substitution } from '../db/entities/events/substitution.entity';
+import { PlayerService } from '../player/player.service';
+import { Player } from '../db/entities/player.entity';
+import { AssistController } from './assist/assist.controller';
+import { AssistService } from './assist/assist.service';
+import { Assist } from '../db/entities/events/assist.entity';
+import { PossessionService } from './possession/possession.service';
+import { PossessionController } from './possession/possession.controller';
+import { Possession } from '../db/entities/events/possession.entity';
+import { ShotController } from './shot/shot.controller';
+import { ShotService } from './shot/shot.service';
+import { Shot } from '../db/entities/events/shot.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Goal, Substitution])],
-  controllers: [GoalController, SubstitutionController],
-  providers: [GoalService, SubstitutionService],
-  exports: [GoalService, SubstitutionService],
+  imports: [
+    TypeOrmModule.forFeature([
+      Goal,
+      Substitution,
+      Player,
+      Assist,
+      Possession,
+      Shot,
+    ]),
+  ],
+  controllers: [
+    GoalController,
+    SubstitutionController,
+    AssistController,
+    PossessionController,
+    ShotController,
+  ],
+  providers: [
+    GoalService,
+    SubstitutionService,
+    PlayerService,
+    AssistService,
+    PossessionService,
+    ShotService,
+  ],
 })
 export class EventModule {}

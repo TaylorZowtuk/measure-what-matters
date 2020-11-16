@@ -1,63 +1,68 @@
-import { PlayerService } from "../src/player/player.service";
-import { Repository } from "typeorm";
-import { Player } from "../src/db/entities/player.entity";
-import { PlayerDTO } from "../src/dto/player/player.dto";
-import { getRepositoryToken } from "@nestjs/typeorm";
-import { Test, TestingModule } from "@nestjs/testing";
-import { PlayerArrayDTO } from "../src/dto/player/playerArray.dto";
-
-
-const playerDto: PlayerDTO = {
-    playerId: 1,
-    teamId: 1,
-    name: 'name',
-    jerseyNum: 1
-};
-
-
-const player = new Player();
-
-player.playerId = 1;
-player.teamId = 1;
-player.name = 'name';
-player.jerseyNum = 1;
-
-const playerDtos: PlayerDTO[] = [playerDto];
-const playerEntities: Player[] = [player];
-
-const playerArrayDTO: PlayerArrayDTO = {
-    playerArray: playerDtos,
-}
+import { PlayerService } from '../src/player/player.service';
+import { Repository } from 'typeorm';
+import { Player } from '../src/db/entities/player.entity';
+import { getRepositoryToken } from '@nestjs/typeorm';
+import { Test, TestingModule } from '@nestjs/testing';
 
 describe('PlayerService Test', () => {
+  let playerService: PlayerService;
+  let playerRepository: Repository<Player>;
 
-    let playerService: PlayerService;
-    let playerRepository: Repository<Player>;
+  beforeEach(async () => {
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [
+        PlayerService,
+        { provide: 'PlayerRepository', useClass: Repository },
+      ],
+    }).compile();
 
-    beforeEach(async () => {
-        const module: TestingModule = await Test.createTestingModule({
-            providers: [PlayerService, {provide:'PlayerRepository', useClass: Repository},
-            ],
-        }).compile();
-        
-        playerService = module.get<PlayerService>(PlayerService);
-        playerRepository = module.get<Repository<Player>>(getRepositoryToken(Player));
+    playerService = module.get<PlayerService>(PlayerService);
+    playerRepository = module.get<Repository<Player>>(
+      getRepositoryToken(Player),
+    );
+  });
+
+  // const createPlayerDto: CreatePlayerDTO = {
+  //   teamId: 1,
+  //   firstName: 'firstName',
+  //   lastName: 'lastName',
+  //   jerseyNum: 1,
+  // };
+
+  const player = new Player();
+
+  player.playerId = 1;
+  player.teamId = 1;
+  player.firstName = 'firstName';
+  player.lastName = 'lastName';
+  player.jerseyNum = 1;
+
+  // const playerDtos: CreatePlayerDTO[] = [createPlayerDto, createPlayerDto];
+  const playerEntities: Player[] = [player, player];
+
+  it('check if service defined', () => {
+    expect(playerService).toBeDefined();
+  });
+
+  /*  describe('Saving Players', () => {
+    it('should call save n times', async () => {
+      const spy = jest.spyOn(playerRepository, 'save').mockResolvedValue(null);
+      await playerService.savePlayer(playerDtos);
+      expect(spy).toBeCalledTimes(1);
     });
+  });*/
 
-    it('check if service defined', () =>{
-        expect(playerService).toBeDefined();
-    });
+  describe('Getting Players', () => {
+    it('playerRepository find method should be called using teamId', async () => {
+      const teamId = 1;
+      const spy = jest
+        .spyOn(playerRepository, 'find')
+        .mockResolvedValueOnce(playerEntities);
 
-    it('should create a player and add to database', () => {
-        const spy = jest.spyOn(playerRepository, 'save');
-        playerService.savePlayer(playerArrayDTO);
-        expect(spy).toHaveBeenCalledTimes(1);
-    });
-    
-    it('should get players with a specified team id', () => {
-        jest.spyOn(playerRepository, 'find').mockResolvedValue(playerEntities);
-        const players = playerService.getPlayers(player.teamId);
-        expect(players).resolves.toBe(playerDtos);
-    });
+      await playerService.getPlayersByTeamId(teamId);
 
+      expect(spy).toBeCalledTimes(1);
+      expect(spy).toBeCalledWith({ where: { teamId } });
+    });
+  });
 });

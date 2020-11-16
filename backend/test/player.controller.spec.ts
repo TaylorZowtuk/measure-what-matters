@@ -1,27 +1,32 @@
-import { TestingModule, Test } from '@nestjs/testing';
-import { PlayerDTO } from '../src/dto/player/player.dto';
+import { Test } from '@nestjs/testing';
+import { TestingModule } from '@nestjs/testing';
+import { CreatePlayerDTO } from 'src/dto/player/createPlayer.dto';
 import { PlayerController } from '../src/player/player.controller';
 import { PlayerService } from '../src/player/player.service';
 import { Repository } from 'typeorm';
-import { PlayerArrayDTO } from '../src/dto/player/playerArray.dto';
-import { Player } from '../src/db/entities/player.entity';
-
-const playerDtos: PlayerDTO[] = [
-  {
-    teamId: 1,
-    name: 'Jim',
-    jerseyNum: 1,
-  },
-  {
-    teamId: 2,
-    name: 'Sally',
-    jerseyNum: 2,
-  },
-];
 
 describe('PlayerController', () => {
-  let controller: PlayerController;
+  let playerController: PlayerController;
   let playerService: PlayerService;
+
+  const createPlayerDto1: CreatePlayerDTO = {
+    teamId: 1,
+    firstName: 'Jesus',
+    lastName: 'Shuttlesworth',
+    jerseyNum: 1,
+  };
+
+  const createPlayerDto2: CreatePlayerDTO = {
+    teamId: 1,
+    firstName: 'Cristiano',
+    lastName: 'Ronaldo',
+    jerseyNum: 2,
+  };
+
+  const createPlayersArray: CreatePlayerDTO[] = [
+    createPlayerDto1,
+    createPlayerDto2,
+  ];
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -32,33 +37,26 @@ describe('PlayerController', () => {
       ],
     }).compile();
 
-    controller = module.get<PlayerController>(PlayerController);
+    playerController = module.get<PlayerController>(PlayerController);
     playerService = module.get<PlayerService>(PlayerService);
   });
 
-  it('should be defined', () => {
-    expect(controller).toBeDefined();
+  it('check if controller defined', () => {
+    expect(playerController).toBeDefined();
   });
 
-  it('should call player service to create', () => {
-    const playerArrayDTO: PlayerArrayDTO = {
-      playerArray: playerDtos,
-    };
-    const spy = jest
-      .spyOn(playerService, 'savePlayer')
-      .mockImplementation(() => {
-        return new Promise<Player[]>(() => {
-          return;
-        });
-      });
-    controller.createPlayers(playerArrayDTO);
-    expect(spy).toBeCalledWith(playerArrayDTO);
-  });
+  describe('Saving players using player service', () => {
+    // create player that throws an error
+    // checking that errors returned by controller match
+    // error types thrown by service
+    it('Calls player service to create a player', async () => {
+      const spy = jest
+        .spyOn(playerService, 'savePlayer')
+        .mockResolvedValue(null);
 
-  it('should call player service to get players by team id', () => {
-    const teamId = 1;
-    jest.spyOn(playerService, 'getPlayers').mockResolvedValue(playerDtos);
-    const response = controller.getPlayersByTeamId(teamId);
-    expect(response).resolves.toBe(playerDtos);
+      await playerController.createPlayers(createPlayersArray);
+      expect(spy).toBeCalledWith(createPlayersArray);
+      expect(spy).toBeCalledTimes(1);
+    });
   });
 });

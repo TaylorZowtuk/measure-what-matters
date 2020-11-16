@@ -1,26 +1,23 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty } from '@nestjs/swagger';
 
 export class SubstitutionDTO {
+  id?: number;
 
-    @ApiProperty({required: false, description: 'Only required for subbing out'})
-    id?: number;
+  @ApiProperty()
+  playerId: number;
 
-    @ApiProperty()
-    playerId: number;
+  @ApiProperty()
+  matchId: number;
 
-    @ApiProperty()
-    matchId: number;
+  @ApiProperty({
+    format: 'int',
+    description: 'The time the player came onto the field in milliseconds',
+  })
+  timeOn: number;
 
-    @ApiProperty({
-        format: 'int64', 
-        description: 'The time the player came onto the field'
-    })
-    timeOn: number;
-
-    @ApiProperty({
-        format: 'int64', 
-        required: false,
-        description: 'The time the player left the field. Only required for new subs'
-    })
-    timeOff?: number;
+  @ApiProperty({
+    format: 'int',
+    description: 'The time the player came off the field in milliseconds',
+  })
+  timeOff?: number;
 }

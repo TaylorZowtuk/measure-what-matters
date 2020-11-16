@@ -1,52 +1,52 @@
 import React from "react";
-import { cleanup, render } from "@testing-library/react";
-import Player, { createPlayerDraggable } from "../components/Player";
-import { FieldTarget } from "../components/Field";
-import { DraggableTypes } from "../constants";
+import { cleanup, render, screen } from "@testing-library/react";
+import Player, { createPlayerDraggables } from "../components/recording/Player";
+import Field, { FieldTarget } from "../components/recording/Field";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
+import CircularBuffer from "../util/circular-buffer";
 
 const roster: Player[] = [
   {
-    first_name: "Charlie",
-    last_name: "Whittle",
-    num: 0,
-    team: "ours",
+    firstName: "Charlie",
+    lastName: "Whittle",
+    jerseyNum: 0,
+    teamId: 1,
     playerId: 1,
   },
   {
-    first_name: "Mac",
-    last_name: "Ferguson",
-    num: 1,
-    team: "ours",
+    firstName: "Mac",
+    lastName: "Ferguson",
+    jerseyNum: 1,
+    teamId: 1,
     playerId: 2,
   },
   {
-    first_name: "Dee",
-    last_name: "Barnes",
-    num: 2,
-    team: "ours",
+    firstName: "Dee",
+    lastName: "Barnes",
+    jerseyNum: 2,
+    teamId: 1,
     playerId: 2,
   },
   {
-    first_name: "Dennis",
-    last_name: "Yang",
-    num: 3,
-    team: "ours",
+    firstName: "Dennis",
+    lastName: "Yang",
+    jerseyNum: 3,
+    teamId: 1,
     playerId: 3,
   },
   {
-    first_name: "Aman",
-    last_name: "Luna",
-    num: 4,
-    team: "ours",
+    firstName: "Aman",
+    lastName: "Luna",
+    jerseyNum: 4,
+    teamId: 1,
     playerId: 4,
   },
   {
-    first_name: "Taylor",
-    last_name: "Wilkins",
-    num: 5,
-    team: "ours",
+    firstName: "Taylor",
+    lastName: "Wilkins",
+    jerseyNum: 5,
+    teamId: 1,
     playerId: 5,
   },
 ];
@@ -55,23 +55,55 @@ afterEach(cleanup);
 
 test("renders player draggables on the field", () => {
   // Create mock player draggables
-  let draggablePlayers: any[] = createPlayerDraggable(roster);
-
+  let draggablePlayers: any[] = createPlayerDraggables(roster, () => {});
   const { getByText } = render(
     <DndProvider backend={HTML5Backend}>
       <FieldTarget
+        enterShootingState={() => {}}
+        resetPlayerWithPossession={() => {}}
         draggablePlayers={draggablePlayers}
-        incrementScore={() => {}}
         getLineup={() => {}}
+        previousPossessions={new CircularBuffer(0)}
       />
     </DndProvider>
   );
 
   for (let i = 0; i < draggablePlayers.length; i++) {
-    // Each player should appear as a button on the field
-    const teamName = getByText(
-      new RegExp(draggablePlayers[i].props.first_name, "i")
+    const firstName = getByText(
+      new RegExp(draggablePlayers[i].props.player.firstName, "i")
     );
-    expect(teamName).toBeInTheDocument();
+
+    // Each player should appear as a button on the field
+    expect(firstName).toBeInTheDocument();
+  }
+});
+
+test("does not render player draggables on the field when in shooting state", () => {
+  // Create mock player draggables
+  let draggablePlayers: any[] = createPlayerDraggables(roster, () => {});
+  render(
+    <DndProvider backend={HTML5Backend}>
+      <Field
+        matchId={1}
+        getStartingLine={() => {
+          return draggablePlayers;
+        }}
+        inShootingState={true}
+        enterShootingState={() => {}}
+        removeFromField={undefined}
+        addToField={undefined}
+        resetSubs={() => {}}
+      />
+    </DndProvider>
+  );
+
+  for (let i = 0; i < draggablePlayers.length; i++) {
+    const firstName = screen.queryByText(
+      new RegExp(draggablePlayers[i].props.player.firstName, "i")
+    );
+
+    // Each player should appear as a button on the field if we are not in the shooting state
+    // But when we are in the shooting state the field should be hidden
+    expect(firstName).not.toBeInTheDocument();
   }
 });

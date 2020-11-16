@@ -1,32 +1,52 @@
-import { BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
-import { Match } from "../match.entity";
-import { Player } from "../player.entity";
+import {
+  BaseEntity,
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
+import { Match } from '../match.entity';
+import { Player } from '../player.entity';
 
 @Entity()
-
 export class Substitution extends BaseEntity {
+  @PrimaryGeneratedColumn()
+  Id: number;
 
-    @PrimaryGeneratedColumn()
-    Id : number;
+  @ManyToOne(
+    () => Player,
+    player => player.playerId,
+    { eager: true },
+  )
+  @JoinColumn({ name: 'playerId' })
+  player: Player;
 
-    @ManyToOne(type => Player, player => player.playerId, {eager: true})
-    @JoinColumn()
-    playerId: number;
+  @Column()
+  playerId: number;
 
-    @ManyToOne(type => Match, match => match.matchId, {eager: true})
-    @JoinColumn()
-    matchId: number;
+  @ManyToOne(
+    () => Match,
+    match => match.matchId,
+    { eager: true },
+  )
+  @JoinColumn({ name: 'matchId' })
+  match: Match;
 
-    @Column()
-    timeOn: number;
+  @Column()
+  matchId: number;
 
-    @Column({nullable : true})
-    timeOff: number; 
+  @Column({ type: 'int' })
+  timeOn: number;
 
-    @CreateDateColumn()
-    createdDate: Date;
-  
-    @UpdateDateColumn()
-    updatedDate: Date;
+  @Column({ nullable: true, type: 'int' })
+  timeOff: number;
+
+  @CreateDateColumn()
+  createdDate: Date;
+
+  @UpdateDateColumn()
+  updatedDate: Date;
 }
-

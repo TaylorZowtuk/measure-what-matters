@@ -9,20 +9,35 @@ export class UsersService {
     @InjectRepository(User) private readonly userRepository: Repository<User>,
   ) {}
 
+  // Create
   async create(name: string, username: string, password: string) {
     const newUser = this.userRepository.create({
       name,
       username,
       password,
     });
-    console.log(newUser);
     const result = await this.userRepository.save(newUser);
-    console.log(result);
-    delete result.password;
-    return result;
+    const copyWithoutPass = { ...result };
+    delete copyWithoutPass.password;
+    return copyWithoutPass;
   }
 
-  findOne(username: string) {
+  // Read
+  findOneForAuth(username: string): Promise<User> {
     return this.userRepository.findOne({ username });
+  }
+
+  async findOne(userId: number): Promise<any> {
+    const user = await this.userRepository.findOneOrFail({ userId });
+    const userWithoutPass = { ...user };
+    delete userWithoutPass.password;
+    return userWithoutPass;
+  }
+
+  // Update
+  async update(userId: number, name: string) {
+    const user = await this.findOne(userId);
+    const updatedUser = { ...user, name };
+    return this.userRepository.save(updatedUser);
   }
 }

@@ -1,27 +1,36 @@
-import { TestingModule, Test } from '@nestjs/testing';
+import { BadRequestException } from '@nestjs/common';
+import { Test, TestingModule } from '@nestjs/testing';
+import { MatchDTO } from 'src/dto/match/match.dto';
 import { Repository } from 'typeorm';
-import { MatchDTO } from '../src/dto/match/match.dto';
+import { Match } from '../src/db/entities/match.entity';
+import { CreateMatchDTO } from '../src/dto/match/createMatch.dto';
 import { MatchController } from '../src/match/match.controller';
 import { MatchService } from '../src/match/match.service';
-// import { getRepositoryToken } from '@nestjs/typeorm';
-// import { Goal } from 'src/db/entities/events/goal.entity';
-
-const matchDtos: MatchDTO[] = [
-  {
-    teamId: 1,
-    time: 100,
-    isHomeTeam: false,
-  },
-  {
-    teamId: 2,
-    time: 500,
-    isHomeTeam: false,
-  },
-];
 
 describe('MatchController', () => {
-  let controller: MatchController;
+  let matchController: MatchController;
   let matchService: MatchService;
+
+  // const createMatchDto: CreateMatchDTO = {
+  //   teamId: 1,
+  //   startTime: 0,
+  //   isHomeTeam: true,
+  // };
+
+  // const returnMatchDto: MatchDTO = {
+  //   matchId: 1,
+  //   teamId: 1,
+  //   startTime: 0,
+  //   isHomeTeam: true,
+  //   halfTime: 600,
+  //   fullTime: 1200,
+  // };
+
+  // const match = new Match();
+
+  // match.teamId = 1;
+  // match.startTime = 100;
+  // match.isHomeTeam = true;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -32,31 +41,46 @@ describe('MatchController', () => {
       ],
     }).compile();
 
-    controller = module.get<MatchController>(MatchController);
+    matchController = module.get<MatchController>(MatchController);
     matchService = module.get<MatchService>(MatchService);
   });
 
-  it('should be defined', () => {
-    expect(controller).toBeDefined();
+  it('check if controller defined', () => {
+    expect(matchController).toBeDefined();
+    expect(matchService).toBeDefined();
   });
 
-  it('should call match service to start a match', () => {
-    const match: MatchDTO = new MatchDTO();
-    const spy = jest.spyOn(matchService, 'saveMatch').mockImplementation(() => {
-      return new Promise<number>(() => {
-        return;
-      });
-    });
-    controller.startMatch(match);
-    expect(spy).toBeCalledWith(match);
-  });
+  // describe('Saving match with match service', () => {
+  //   it('calls match service to create a match', async () => {
+  //     const spy = jest.spyOn(matchService, 'saveMatch').mockResolvedValue(null);
+  //     await matchService.saveMatch(createMatchDto);
+  //     expect(spy).toBeCalledWith(createMatchDto);
+  //     expect(spy).toBeCalledTimes(1);
+  //   });
+  // });
 
-  it('should call match service to get matches by team id', () => {
-    const teamId = 1;
-    jest.spyOn(matchService, 'getMatches').mockResolvedValue(matchDtos);
-    const response = controller.getMatchesByTeamId(teamId);
-    expect(response).resolves.toBe(matchDtos);
-  });
+  // describe('Getting matches with match service', () => {
+  //   const matchDtos = [returnMatchDto, returnMatchDto];
+  //   it('Gets matches with match service using teamId', async () => {
+  //     const teamId = 1;
+  //     const spy = jest
+  //       .spyOn(matchService, 'getMatches')
+  //       .mockResolvedValue(matchDtos);
+  //     const result = await matchService.getMatches(teamId);
+  //     expect(spy).toBeCalledWith(teamId);
+  //     expect(spy).toBeCalledTimes(1);
+  //     expect(result).toBe(matchDtos);
+  //   });
 
-
+  //   it('should throw a BadRequestException if the teamId does not exist when searching for matches', async () => {
+  //     jest.spyOn(matchService, 'getMatches').mockResolvedValue(null);
+  //     const teamId = -1;
+  //     try {
+  //       await matchService.getMatches(teamId);
+  //     } catch (error) {
+  //       expect(error).toBeInstanceOf(BadRequestException);
+  //       expect(error.message).toBe('MatchId or PlayerId invalid');
+  //     }
+  //   });
+  // });
 });
