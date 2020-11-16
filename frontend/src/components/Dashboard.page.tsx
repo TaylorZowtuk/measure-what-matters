@@ -3,8 +3,8 @@ import { Link } from "react-router-dom";
 import Button from "@material-ui/core/Button";
 import TimeOnField from "./reports/TimeOnField";
 import { Col, Container, Row } from "react-bootstrap";
-import PossessionCircular from "./reports/Possession";
-import TouchesBar from "./reports/Touches";
+import PossessionCircular, { fetchTimes } from "./reports/Possession";
+import TouchesBar, { fetchTouches } from "./reports/Touches";
 import PlusMinusComponent from "./reports/PlusMinus";
 
 const Dashboard = () => (
@@ -27,12 +27,12 @@ const Dashboard = () => (
     <Container style={{ backgroundColor: "#282c34" }}>
       <Row style={{ margin: "20px" }}>
         <Col>
-          <PossessionCircular />
+          <PossessionCircular fetchTimes={fetchTimes} />
         </Col>
       </Row>
       <Row style={{ margin: "20px" }}>
         <Col>
-          <TouchesBar />
+          <TouchesBar fetchTouches={fetchTouches} />
         </Col>
       </Row>
       <Row style={{ margin: "20px" }}>
