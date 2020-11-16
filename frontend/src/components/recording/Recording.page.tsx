@@ -86,7 +86,7 @@ class Recording extends React.Component<
       let sub: StartingPlayerDTO = {
         playerId: starting[i].playerId,
         matchId: Number(this.props.location.state.matchId),
-        timeOn: Date.now(),
+        timeOn: Date.now() % 1000,
       };
       lineupSubs.push(sub);
     }
