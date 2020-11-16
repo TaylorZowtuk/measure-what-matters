@@ -10,6 +10,8 @@ import { MockType } from './mocks/mockType';
 import { StartMatchDTO } from '../src/dto/match/startMatch.dto';
 import { Team } from '../src/db/entities/team.entity';
 import { User } from '../src/db/entities/user.entity';
+import { BadRequestException } from '@nestjs/common';
+import { HalfTimeDTO } from '../src/dto/match/halfTime.dto';
 
 describe('MatchService Test', () => {
   const matchRepoToken = getRepositoryToken(Match);
@@ -28,68 +30,18 @@ describe('MatchService Test', () => {
     matchRepo = module.get<MockType<Repository<Match>>>(matchRepoToken);
   });
 
-  // // TODO, check these tests. They were passing locally and failing in the pipeline. Fixed the type errors now.
-
-  // const match = new Match();
-
-  // match.teamId = 1;
-  // match.startTime = 100;
-  // match.isHomeTeam = true;
-
-  // // const matchDtos: CreateMatchDTO[] = [createMatchDto, createMatchDto];
-  // const matchEntities: Match[] = [match, match];
-
-  const user: User = {
-    "userId": 1,
-    "name": "t",
-    "username": "t",
-    "password": "$2b$10$L.4Wzh5WMcUSnfhVQUZ2ZulXSLRGrT8v0dlA6KU86yzUKtJ.1SFni",
-    "createdDate": new Date(),
-    "updatedDate": new Date()
-  }
-
-  const team: Team = {
-    "teamId": 1,
-    "name": "team",
-    "userId": 1,
-    "createdDate": "2020-11-15T09:19:45.170Z",
-    "updatedDate": "2020-11-15T09:19:45.170Z",
-    "user": {
-      "userId": 1,
-      "name": "t",
-      "username": "t",
-      "password": "$2b$10$L.4Wzh5WMcUSnfhVQUZ2ZulXSLRGrT8v0dlA6KU86yzUKtJ.1SFni",
-      "createdDate": "2020-11-15T09:19:45.164Z",
-      "updatedDate": "2020-11-15T09:19:45.164Z"
-    }
-
-  const match: Match = {
-    "matchId": 1,
-    "teamId": 1,
-    "scheduledTime": 46544654,
-    "startTime": 255,
-    "halfTime": 66,
-    "fullTime": null,
-    "opponentTeamName": "46544655",
-    "isHomeTeam": true,
-    "createdDate": "2020-11-15T09:19:45.172Z",
-    "updatedDate": "2020-11-16T07:06:22.929Z",
-    "team": {
-      "teamId": 1,
-      "name": "team",
-      "userId": 1,
-      "createdDate": "2020-11-15T09:19:45.170Z",
-      "updatedDate": "2020-11-15T09:19:45.170Z",
-      "user": {
-        "userId": 1,
-        "name": "t",
-        "username": "t",
-        "password": "$2b$10$L.4Wzh5WMcUSnfhVQUZ2ZulXSLRGrT8v0dlA6KU86yzUKtJ.1SFni",
-        "createdDate": "2020-11-15T09:19:45.164Z",
-        "updatedDate": "2020-11-15T09:19:45.164Z"
-      }
-    }
-  }
+  const match = {
+    matchId: 1,
+    teamId: 1,
+    scheduledTime: 46544654,
+    startTime: 255,
+    halfTime: 66,
+    fullTime: null,
+    opponentTeamName: '46544655',
+    isHomeTeam: true,
+    createdDate: new Date(),
+    updatedDate: new Date(),
+  } as Match;
 
   it('check if service defined', () => {
     expect(matchService).toBeDefined();
@@ -155,13 +107,30 @@ describe('MatchService Test', () => {
     it('should throw an error if matchId is null', async () => {
       const { time } = startMatchDTO;
       const badMatchId = null;
-      matchRepo.findOneOrFail.mockResolvedValueOnce()
-
-      await matchService.startMatch(badMatchId, time);
+      try {
+        await matchService.startMatch(badMatchId, time);
+      } catch (error) {
+        expect(error).toBeInstanceOf(Error);
+        expect(error.message).toBe('matchId cannot be null');
+      }
     });
 
-    it('should call a find method with matchId', async () => {});
+    it('should call a find method with matchId', async () => {
+      const { matchId, time } = startMatchDTO;
+      matchRepo.findOneOrFail.mockReturnValueOnce(match);
 
-    it('should call save with startTime defined', async () => {});
+      await matchService.startMatch(matchId, time);
+      expect(matchRepo.findOneOrFail).toBeCalledWith({ matchId });
+    });
+
+    it('should call save with startTime defined', async () => {
+      const { matchId, time } = startMatchDTO;
+      matchRepo.findOneOrFail.mockReturnValueOnce(match);
+      const expected = { ...match, startTime: time };
+
+      await matchService.startMatch(matchId, time);
+
+      expect(matchRepo.save).toBeCalledWith(expected);
+    });
   });
 });
