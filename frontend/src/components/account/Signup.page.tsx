@@ -134,7 +134,7 @@ const Signup = () => {
 
   return (
     <div className="login">
-      <h1>Sign Up</h1>
+      <h1>Signup</h1>
       <div className={classes.root}>
         <p
           style={{

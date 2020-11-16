@@ -1,6 +1,6 @@
 import React from "react";
 import { cleanup, render } from "@testing-library/react";
-import Teams from "../components/Teams/Teams.page";
+import Teams from "../components/team/Teams.page";
 import { BrowserRouter } from "react-router-dom";
 
 afterEach(cleanup);
@@ -20,8 +20,8 @@ test("renders dashboard return button on teams list page", () => {
 });
 
 test("renders add team button on teams list page", () => {
-    const { getByText } = render(<Teams />, { wrapper: BrowserRouter });
-  
-    const addTeamButton = getByText(/Add Team/i);
-    expect(addTeamButton).toBeInTheDocument();
-  });
+  const { getByText } = render(<Teams />, { wrapper: BrowserRouter });
+
+  const addTeamButton = getByText(/Add Team/i);
+  expect(addTeamButton).toBeInTheDocument();
+});

@@ -2,11 +2,12 @@ import React from "react";
 import { Switch, Route } from "react-router-dom";
 import Dashboard from "./components/Dashboard.page";
 import Recording from "./components/recording/Recording.page";
-import Login from "./components/Login/Login.page";
-import Teams from "./components/Teams/Teams.page";
-import AddTeam from "./components/AddTeam/AddTeam.page";
-import Signup from "./components/Signup/Signup.page";
+import Login from "./components/account/Login.page";
+import Teams from "./components/team/Teams.page";
+import AddTeam from "./components/team/AddTeam.page";
+import Signup from "./components/account/Signup.page";
 import MatchSelection from "./components/recording/MatchSelection.page";
+import CreateMatch from "./components/match/CreateMatch.page";
 import AccountView from "./components/account/AccountView.page";
 import LineupComponent from "./components/recording/Lineup.page";
 
@@ -23,6 +24,7 @@ const Router = () => {
       <Route exact path="/match/lineup" component={LineupComponent}></Route>
       <Route exact path="/match/recording" component={Recording}></Route>
       <Route exact path="/signup" component={Signup}></Route>
+      <Route exact path="/create-match" component={CreateMatch}></Route>
       <Route exact path="/view-account" component={AccountView}></Route>
     </Switch>
   );
