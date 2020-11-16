@@ -20,6 +20,9 @@ const Dashboard = () => (
     <Link to="/teams">
       <Button variant="contained">Teams</Button>
     </Link>
+    <Link to="/create-match">
+      <Button variant="contained">Create Match</Button>
+    </Link>
     <Link to="/view-account">
       <Button variant="contained">Account</Button>
     </Link>
