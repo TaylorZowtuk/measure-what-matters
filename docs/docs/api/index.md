@@ -13,7 +13,7 @@ Then navigate to [http://localhost:3001/api](http://localhost:3001/api)
 
 The following demonstrates how db objects, api endpoints, and stats can be calculated/
 
-[Docs](./SwaggerUI.html)
+<a href="./SwaggerUI.html" target="_blank">Docs</a>
 
 ### Ball Possession
 
