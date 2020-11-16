@@ -10,14 +10,6 @@ import axios from "axios";
 import Player from "./Player";
 import { MatchIdContext } from "./Recording.page";
 
-export type StartingPlayer = {
-  id?: number;
-  playerId: number;
-  matchId: number;
-  timeOn: number;
-  timeOff: number;
-};
-
 type Substitution = {
   playerIdIn: number;
   playerIdOut: number;

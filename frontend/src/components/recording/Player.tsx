@@ -26,6 +26,9 @@ export const PlayerDraggable = (props: DraggableProps) => {
     jerseyNum: props.player.jerseyNum,
     teamId: props.player.teamId,
     playerId: props.player.playerId,
+    archived: props.player.archived,
+    createdDate: props.player.createdDate,
+    updatedDate: props.player.updatedDate,
   };
 
   const [, drag] = useDrag({
@@ -142,6 +145,9 @@ export function createPlayerDraggables(
       jerseyNum: players[i].jerseyNum,
       teamId: players[i].teamId,
       playerId: players[i].playerId,
+      archived: players[i].archived,
+      createdDate: players[i].createdDate,
+      updatedDate: players[i].updatedDate,
     };
     const possession: Possession = {
       hasPossession: false, // No player created has possession

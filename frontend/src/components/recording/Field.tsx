@@ -39,6 +39,9 @@ class Field extends React.Component<
       jerseyNum: -1,
       teamId: -1,
       playerId: -1,
+      archived: false,
+      createdDate: "",
+      updatedDate: "",
     };
     const oppositionDraggable = createPlayerDraggable(
       oppositionPlayer,

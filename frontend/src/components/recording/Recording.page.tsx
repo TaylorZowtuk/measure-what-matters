@@ -9,7 +9,7 @@ import authHeader from "../../services/auth.header";
 
 import Button from "@material-ui/core/Button";
 import Team from "./Team";
-import Bench, { StartingPlayer } from "./Bench";
+import Bench from "./Bench";
 import Field from "./Field";
 import Player from "../interfaces/player";
 import CircularBuffer from "../../util/circular-buffer";
@@ -17,6 +17,8 @@ import RecordingProps from "../interfaces/props/recording-props";
 import { fullTimeDTO } from "../interfaces/fullTime";
 import { Col, Row } from "react-bootstrap";
 import { ShotFieldInfo, ShotResultPicker } from "./ShotResultPicker";
+import { MatchStartDTO } from "../interfaces/matchStart";
+import { StartingPlayerDTO } from "../interfaces/startingPlayer";
 
 // Provide MatchId to each recording component which requires it through context
 export const MatchIdContext: React.Context<number> = React.createContext(0);
@@ -61,7 +63,19 @@ class Recording extends React.Component<
       shooting: false,
       shotFieldInfo: undefined,
     };
-    // TODO: add start match call
+
+    // Make start match call
+    let start: MatchStartDTO = {
+      matchId: Number(this.props.location.state.matchId),
+      time: Date.now() % 1000,
+    };
+    axios
+      .post(`/match/start`, start, {
+        headers: authHeader(),
+      })
+      .then((res) => {
+        console.log("Post game start response:", res); // TODO: catch error and handle if needed
+      });
   }
 
   provideStartingLine = (): Player[] => {
@@ -69,12 +83,10 @@ class Recording extends React.Component<
 
     let lineupSubs: any[] = [];
     for (let i = 0; i < starting.length; i++) {
-      let sub: StartingPlayer = {
-        id: undefined,
+      let sub: StartingPlayerDTO = {
         playerId: starting[i].playerId,
         matchId: Number(this.props.location.state.matchId),
         timeOn: Date.now(),
-        timeOff: Date.now() + 10000, // TODO: have timeoff removed from endpoint
       };
       lineupSubs.push(sub);
     }
