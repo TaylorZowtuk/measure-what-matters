@@ -167,7 +167,7 @@ export function OpenBench(props: OpenBenchProps) {
       <tbody>
         <tr>
           {props.players.map((player: Player) => (
-            <td>
+            <td key={player.playerId}>
               <MatchIdContext.Consumer>
                 {(matchId) => (
                   <Button
