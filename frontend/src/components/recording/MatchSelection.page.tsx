@@ -164,7 +164,7 @@ export function AlignItemsList() {
     return (
       <List className={classes.root}>
         {matches.map((matchAndTeam: MatchAndTeam, index: number) => {
-          const date = new Date(matchAndTeam.match.scheduledTime); // The epoch start time of this match
+          const date = new Date(matchAndTeam.match.scheduledTime * 1000); // The epoch start time of this match
           const weekday: string = date.toLocaleString("en-us", {
             weekday: "long",
           });
