@@ -198,7 +198,7 @@ export function AlignItemsList() {
                         color="textPrimary"
                       >
                         {matchAndTeam.teamName} vs.
-                        {matchAndTeam.match.opponentTeamName}
+                        {" " + matchAndTeam.match.opponentTeamName}
                         {/* TODO: add their team name */}
                       </Typography>
                       <br></br>

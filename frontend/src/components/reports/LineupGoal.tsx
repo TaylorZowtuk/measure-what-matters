@@ -21,26 +21,6 @@ interface TeamLineup {
   }[];
 }
 
-const someData: LineupState = {
-  lineupList: [
-    {
-      team: "blue team",
-      teamId: 10,
-      matchList: [
-        {
-          id: 1,
-          goalList: [
-            { lineup: [1, 2, 3, 4, 5] },
-            { lineup: [10, 20, 30, 40, 50] },
-          ],
-        },
-      ],
-    },
-  ],
-  finishLoading: true,
-  open: false,
-};
-
 class LineupGoal extends React.Component<any, LineupState> {
   constructor(props: any) {
     super(props);
