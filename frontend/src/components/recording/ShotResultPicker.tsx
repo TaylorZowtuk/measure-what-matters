@@ -28,7 +28,7 @@ export function ShotResultPicker(props: ShotResultPickerProps) {
           </Row>
           {/* Display a button for each possible outcome of a shot */}
 
-          <Row>
+          <Row style={{ marginBottom: "50px" }}>
             <Col>
               <Button
                 variant="danger"
@@ -125,7 +125,6 @@ function shotOnClick(props: ShotOnClickProps) {
       playerId: props.shooter.playerId,
       onTarget: props.onTarget,
     };
-    console.log(shot);
 
     axios.post(`/event/shots`, shot, { headers: authHeader() }).then((res) => {
       console.log("Post shot response:", res); // TODO: catch error and handle if needed

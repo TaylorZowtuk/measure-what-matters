@@ -95,7 +95,7 @@ class Bench extends React.Component<
       ].playerId, // Player who is coming onto field
       playerIdOut: this.state.substituteFor.playerId, // Player who is leaving field
       matchId: matchId,
-      time: Date.now(),
+      time: Date.now() % 1000,
     };
     axios
       .post(`/event/substitutions`, sub, { headers: authHeader() })
@@ -167,7 +167,7 @@ export function OpenBench(props: OpenBenchProps) {
       <tbody>
         <tr>
           {props.players.map((player: Player) => (
-            <td>
+            <td key={player.playerId}>
               <MatchIdContext.Consumer>
                 {(matchId) => (
                   <Button

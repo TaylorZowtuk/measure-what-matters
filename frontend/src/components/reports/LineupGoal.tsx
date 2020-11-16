@@ -1,5 +1,4 @@
 import React from "react";
-import "./Lineup.css";
 import axios from "axios";
 import authHeader from "../../services/auth.header";
 import { Collapse, List, ListItem, ListItemText } from "@material-ui/core";
@@ -21,26 +20,6 @@ interface TeamLineup {
     }[];
   }[];
 }
-
-const someData: LineupState = {
-  lineupList: [
-    {
-      team: "blue team",
-      teamId: 10,
-      matchList: [
-        {
-          id: 1,
-          goalList: [
-            { lineup: [1, 2, 3, 4, 5] },
-            { lineup: [10, 20, 30, 40, 50] },
-          ],
-        },
-      ],
-    },
-  ],
-  finishLoading: true,
-  open: false,
-};
 
 class LineupGoal extends React.Component<any, LineupState> {
   constructor(props: any) {
@@ -126,7 +105,7 @@ class LineupGoal extends React.Component<any, LineupState> {
           }}
         >
           <h2 style={{ padding: 0, margin: 0 }}>Lineup for Goals</h2>
-          {someData.lineupList.map((team) => {
+          {this.state.lineupList.map((team) => {
             return (
               <List component="nav">
                 <ListItem button onClick={this.handleClick} key={team.teamId}>

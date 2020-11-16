@@ -1,4 +1,4 @@
 export type fullTimeDTO = {
   matchId: number;
-  fullTime: number;
+  time: number;
 };
