@@ -4,9 +4,6 @@ interface Player {
   firstName: string;
   lastName: string;
   jerseyNum: number; // Jersey number
-  archived: boolean;
-  createdDate: string;
-  updatedDate: string;
 }
 
 export default Player;
