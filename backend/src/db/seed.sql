@@ -8,7 +8,7 @@ INSERT INTO public.team ("teamId", "name", "userId")
 VALUES (22, 'team22', 1);
 
 INSERT INTO public.match ("teamId", "scheduledTime", "isHomeTeam", "opponentTeamName")
-VALUES (1, 1607446800, true, 'PSG');
+VALUES (1, 1607446800000, true, 'PSG');
 
 INSERT INTO public.match ("teamId", "scheduledTime", "isHomeTeam", "opponentTeamName")
 VALUES (1, 1607878800, false, 'Liverpool');
