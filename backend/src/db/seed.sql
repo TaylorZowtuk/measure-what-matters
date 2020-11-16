@@ -11,13 +11,13 @@ INSERT INTO public.match ("teamId", "scheduledTime", "isHomeTeam", "opponentTeam
 VALUES (1, 1607446800000, true, 'PSG');
 
 INSERT INTO public.match ("teamId", "scheduledTime", "isHomeTeam", "opponentTeamName")
-VALUES (1, 1607878800, false, 'Liverpool');
+VALUES (1, 1607878800000, false, 'Liverpool');
 
 INSERT INTO public.match ("teamId", "scheduledTime", "isHomeTeam", "opponentTeamName")
-VALUES (1, 1608228000, true, 'Barcelona');
+VALUES (1, 1608228000000, true, 'Barcelona');
 
 INSERT INTO public.match ("teamId", "scheduledTime", "isHomeTeam", "opponentTeamName")
-VALUES (1, 1609092000, false, 'Juventus');
+VALUES (1, 1609092000000, false, 'Juventus');
 
 INSERT INTO public.player ("teamIdTeamId", "firstName", "lastName", "jerseyNum")
 VALUES (1, 'Aaminah', 'Hood', 1);
