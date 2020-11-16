@@ -6,7 +6,9 @@ export class FullTimeDTO {
   @IsNotEmpty()
   matchId: number;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: 'The game time in milliseconds that the game concluded.',
+  })
   @IsNotEmpty()
-  fullTime: number;
+  time: number;
 }

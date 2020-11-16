@@ -2,13 +2,22 @@ INSERT INTO public.user ("userId", "username", "name", "password")
 VALUES (1, 't', 't','$2b$10$L.4Wzh5WMcUSnfhVQUZ2ZulXSLRGrT8v0dlA6KU86yzUKtJ.1SFni');
 
 INSERT INTO public.team ("teamId", "name", "userId")
-VALUES (1, 'team', 1);
+VALUES (1, 'MWM', 1);
 
 INSERT INTO public.team ("teamId", "name", "userId")
 VALUES (22, 'team22', 1);
 
-INSERT INTO public.match ("teamIdTeamId", "startTime", "isHomeTeam")
-VALUES (1, 46544654, true);
+INSERT INTO public.match ("teamId", "scheduledTime", "isHomeTeam", "opponentTeamName","halfTime")
+VALUES (1, 1607446800, true, 'PSG',1000);
+
+INSERT INTO public.match ("teamId", "scheduledTime", "isHomeTeam", "opponentTeamName","halfTime")
+VALUES (1, 1607878800, false, 'Liverpool',1000);
+
+INSERT INTO public.match ("teamId", "scheduledTime", "isHomeTeam", "opponentTeamName","halfTime")
+VALUES (1, 1608228000, true, 'Barcelona',1000);
+
+INSERT INTO public.match ("teamId", "scheduledTime", "isHomeTeam", "opponentTeamName","halfTime")
+VALUES (1, 1609092000, false, 'Juventus',1000);
 
 INSERT INTO public.player ("teamIdTeamId", "firstName", "lastName", "jerseyNum")
 VALUES (1, 'Aaminah', 'Hood', 1);

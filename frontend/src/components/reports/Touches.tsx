@@ -15,7 +15,7 @@ type DataType = {
   y: number;
 };
 
-const firstData: DataType[] = [
+export const firstData: DataType[] = [
   { x: "Jim", y: 10 },
   { x: "Bob", y: 5 },
   { x: "Suzie", y: 15 },
@@ -25,7 +25,7 @@ const firstData: DataType[] = [
   { x: "Jack", y: 15 },
 ];
 
-const secondData: DataType[] = [
+export const secondData: DataType[] = [
   { x: "Jim", y: 12 },
   { x: "Bob", y: 2 },
   { x: "Suzie", y: 11 },
@@ -35,7 +35,7 @@ const secondData: DataType[] = [
   { x: "Jack", y: 3 },
 ];
 
-function fetchTouches(debug = true): DataType[][] {
+export function fetchTouches(debug = true): DataType[][] {
   if (debug) {
     // Return hardcoded values
     return [firstData, secondData];
@@ -45,8 +45,15 @@ function fetchTouches(debug = true): DataType[][] {
   return [firstData, secondData];
 }
 
-export default function TouchesBar() {
-  let bothHalvesData: DataType[][] = fetchTouches();
+type TouchesBarProps = {
+  fetchTouches: Function; // Dependency inject for testing
+};
+
+export default function TouchesBar(props: TouchesBarProps) {
+  let bothHalvesData: DataType[][] = props.fetchTouches();
+  if (!bothHalvesData) {
+    bothHalvesData = [];
+  }
   return (
     <Container>
       <h4>Number of Touches</h4>

@@ -16,8 +16,6 @@ import TableSortLabel from "@material-ui/core/TableSortLabel";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Switch from "@material-ui/core/Switch";
 import axios from "axios";
 import authHeader from "../../services/auth.header";
 import { timeOnFieldDTO } from "../interfaces/timeOnField";
@@ -220,7 +218,7 @@ const useToolbarStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const EnhancedTableToolbar = (matchId: number) => {
+const EnhancedTableToolbar = () => {
   const classes = useToolbarStyles();
   return (
     <Toolbar>
@@ -230,8 +228,7 @@ const EnhancedTableToolbar = (matchId: number) => {
         id="tableTitle"
         component="div"
       >
-        Time on Field for Match {matchId}
-        {/* TODO: Remove hardcoded matchid */}
+        Time on Field for Match 1{/* TODO: Remove hardcoded matchid */}
       </Typography>
     </Toolbar>
   );
@@ -268,7 +265,6 @@ export default function EnhancedTable() {
   const [order, setOrder] = React.useState<Order>("asc");
   const [orderBy, setOrderBy] = React.useState<keyof FormattedData>("minutes");
   const [page, setPage] = React.useState(0);
-  const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   //const matchId = React.useContext(MatchReportContext);
 
@@ -292,10 +288,6 @@ export default function EnhancedTable() {
     setPage(0);
   };
 
-  const handleChangeDense = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setDense(event.target.checked);
-  };
-
   const [rows, setRows] = useState<FormattedData[] | null>(null);
   useEffect(() => {
     async function getRows() {
@@ -311,62 +303,54 @@ export default function EnhancedTable() {
     rowsPerPage - Math.min(rowsPerPage, _rows.length - page * rowsPerPage);
 
   return (
-    <MatchReportContext.Consumer>
-      {(matchId) => (
-        <div className={classes.root}>
-          <Paper className={classes.paper}>
-            <EnhancedTableToolbar {...matchId} />
-            <TableContainer>
-              <Table
-                className={classes.table}
-                aria-labelledby="tableTitle"
-                size={dense ? "small" : "medium"}
-                aria-label="enhanced table"
-              >
-                <EnhancedTableHead
-                  classes={classes}
-                  order={order}
-                  orderBy={orderBy}
-                  onRequestSort={handleRequestSort}
-                />
-                <TableBody>
-                  {stableSort(_rows, getComparator(order, orderBy))
-                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((row) => {
-                      return (
-                        <TableRow hover tabIndex={-1} key={row.name}>
-                          <TableCell component="th" scope="row" padding="none">
-                            {row.name}
-                          </TableCell>
-                          <TableCell align="right">{row.number}</TableCell>
-                          <TableCell align="right">{row.minutes}</TableCell>
-                        </TableRow>
-                      );
-                    })}
-                  {emptyRows > 0 && (
-                    <TableRow style={{ height: (dense ? 33 : 53) * emptyRows }}>
-                      <TableCell colSpan={6} />
-                    </TableRow>
-                  )}
-                </TableBody>
-              </Table>
-            </TableContainer>
-            <TablePagination
-              rowsPerPageOptions={[5, 10, 25]}
-              component="div"
-              count={_rows.length}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              onChangePage={handleChangePage}
-              onChangeRowsPerPage={handleChangeRowsPerPage}
+    <div className={classes.root}>
+      <Paper className={classes.paper}>
+        <EnhancedTableToolbar />
+        <TableContainer>
+          <Table
+            className={classes.table}
+            aria-labelledby="tableTitle"
+            size={"medium"}
+            aria-label="enhanced table"
+          >
+            <EnhancedTableHead
+              classes={classes}
+              order={order}
+              orderBy={orderBy}
+              onRequestSort={handleRequestSort}
             />
-          </Paper>
-          <FormControlLabel
-            control={<Switch checked={dense} onChange={handleChangeDense} />}
-            label="Dense padding"
-          />
-        </div>
-      )}
-    </MatchReportContext.Consumer>
+            <TableBody>
+              {stableSort(_rows, getComparator(order, orderBy))
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map((row) => {
+                  return (
+                    <TableRow hover tabIndex={-1} key={row.name}>
+                      <TableCell component="th" scope="row" padding="none">
+                        {row.name}
+                      </TableCell>
+                      <TableCell align="right">{row.number}</TableCell>
+                      <TableCell align="right">{row.minutes}</TableCell>
+                    </TableRow>
+                  );
+                })}
+              {emptyRows > 0 && (
+                <TableRow style={{ height: 53 * emptyRows }}>
+                  <TableCell colSpan={6} />
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 25]}
+          component="div"
+          count={_rows.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onChangePage={handleChangePage}
+          onChangeRowsPerPage={handleChangeRowsPerPage}
+        />
+      </Paper>
+    </div>
   );
 }

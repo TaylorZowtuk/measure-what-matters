@@ -81,7 +81,7 @@ function filterOutFinishedGames(matches: MatchAndTeam[]): MatchAndTeam[] {
 // this ordering means upcoming first)
 function sortUpcoming(matches: MatchAndTeam[]): MatchAndTeam[] {
   return matches.sort(function (a, b) {
-    return a.match.startTime - b.match.startTime;
+    return a.match.scheduledTime - b.match.scheduledTime;
   });
 }
 
@@ -164,7 +164,7 @@ export function AlignItemsList() {
     return (
       <List className={classes.root}>
         {matches.map((matchAndTeam: MatchAndTeam, index: number) => {
-          const date = new Date(matchAndTeam.match.startTime); // The epoch start time of this match
+          const date = new Date(matchAndTeam.match.scheduledTime * 1000); // The epoch start time of this match
           const weekday: string = date.toLocaleString("en-us", {
             weekday: "long",
           });
@@ -197,7 +197,8 @@ export function AlignItemsList() {
                         className={classes.inline}
                         color="textPrimary"
                       >
-                        {matchAndTeam.teamName} vs.{" "}
+                        {matchAndTeam.teamName} vs.
+                        {" " + matchAndTeam.match.opponentTeamName}
                         {/* TODO: add their team name */}
                       </Typography>
                       <br></br>
@@ -225,11 +226,14 @@ const debugData: MatchAndTeam[] = [
   {
     match: {
       matchId: 1,
+      team: null,
       teamId: 4,
-      startTime: Date.now(),
-      isHomeTeam: false,
+      scheduledTime: Date.now(),
+      startTime: null,
       halfTime: null,
       fullTime: null,
+      opponentTeamName: "Rad Boys",
+      isHomeTeam: false,
       createdDate: "12345",
       updatedDate: "12345",
     },
@@ -238,9 +242,12 @@ const debugData: MatchAndTeam[] = [
   {
     match: {
       matchId: 1,
+      team: null,
       teamId: 1,
-      startTime: 46544654,
+      scheduledTime: 46544654,
+      opponentTeamName: "Rad Boys",
       isHomeTeam: true,
+      startTime: null,
       halfTime: null,
       fullTime: null,
       createdDate: "12345",
@@ -251,9 +258,12 @@ const debugData: MatchAndTeam[] = [
   {
     match: {
       matchId: 2,
+      team: null,
       teamId: 1,
-      startTime: 123456,
+      scheduledTime: 123456,
+      opponentTeamName: "Rad Boys",
       isHomeTeam: false,
+      startTime: null,
       halfTime: null,
       fullTime: null,
       createdDate: "12345",
@@ -264,9 +274,12 @@ const debugData: MatchAndTeam[] = [
   {
     match: {
       matchId: 2,
+      team: null,
       teamId: 2,
-      startTime: 1234561,
+      scheduledTime: 1234561,
+      opponentTeamName: "Rad Boys",
       isHomeTeam: false,
+      startTime: 12343,
       halfTime: 12344,
       fullTime: 12345,
       createdDate: "12345",
@@ -277,9 +290,12 @@ const debugData: MatchAndTeam[] = [
   {
     match: {
       matchId: 1,
+      team: null,
       teamId: 2,
-      startTime: 1234561,
+      scheduledTime: 1234561,
+      opponentTeamName: "Rad Boys",
       isHomeTeam: true,
+      startTime: null,
       halfTime: null,
       fullTime: null,
       createdDate: "12345",
@@ -290,9 +306,12 @@ const debugData: MatchAndTeam[] = [
   {
     match: {
       matchId: 3,
+      team: null,
       teamId: 1,
-      startTime: 1234561,
+      scheduledTime: 1234561,
+      opponentTeamName: "Rad Boys",
       isHomeTeam: false,
+      startTime: null,
       halfTime: null,
       fullTime: null,
       createdDate: "12345",
@@ -303,9 +322,12 @@ const debugData: MatchAndTeam[] = [
   {
     match: {
       matchId: 1,
+      team: null,
       teamId: 4,
-      startTime: 12311,
+      scheduledTime: 12311,
+      opponentTeamName: "Rad Boys",
       isHomeTeam: false,
+      startTime: 123633,
       halfTime: 126336,
       fullTime: null,
       createdDate: "12345",
@@ -316,9 +338,12 @@ const debugData: MatchAndTeam[] = [
   {
     match: {
       matchId: 1,
+      team: null,
       teamId: 3,
-      startTime: 12345235,
+      scheduledTime: 12345235,
+      opponentTeamName: "Rad Boys",
       isHomeTeam: false,
+      startTime: 1233,
       halfTime: 12344,
       fullTime: 12345,
       createdDate: "12345",
@@ -329,9 +354,12 @@ const debugData: MatchAndTeam[] = [
   {
     match: {
       matchId: 1,
+      team: null,
       teamId: 3,
-      startTime: 123,
+      scheduledTime: 123,
+      opponentTeamName: "Rad Boys",
       isHomeTeam: false,
+      startTime: null,
       halfTime: null,
       fullTime: null,
       createdDate: "12345",
