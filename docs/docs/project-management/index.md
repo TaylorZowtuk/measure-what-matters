@@ -123,3 +123,19 @@ Here are the general rules for assigning tasks on the team:
 | Player summary BE | Joe | November 14 |
 | Player summary FE | Chloe | November 14 |
 
+**Due: November 26 8pm**
+
+| **Task To-Do** | **Assigned To** | **Date To Complete By** |
+| --- | --- | --- | 
+
+| User Manual | Bard | November 18 |
+| Migrations BE | Joe | November 19 |
+| Deployment Documentation | Ayub/ Joe | November 19 |
+| Deploying App Cybera | Ayub/ Joe | November 19 |
+| Stats by Match | Ayub | November 20 |
+| Manifest | Taylor / Bard | November 21 |
+| Match Timer FE | Taylor/Ayub | November 22 |
+| Caching Events + Offline FE | Taylor/Ayub | November 23 |
+| Player Summary FE | Chloe | November 25 |
+| Player Summary BE | Bard | November 25 |
+| Styling | TEAM EFFORT | November 26 |
