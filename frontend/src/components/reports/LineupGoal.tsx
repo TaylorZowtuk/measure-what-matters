@@ -125,7 +125,7 @@ class LineupGoal extends React.Component<any, LineupState> {
           }}
         >
           <h2 style={{ padding: 0, margin: 0 }}>Lineup for Goals</h2>
-          {someData.lineupList.map((team) => {
+          {this.state.lineupList.map((team) => {
             return (
               <List component="nav">
                 <ListItem button onClick={this.handleClick} key={team.teamId}>
