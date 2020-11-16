@@ -127,7 +127,6 @@ Here are the general rules for assigning tasks on the team:
 
 | **Task To-Do** | **Assigned To** | **Date To Complete By** |
 | --- | --- | --- | 
-
 | User Manual | Chloe | November 18 |
 | Migrations BE | Joe | November 19 |
 | Deployment Documentation | Ayub/ Joe | November 19 |
