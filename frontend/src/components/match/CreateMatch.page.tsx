@@ -9,6 +9,7 @@ import {
 import React from "react";
 import axios from "axios";
 import authHeader from "../../services/auth.header";
+import { Link } from "react-router-dom";
 
 interface matchState {
   teamId: number | unknown;
@@ -176,6 +177,14 @@ class CreateMatch extends React.Component<{}, matchState> {
             Create Match
           </Button>
         </form>
+        <Link to="/dashboard">
+          <Button
+            variant="contained"
+            style={{ marginLeft: "auto", marginRight: "auto", width: "100%" }}
+          >
+            Back
+          </Button>
+        </Link>
       </div>
     );
   }

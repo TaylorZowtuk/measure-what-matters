@@ -20,12 +20,12 @@ const Router = () => {
       <Route exact path="/dashboard" component={Dashboard}></Route>
       <Route exact path="/teams" component={Teams}></Route>
       <Route exact path="/create-team" component={AddTeam}></Route>
+      <Route exact path="/create-match" component={CreateMatch}></Route>
       <Route exact path="/matches/upcoming" component={MatchSelection}></Route>
       <Route exact path="/match/lineup" component={LineupComponent}></Route>
       <Route exact path="/match/recording" component={Recording}></Route>
       <Route exact path="/signup" component={Signup}></Route>
       <Route exact path="/teams/roster" component={Roster}></Route>
-      <Route exact path="/create-match" component={CreateMatch}></Route>
       <Route exact path="/view-account" component={AccountView}></Route>
     </Switch>
   );
