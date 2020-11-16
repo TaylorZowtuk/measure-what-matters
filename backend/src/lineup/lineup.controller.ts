@@ -41,7 +41,7 @@ export class LineupController {
           throw new BadRequestException('null value entered for parameter');
         }
       } else {
-        throw new InternalServerErrorException('Unknown error');
+        throw new InternalServerErrorException('Unknown error occurred');
       }
     }
   }

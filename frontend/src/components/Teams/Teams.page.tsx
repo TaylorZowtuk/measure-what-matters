@@ -2,6 +2,8 @@ import React from "react";
 import TeamComponent from "../TeamComponent/TeamComponent";
 import Button from "@material-ui/core/Button";
 import { Link } from "react-router-dom";
+import axios from "axios";
+import authHeader from "../../services/auth.header";
 import { Container, Row, Col } from "react-bootstrap";
 import RosterProps from "../interfaces/props/roster-props";
 
@@ -16,7 +18,8 @@ interface Team {
 }
 
 interface Player {
-  name: string;
+  firstName: string;
+  lastName: string;
   number: number;
   playerId: number;
 }
@@ -28,54 +31,53 @@ const rosterProps: RosterProps = {
 class Teams extends React.Component<{}, teamState> {
   constructor(props: {}) {
     super(props);
-    // TODO: make request to retrieve team list
-
     this.state = {
-      teamList: [
-        {
-          teamName: "Boys Team",
-          playerList: [
-            {
-              name: "John",
-              number: 1,
-              playerId: 1,
-            },
-            {
-              name: "Tom",
-              number: 2,
-              playerId: 2,
-            },
-            {
-              name: "Bob",
-              number: 3,
-              playerId: 3,
-            },
-          ],
-          teamId: 1,
-        },
-        {
-          teamName: "Girls Team",
-          playerList: [
-            {
-              name: "Cat",
-              number: 5,
-              playerId: 4,
-            },
-            {
-              name: "Lily",
-              number: 6,
-              playerId: 5,
-            },
-            {
-              name: "Mag",
-              number: 8,
-              playerId: 6,
-            },
-          ],
-          teamId: 2,
-        },
-      ],
+      teamList: [],
     };
+    axios.get(`/teams`, { headers: authHeader() }).then(
+      (response) => {
+        console.log("got teams");
+        console.log(response.data);
+        let teams = response.data;
+        let teamArray: Team[] = [];
+
+        teams.forEach((element: any) => {
+          axios
+            .get(`/players/teamId?teamId=${element.teamId}`, {
+              headers: authHeader(),
+            })
+            .then(
+              (response) => {
+                let players: Array<Player> = [];
+                if (response.data) {
+                  response.data.forEach((player: any) => {
+                    players.push({
+                      firstName: player.firstName,
+                      lastName: player.lastName,
+                      number: player.jerseyNum,
+                      playerId: player.playerId,
+                    });
+                  });
+                }
+                teamArray.push({
+                  teamName: element.name,
+                  playerList: players,
+                  teamId: element.teamId,
+                });
+                this.setState({ teamList: teamArray });
+              },
+              (error) => {
+                console.log("getting errors");
+                console.log(error);
+              }
+            );
+        });
+      },
+      (error) => {
+        console.log("getting errors");
+        console.log(localStorage.getItem("user"));
+      }
+    );
   }
 
   public render() {

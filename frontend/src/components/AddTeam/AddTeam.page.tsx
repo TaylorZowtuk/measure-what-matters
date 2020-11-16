@@ -4,7 +4,8 @@ import "./AddTeam.css";
 import Button from "@material-ui/core/Button";
 import Player from "./Player";
 import { Link } from "react-router-dom";
-// import axios from "axios";
+import axios from "axios";
+import authHeader from "../../services/auth.header";
 
 interface createTeamState {
   teamName: string;
@@ -13,6 +14,7 @@ interface createTeamState {
   newPlayerLastName: string;
   newPlayerNumber: string;
   id: number;
+  errorMessage: string;
 }
 
 interface newPlayer {
@@ -32,6 +34,7 @@ class AddTeam extends React.Component<{}, createTeamState> {
       newPlayerLastName: "",
       newPlayerNumber: "",
       id: 0,
+      errorMessage: "",
     };
   }
 
@@ -113,38 +116,93 @@ class AddTeam extends React.Component<{}, createTeamState> {
 
   // handles when add team button is pressed
   onAddTeam = () => {
+    this.setState({ errorMessage: "" });
     //TODO: add new team to database
     if (this.state.teamName.trim() !== "") {
-      // axios.post('/teams', {name: this.state.teamName, playerList: this.state.playerList})
-      // .then(res => {
-      //     console.log("add team");
-      //     this.setState({
-      //         teamName: '',
-      //         playerList: [],
-      //         newPlayerFirstName: '',
-      //         newPlayerLastName: '',
-      //         newPlayerNumber: '',
-      //         id: 0
-      //     });
-      // })
-
-      console.log("add team");
-      this.setState({
-        teamName: "",
-        playerList: [],
-        newPlayerFirstName: "",
-        newPlayerLastName: "",
-        newPlayerNumber: "",
-        id: 0,
-      });
+      axios
+        .post(
+          "/teams",
+          { name: this.state.teamName },
+          { headers: authHeader() }
+        )
+        .then(
+          (response) => {
+            console.log("team name pass");
+            if (response.data.teamId) {
+              if (this.state.playerList.length !== 0) {
+                let playerArray: Array<{
+                  teamId: number;
+                  firstName: string;
+                  lastName: string;
+                  jerseyNum: number;
+                }> = [];
+                this.state.playerList.map((player: newPlayer) => {
+                  playerArray.push({
+                    teamId: response.data.teamId,
+                    firstName: player.firstName,
+                    lastName: player.lastName,
+                    jerseyNum: Number(player.number),
+                  });
+                  return null;
+                });
+                console.log(playerArray);
+                axios
+                  .post("/players", playerArray, { headers: authHeader() })
+                  .then(
+                    (response) => {
+                      console.log("team added successfully");
+                      this.setState({
+                        teamName: "",
+                        playerList: [],
+                        newPlayerFirstName: "",
+                        newPlayerLastName: "",
+                        newPlayerNumber: "",
+                        id: 0,
+                      });
+                    },
+                    (error) => {
+                      console.log("unsuccessful team creation");
+                    }
+                  );
+              } else {
+                console.log("add team");
+                this.setState({
+                  teamName: "",
+                  playerList: [],
+                  newPlayerFirstName: "",
+                  newPlayerLastName: "",
+                  newPlayerNumber: "",
+                  id: 0,
+                });
+              }
+            } else {
+              console.log(response.data);
+            }
+          },
+          (error) => {
+            console.log("team not created");
+            this.setState({ errorMessage: error.response.data.message });
+            console.log(error.response);
+          }
+        );
     } else {
-      alert("Enter team name");
+      this.setState({ errorMessage: "Enter team name" });
     }
   };
 
   render() {
     return (
       <div className="container">
+        <p
+          style={{
+            color: "crimson",
+            fontSize: 14,
+            marginLeft: "auto",
+            marginRight: "auto",
+          }}
+        >
+          {this.state.errorMessage}
+        </p>
         <h3>Add A New Team</h3>
         <TextField
           required
@@ -156,23 +214,13 @@ class AddTeam extends React.Component<{}, createTeamState> {
           value={this.state.teamName}
         />
         <h3>{this.state.teamName}</h3>
-        <table>
-          <thead>
-            <tr>
-              <th>Player Name</th>
-              <th>Player Number</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {this.state.playerList.map((player) => {
-              return (
-                <Player player={player} onRemove={this.onRemovePlayer}></Player>
-              );
-            })}
-          </tbody>
-        </table>
-        <form>
+        <form
+          style={{
+            width: "fit-content",
+            marginLeft: "auto",
+            marginRight: "auto",
+          }}
+        >
           <TextField
             style={{ marginRight: 10 }}
             id="outlined-required"
@@ -202,9 +250,33 @@ class AddTeam extends React.Component<{}, createTeamState> {
             value={this.state.newPlayerNumber}
             onChange={this.handlePlayerNumberChange}
           />
-
-          <button onClick={this.onAddPlayer}>add</button>
+          <br />
+          <div>
+            <Button variant="contained" onClick={this.onAddPlayer}>
+              ADD PLAYER
+            </Button>
+          </div>
         </form>
+        <table style={{ margin: "20px auto" }}>
+          <thead>
+            <tr>
+              <th style={{ padding: "10px" }}>Player Name</th>
+              <th style={{ padding: "10px" }}>Player Number</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {this.state.playerList.map((player) => {
+              return (
+                <Player
+                  player={player}
+                  onRemove={this.onRemovePlayer}
+                  key={player.number}
+                ></Player>
+              );
+            })}
+          </tbody>
+        </table>
         <Button
           variant="contained"
           style={{ marginBottom: 10 }}
