@@ -9,7 +9,7 @@ export default function AppNavbar() {
       <Navbar.Brand href="#home">Measure What Matters</Navbar.Brand>
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">
-        <Nav className="ml auto">
+        <Nav className="ml-auto">
           <Link to="/">
             <Button
               variant="outline-secondary"
@@ -18,7 +18,7 @@ export default function AppNavbar() {
               }}
             >
               Logout
-            </Button>{" "}
+            </Button>
           </Link>
         </Nav>
       </Navbar.Collapse>
