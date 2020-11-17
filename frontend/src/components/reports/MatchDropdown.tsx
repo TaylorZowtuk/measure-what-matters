@@ -12,7 +12,10 @@ type MatchAndTeam = {
   teamName: string;
 };
 
-export const MatchReportContext = React.createContext(1); //exporting context object
+interface Props {
+  matchId?: number;
+  handleMatchIdChange(matchId: number): void;
+}
 
 // Get all the users upcoming matches for every team they are a part of
 async function fetchMatches(): Promise<MatchAndTeam[]> {
@@ -47,7 +50,7 @@ async function fetchMatches(): Promise<MatchAndTeam[]> {
 // Remove games that have been recorded already from matches
 function filterOutUnfinishedGames(matches: MatchAndTeam[]): MatchAndTeam[] {
   matches = matches.filter(
-    (matchAndTeam) => matchAndTeam.match.fullTime === null
+    (matchAndTeam) => matchAndTeam.match.fullTime !== null
   );
   return matches;
 }
@@ -56,11 +59,17 @@ function filterOutUnfinishedGames(matches: MatchAndTeam[]): MatchAndTeam[] {
 // this ordering means upcoming first)
 function sortUpcoming(matches: MatchAndTeam[]): MatchAndTeam[] {
   return matches.sort(function (a, b) {
-    return a.match.startTime - b.match.startTime;
+    return a.match.scheduledTime - b.match.scheduledTime;
   });
 }
 
-export default function MatchDropdown() {
+function getSelectionBoxText(matchAndTeam: MatchAndTeam): string {
+  return `${matchAndTeam.teamName} vs ${
+    matchAndTeam.match.opponentTeamName
+  } | ${new Date(matchAndTeam.match.scheduledTime * 1000).toLocaleString()} `;
+}
+
+export default function MatchDropdown(props: Props) {
   const [matches, setMatches] = useState<MatchAndTeam[] | null>(null);
   useEffect(() => {
     async function getMatches() {
@@ -69,32 +78,38 @@ export default function MatchDropdown() {
     getMatches();
   }, []);
 
-  const [matchId, setMatchId] = useState<number>(1);
+  const [dropdownText, setDropdownText] = useState<string>("Stats By Match");
 
   // If fetch request hasnt returned yet
   if (!matches) {
-    return <h1>Loading...</h1>;
+    return (
+      <Dropdown>
+        <Dropdown.Toggle variant="success" id="dropdown-basic">
+          {dropdownText}
+        </Dropdown.Toggle>
+      </Dropdown>
+    );
   } else {
     return (
-      <MatchReportContext.Provider value={matchId}>
-        <Dropdown>
-          <Dropdown.Toggle variant="success" id="dropdown-basic">
-            Stats By Match
-          </Dropdown.Toggle>
+      <Dropdown>
+        <Dropdown.Toggle variant="success" id="dropdown-basic">
+          {dropdownText}
+        </Dropdown.Toggle>
 
-          <Dropdown.Menu>
-            {matches.map((matchAndTeam: MatchAndTeam) => (
-              <Dropdown.Item
-                as="button"
-                onSelect={() => setMatchId(matchAndTeam.match.matchId)}
-              >
-                {`${matchAndTeam.teamName} vs Opponent: `}
-                {new Date(matchAndTeam.match.startTime).toString()}
-              </Dropdown.Item>
-            ))}
-          </Dropdown.Menu>
-        </Dropdown>
-      </MatchReportContext.Provider>
+        <Dropdown.Menu>
+          {matches.map((matchAndTeam: MatchAndTeam) => (
+            <Dropdown.Item
+              as="button"
+              onSelect={() => {
+                props.handleMatchIdChange(matchAndTeam.match.matchId);
+                setDropdownText(getSelectionBoxText(matchAndTeam));
+              }}
+            >
+              {getSelectionBoxText(matchAndTeam)}
+            </Dropdown.Item>
+          ))}
+        </Dropdown.Menu>
+      </Dropdown>
     );
   }
 }

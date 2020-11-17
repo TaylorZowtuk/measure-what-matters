@@ -6,6 +6,7 @@ import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import { Col, Container, Row } from "react-bootstrap";
 import { withStyles } from "@material-ui/core/styles";
+import ReportProps from "../interfaces/props/report-props";
 
 export function CircularProgressWithLabel(
   props: CircularProgressProps & { value: number }
@@ -60,7 +61,9 @@ type PossessionCircularProps = {
   fetchTimes: Function; // Dependency inject for testing
 };
 
-export default function PossessionCircular(props: PossessionCircularProps) {
+export default function PossessionCircular(
+  props: PossessionCircularProps & ReportProps
+) {
   let times: number[] = props.fetchTimes();
   if (!times || times.length < 3) {
     // If there was a problem with fetch, then display 0's

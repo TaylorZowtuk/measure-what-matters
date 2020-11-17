@@ -19,7 +19,7 @@ import Paper from "@material-ui/core/Paper";
 import axios from "axios";
 import authHeader from "../../services/auth.header";
 import { timeOnFieldDTO } from "../interfaces/timeOnField";
-import { MatchReportContext } from "./MatchDropdown";
+import ReportProps from "../interfaces/props/report-props";
 
 interface FormattedData {
   name: string;
@@ -228,7 +228,7 @@ const EnhancedTableToolbar = () => {
         id="tableTitle"
         component="div"
       >
-        Time on Field for Match 1{/* TODO: Remove hardcoded matchid */}
+        Time on Field
       </Typography>
     </Toolbar>
   );
@@ -260,13 +260,12 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export default function EnhancedTable() {
+export default function EnhancedTable(props: ReportProps) {
   const classes = useStyles();
   const [order, setOrder] = React.useState<Order>("asc");
   const [orderBy, setOrderBy] = React.useState<keyof FormattedData>("minutes");
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  //const matchId = React.useContext(MatchReportContext);
 
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
@@ -291,10 +290,12 @@ export default function EnhancedTable() {
   const [rows, setRows] = useState<FormattedData[] | null>(null);
   useEffect(() => {
     async function getRows() {
-      setRows(await fetchRows(1));
+      if (props.matchId) {
+        setRows(await fetchRows(props.matchId));
+      }
     }
     getRows();
-  }, []);
+  }, [props]);
 
   let _rows: FormattedData[] = [];
   if (rows) _rows = rows;

@@ -3,6 +3,7 @@ import axios from "axios";
 import authHeader from "../../services/auth.header";
 import { Collapse, List, ListItem, ListItemText } from "@material-ui/core";
 import { ExpandLess, ExpandMore } from "@material-ui/icons";
+import ReportProps from "../interfaces/props/report-props";
 
 interface LineupState {
   lineupList: TeamLineup[];
@@ -21,8 +22,8 @@ interface TeamLineup {
   }[];
 }
 
-class LineupGoal extends React.Component<any, LineupState> {
-  constructor(props: any) {
+class LineupGoal extends React.Component<ReportProps, LineupState> {
+  constructor(props: ReportProps) {
     super(props);
     this.state = { lineupList: [], finishLoading: false, open: false };
   }

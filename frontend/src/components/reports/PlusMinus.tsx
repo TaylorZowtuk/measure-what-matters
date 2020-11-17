@@ -17,8 +17,7 @@ import {
   makeStyles,
   Theme,
 } from "@material-ui/core";
-
-const matchId: number = 1;
+import ReportProps from "../interfaces/props/report-props";
 
 const useToolbarStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -52,13 +51,13 @@ const EnhancedTableToolbar = () => {
         id="tableTitle"
         component="div"
       >
-        Plus Minus for Match {matchId}
+        Plus Minus
       </Typography>
     </Toolbar>
   );
 };
 
-async function fetchPlusMinus(matchId: number = 1): Promise<PlusMinus[]> {
+async function fetchPlusMinus(matchId: number): Promise<PlusMinus[]> {
   const response = await axios.get(
     `/player-stats/plus-minus?matchId=${matchId}`,
     {
@@ -68,18 +67,42 @@ async function fetchPlusMinus(matchId: number = 1): Promise<PlusMinus[]> {
   return response.data;
 }
 
-export default function PlusMinusComponent() {
+export default function PlusMinusComponent(props: ReportProps) {
   const [plusMinus, setPlusMinus] = React.useState<PlusMinus[] | null>(null);
 
   useEffect(() => {
     async function getPlusMinus() {
-      setPlusMinus(await fetchPlusMinus());
+      if (props.matchId) {
+        setPlusMinus(await fetchPlusMinus(props.matchId));
+      }
     }
     getPlusMinus();
-  }, []);
+  }, [props]);
 
-  if (!plusMinus) {
-    return <h1 style={{ color: "white" }}>Loading...</h1>;
+  if (!plusMinus || !props.matchId) {
+    return (
+      <div className="PlusMinus">
+        <TableContainer component={Paper}>
+          <EnhancedTableToolbar />
+          <Table stickyHeader>
+            <TableHead>
+              <TableRow>
+                <TableCell>First Name</TableCell>
+                <TableCell>Last Name</TableCell>
+                <TableCell align="center">Jersey Number</TableCell>
+                <TableCell align="center">Plus Minus</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              <TableCell />
+              <TableCell />
+              <TableCell />
+              <TableCell />
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </div>
+    );
   } else {
     return (
       <div className="PlusMinus">
