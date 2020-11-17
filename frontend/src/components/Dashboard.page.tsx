@@ -25,11 +25,15 @@ const Dashboard = () => {
         matchId={matchId}
         handleMatchIdChange={handleMatchIdChange}
       />
+      {/* Navigation */}
       <Link to="/matches/upcoming">
         <Button variant="contained">Recording</Button>
       </Link>
       <Link to="/teams">
         <Button variant="contained">Teams</Button>
+      </Link>
+      <Link to="/create-match">
+        <Button variant="contained">Create Match</Button>
       </Link>
       <Link to="/view-account">
         <Button variant="contained">Account</Button>
