@@ -19,6 +19,7 @@ import Paper from "@material-ui/core/Paper";
 import axios from "axios";
 import authHeader from "../../services/auth.header";
 import { timeOnFieldDTO } from "../interfaces/timeOnField";
+import ReportProps from "../interfaces/props/report-props";
 
 interface FormattedData {
   name: string;
@@ -56,13 +57,16 @@ const hardCodedRows = [
 ];
 
 // Enable using a hardcoded set of values for testing or to use data from an api call
-async function fetchRows(debug = false): Promise<FormattedData[]> {
+async function fetchRows(
+  matchId: number,
+  debug = false
+): Promise<FormattedData[]> {
   if (debug) {
     return hardCodedRows;
   }
 
   const res = await axios.get(
-    `/player-stats/timeOnField?matchId=1`, // TODO: Remove hardcoded matchId
+    `/player-stats/timeOnField?matchId=${matchId}`, // TODO: Remove hardcoded matchId
     { headers: authHeader() }
   );
 
@@ -216,7 +220,6 @@ const useToolbarStyles = makeStyles((theme: Theme) =>
 
 const EnhancedTableToolbar = () => {
   const classes = useToolbarStyles();
-  const matchId: number = 1;
   return (
     <Toolbar>
       <Typography
@@ -225,8 +228,7 @@ const EnhancedTableToolbar = () => {
         id="tableTitle"
         component="div"
       >
-        Time on Field for Match {matchId}
-        {/* TODO: Remove hardcoded matchid */}
+        Time on Field
       </Typography>
     </Toolbar>
   );
@@ -258,7 +260,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export default function EnhancedTable() {
+export default function EnhancedTable(props: ReportProps) {
   const classes = useStyles();
   const [order, setOrder] = React.useState<Order>("asc");
   const [orderBy, setOrderBy] = React.useState<keyof FormattedData>("minutes");
@@ -288,10 +290,12 @@ export default function EnhancedTable() {
   const [rows, setRows] = useState<FormattedData[] | null>(null);
   useEffect(() => {
     async function getRows() {
-      setRows(await fetchRows());
+      if (props.matchId) {
+        setRows(await fetchRows(props.matchId));
+      }
     }
     getRows();
-  }, []);
+  }, [props]);
 
   let _rows: FormattedData[] = [];
   if (rows) _rows = rows;

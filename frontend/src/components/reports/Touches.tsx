@@ -9,6 +9,7 @@ import {
   VerticalBarSeries,
 } from "react-vis";
 import { Container } from "react-bootstrap";
+import ReportProps from "../interfaces/props/report-props";
 
 type DataType = {
   x: string;
@@ -49,7 +50,7 @@ type TouchesBarProps = {
   fetchTouches: Function; // Dependency inject for testing
 };
 
-export default function TouchesBar(props: TouchesBarProps) {
+export default function TouchesBar(props: TouchesBarProps & ReportProps) {
   let bothHalvesData: DataType[][] = props.fetchTouches();
   if (!bothHalvesData) {
     bothHalvesData = [];

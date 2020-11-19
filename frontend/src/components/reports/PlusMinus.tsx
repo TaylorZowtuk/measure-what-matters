@@ -17,8 +17,8 @@ import {
   makeStyles,
   Theme,
 } from "@material-ui/core";
-
-const matchId: number = 1;
+import ReportProps from "../interfaces/props/report-props";
+import CSS from "csstype";
 
 const useToolbarStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -52,13 +52,19 @@ const EnhancedTableToolbar = () => {
         id="tableTitle"
         component="div"
       >
-        Plus Minus for Match {matchId}
+        Plus Minus
       </Typography>
     </Toolbar>
   );
 };
 
-async function fetchPlusMinus(matchId: number = 1): Promise<PlusMinus[]> {
+const tableStyling: CSS.Properties = {
+  height: "50vh",
+  width: "30vw",
+  margin: "auto",
+};
+
+async function fetchPlusMinus(matchId: number): Promise<PlusMinus[]> {
   const response = await axios.get(
     `/player-stats/plus-minus?matchId=${matchId}`,
     {
@@ -68,60 +74,67 @@ async function fetchPlusMinus(matchId: number = 1): Promise<PlusMinus[]> {
   return response.data;
 }
 
-export default function PlusMinusComponent() {
+function getTableFrame(tableBody: JSX.Element | null): JSX.Element {
+  return (
+    <div className="PlusMinus">
+      <TableContainer component={Paper} style={tableStyling}>
+        <EnhancedTableToolbar />
+        <Table stickyHeader>
+          <TableHead>
+            <TableRow>
+              <TableCell>First Name</TableCell>
+              <TableCell>Last Name</TableCell>
+              <TableCell align="center">Jersey Number</TableCell>
+              <TableCell align="center">Plus Minus</TableCell>
+            </TableRow>
+          </TableHead>
+          {tableBody}
+          {/* Adds the table body to a table frame just to avoid repeating */}
+        </Table>
+      </TableContainer>
+    </div>
+  );
+}
+
+export default function PlusMinusComponent(props: ReportProps) {
   const [plusMinus, setPlusMinus] = React.useState<PlusMinus[] | null>(null);
 
   useEffect(() => {
     async function getPlusMinus() {
-      setPlusMinus(await fetchPlusMinus());
+      if (props.matchId) {
+        setPlusMinus(await fetchPlusMinus(props.matchId));
+      }
     }
     getPlusMinus();
-  }, []);
+  }, [props]);
 
-  if (!plusMinus) {
-    return <h1 style={{ color: "white" }}>Loading...</h1>;
+  if (!plusMinus || !props.matchId) {
+    return getTableFrame(null); // Pass null since we don't have the data to render the table
   } else {
-    return (
-      <div className="PlusMinus">
-        <TableContainer component={Paper}>
-          <EnhancedTableToolbar />
-          <Table stickyHeader>
-            <TableHead>
-              <TableRow>
-                <TableCell>First Name</TableCell>
-                <TableCell>Last Name</TableCell>
-                <TableCell align="center">Jersey Number</TableCell>
-                <TableCell align="center">Plus Minus</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {plusMinus.map((plusMinus) => (
-                <TableRow key={plusMinus.player.playerId}>
-                  <TableCell>{plusMinus.player.firstName}</TableCell>
-                  <TableCell>{plusMinus.player.lastName}</TableCell>
-                  <TableCell align="center">
-                    {plusMinus.player.jerseyNum}
-                  </TableCell>
-                  <TableCell
-                    align="center"
-                    style={{
-                      backgroundColor:
-                        plusMinus.plusMinus <= 0
-                          ? plusMinus.plusMinus === 0
-                            ? "white"
-                            : "red"
-                          : "green",
-                      color: plusMinus.plusMinus !== 0 ? "white" : "black",
-                    }}
-                  >
-                    {plusMinus.plusMinus}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </div>
+    return getTableFrame(
+      <TableBody>
+        {plusMinus.map((plusMinus) => (
+          <TableRow key={plusMinus.player.playerId}>
+            <TableCell>{plusMinus.player.firstName}</TableCell>
+            <TableCell>{plusMinus.player.lastName}</TableCell>
+            <TableCell align="center">{plusMinus.player.jerseyNum}</TableCell>
+            <TableCell
+              align="center"
+              style={{
+                backgroundColor:
+                  plusMinus.plusMinus <= 0
+                    ? plusMinus.plusMinus === 0
+                      ? "white"
+                      : "red"
+                    : "green",
+                color: plusMinus.plusMinus !== 0 ? "white" : "black",
+              }}
+            >
+              {plusMinus.plusMinus}
+            </TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
     );
   }
 }
