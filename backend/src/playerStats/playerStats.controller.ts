@@ -14,9 +14,7 @@ import { PlayerStatsService } from './playerStats.service';
 import { PlayerDTO } from '../dto/player/player.dto';
 import { QueryFailedError } from 'typeorm';
 import { PlusMinusDTO } from '../dto/stats/plusMinus.dto';
-import { PlayerTouchesDTO } from '../dto/stats/playerTouches.dto';
 import { ReturnTouchesDTO } from 'src/dto/stats/returnTouches.dto';
-import { PlayerPossessionStatDTO } from 'src/dto/stats/possession/playerPossessionStat.dto';
 import { PlayerPossessionsReturnDTO } from 'src/dto/stats/possession/playerPossessionReturn.dto';
 import { TeamPossessionSummaryDTO } from 'src/dto/stats/possession/teamPossessionSummary.dto';
 

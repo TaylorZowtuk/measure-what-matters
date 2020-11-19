@@ -1,9 +1,5 @@
-import { BadRequestException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { MatchDTO } from 'src/dto/match/match.dto';
 import { Repository } from 'typeorm';
-import { Match } from '../src/db/entities/match.entity';
-import { CreateMatchDTO } from '../src/dto/match/createMatch.dto';
 import { MatchController } from '../src/match/match.controller';
 import { MatchService } from '../src/match/match.service';
 
