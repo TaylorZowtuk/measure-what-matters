@@ -26,6 +26,7 @@
     "db:cmd": "docker exec -it mwm-psql psql -U mwm",
     "db:clean": "npm run db:stop; docker rm mwm-psql; node echo \"Database removed!\"",
     "db:seed": "docker cp ./src/db/seed.sql mwm-psql:/docker-entrypoint-initdb.d/seed.sql & docker exec -it mwm-psql psql -U mwm -d mwm -f /docker-entrypoint-initdb.d/seed.sql",
+    "migrations:generate": "typeorm migration:generate -d src/db/migrations",
     "docs:generate": "npx @compodoc/compodoc -p tsconfig.json -s"
   },
   "dependencies": {
