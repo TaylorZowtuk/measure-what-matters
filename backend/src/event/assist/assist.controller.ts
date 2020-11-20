@@ -9,7 +9,6 @@ import {
   Post,
   Query,
   UseGuards,
-  ValidationPipe,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { QueryFailedError } from 'typeorm';

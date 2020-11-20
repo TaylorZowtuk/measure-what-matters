@@ -1,11 +1,7 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Match } from '../db/entities/match.entity';
-import { MatchDTO } from '../dto/match/match.dto';
-import { HalfTimeDTO } from '../dto/match/halfTime.dto';
-import { FullTimeDTO } from '../dto/match/fullTime.dto';
 import { Repository } from 'typeorm';
-import { CreateMatchDTO } from '../dto/match/createMatch.dto';
 
 @Injectable()
 export class MatchService {
