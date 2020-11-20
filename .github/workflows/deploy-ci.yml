@@ -1,0 +1,32 @@
+name: Deploy To Cybera
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+      - name: Install Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: '12.x'
+      - name: Install backend dependencies
+        run: yarn --cwd ./backend install
+      - name: Build backend
+        run: yarn --cwd ./backend build
+      - name: Install frontend dependencies
+        run: npm --prefix ./frontend install
+      - name: Build Frontend
+        run: npm --prefix ./frontend run build
+      - name: Deploy to server
+        uses: easingthemes/ssh-deploy@v2.1.5
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_KEY }}
+          ARGS: '-rltgoDzvO --delete'
+          SOURCE: '.'
+          REMOTE_HOST: 2605:fd00:4:1001:f816:3eff:fe43:a221
+          REMOTE_USER: ubuntu
+          REMOTE_PORT: 22
+          TARGET: /home/ubuntu/mvm/
