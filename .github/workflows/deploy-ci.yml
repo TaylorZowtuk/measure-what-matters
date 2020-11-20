@@ -26,7 +26,7 @@ jobs:
           SSH_PRIVATE_KEY: ${{ secrets.SSHKEY }}
           ARGS: '-rltgoDzvO --delete'
           SOURCE: '.'
-          REMOTE_HOST: "[2605:fd00:4:1001:f816:3eff:fe43:a221]""
+          REMOTE_HOST: '[2605:fd00:4:1001:f816:3eff:fe43:a221]'
           REMOTE_USER: ubuntu
           REMOTE_PORT: 22
           TARGET: /home/ubuntu/mvm/
