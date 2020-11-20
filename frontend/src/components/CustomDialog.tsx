@@ -15,6 +15,7 @@ interface Props {
   children?: any;
   confirmationButtonText: string;
   denyButtonText: string;
+  disableConfirmationButton?(): boolean;
 }
 
 export default function CustomDialog(props: Props) {
@@ -30,7 +31,15 @@ export default function CustomDialog(props: Props) {
           <Button onClick={props.handleCancel} color="primary">
             {props.denyButtonText}
           </Button>
-          <Button onClick={props.handleConfirmation} color="primary">
+          <Button
+            onClick={props.handleConfirmation}
+            color="primary"
+            disabled={
+              props.disableConfirmationButton === undefined // if function is not supplied then it is not disabled by default
+                ? false
+                : props.disableConfirmationButton()
+            }
+          >
             {props.confirmationButtonText}
           </Button>
         </DialogActions>
