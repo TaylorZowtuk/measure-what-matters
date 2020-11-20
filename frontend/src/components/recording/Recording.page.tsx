@@ -49,6 +49,9 @@ class Recording extends React.Component<
     shotFieldInfo: ShotFieldInfo | undefined; // A collection on field information passed to ShotResultPicker
   }
 > {
+  // Ref to timer child component for accessing timer methods
+  timer: React.RefObject<Timer> = React.createRef<Timer>();
+
   team_name: string = "Blue Blazers";
   opp_name: string = "Red Rockets";
 
@@ -133,6 +136,9 @@ class Recording extends React.Component<
     previousPossessions: CircularBuffer<number>,
     lineup: any[]
   ): void => {
+    // Stop the timer
+    this.timer.current?.stopTimer();
+
     let ids: number[] = [];
     // Gather the player ids of all of our players on the field
     for (let i = 0; i < lineup.length; i++) {
@@ -142,6 +148,7 @@ class Recording extends React.Component<
     let goal: Goal = {
       matchId: Number(this.props.location.state.matchId),
       time: window._recordingState.getCurrentTotalPlayTime(),
+      // When playerId is null it is their goal
       playerId: scorer.playerId !== -1 ? scorer.playerId : null,
       lineup: ids,
     };
@@ -214,7 +221,7 @@ class Recording extends React.Component<
               <Team name={this.opp_name} score={this.state.goals_against} />
             </Col>
           </Row>
-          <Timer />
+          <Timer ref={this.timer} />
           <Bench
             getStartingBench={this.provideStartingBench}
             notifyOfSubs={this.setSubs}
