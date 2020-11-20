@@ -19,6 +19,7 @@ import { Col, Row } from "react-bootstrap";
 import { ShotFieldInfo, ShotResultPicker } from "./ShotResultPicker";
 import { MatchStartDTO } from "../interfaces/matchStart";
 import { StartingPlayerDTO } from "../interfaces/startingPlayer";
+import Timer from "./Timer";
 
 // Provide MatchId to each recording component which requires it through context
 export const MatchIdContext: React.Context<number> = React.createContext(0);
@@ -223,6 +224,7 @@ class Recording extends React.Component<
               <Team name={this.opp_name} score={this.state.goals_against} />
             </Col>
           </Row>
+          <Timer />
           <Bench
             getStartingBench={this.provideStartingBench}
             notifyOfSubs={this.setSubs}
