@@ -38,6 +38,9 @@ const Dashboard = () => {
       <Link to="/view-account">
         <Button variant="contained">Account</Button>
       </Link>
+      <Link to="/guide">
+        <Button variant="contained">Help</Button>
+      </Link>
 
       {/* Reports */}
       <Container style={{ backgroundColor: "#282c34" }}>
