@@ -193,6 +193,7 @@ class Field extends React.Component<
       <FieldTarget
         enterShootingState={this.props.enterShootingState}
         draggablePlayers={this.state.onField}
+        playerIndexWithPossession={this.state.playerIndexWithPossession}
         previousPossessions={this.previousPossessions}
         resetPlayerWithPossession={this.resetPlayerWithPossession}
         getLineup={this.getOnField}
@@ -204,6 +205,7 @@ class Field extends React.Component<
 type FieldTargetProps = {
   enterShootingState: Function;
   draggablePlayers: any[];
+  playerIndexWithPossession: number;
   previousPossessions: CircularBuffer<number>;
   resetPlayerWithPossession: Function;
   getLineup: Function;
@@ -214,7 +216,12 @@ export function FieldTarget(props: FieldTargetProps) {
     accept: DraggableTypes.PLAYER,
     drop: (item: any, monitor) => {
       // A shot was taken
-      if (item.player.playerId === props.previousPossessions.peekBack()) {
+      if (
+        props.playerIndexWithPossession !== Number.NEGATIVE_INFINITY &&
+        item.player.playerId ===
+          props.draggablePlayers[props.playerIndexWithPossession].props.player
+            .playerId
+      ) {
         // Only allow the player who currently has the ball to 'shoot'
         props.resetPlayerWithPossession();
         let shotFieldInfo: ShotFieldInfo = {
