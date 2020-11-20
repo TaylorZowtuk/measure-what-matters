@@ -18,12 +18,12 @@ jobs:
         run: yarn --cwd ./backend build
       - name: Install frontend dependencies
         run: npm --prefix ./frontend install
-      - name: Build Frontend
+      - name: Build frontend
         run: npm --prefix ./frontend run build
       - name: Deploy to server
         uses: easingthemes/ssh-deploy@v2.1.5
         env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_KEY }}
+          SSH_PRIVATE_KEY: ${{ secrets.SSHKEY }}
           ARGS: '-rltgoDzvO --delete'
           SOURCE: '.'
           REMOTE_HOST: 2605:fd00:4:1001:f816:3eff:fe43:a221
