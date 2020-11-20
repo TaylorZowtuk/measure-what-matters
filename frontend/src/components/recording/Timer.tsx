@@ -45,10 +45,11 @@ class Timer extends React.Component<
   };
 
   endHalf = () => {
-    // Reset the timer
-    this.resetTimer();
     // Save the total time when halftime occurred
     this.setState({ halfTime: this.state.timerTime });
+
+    // Reset the timer
+    this.resetTimer();
   };
 
   componentWillUnmount() {
@@ -67,42 +68,59 @@ class Timer extends React.Component<
 
     return (
       <div className="Timer">
+        <div className="Period-display">
+          {this.state.halfTime === 0 ? "1st" : "2nd"} Half
+        </div>
+
         <div className="Timer-display">
           {hours} : {minutes} : {seconds} : {centiseconds}
         </div>
+
         {/* If we havent started timer yet */}
         {this.state.timerOn === false && this.state.timerTime === 0 && (
           <Button variant="success" onClick={this.startTimer}>
-            Start Game
+            Start
           </Button>
         )}
+
         {/* If timer is running */}
         {this.state.timerOn === true && (
           <Button variant="danger" onClick={this.stopTimer}>
             Pause
           </Button>
         )}
+
         {/* If timer isnt running right now and timer has been started previously */}
         {this.state.timerOn === false && this.state.timerTime > 0 && (
           <Button variant="success" onClick={this.startTimer}>
             Resume
           </Button>
         )}
+
         {/* If timer isnt running right now and timer has been started previously
             and we're in the first half */}
         {this.state.timerOn === false &&
           this.state.timerTime > 0 &&
           this.state.halfTime === 0 && (
-            <Button variant="warning" onClick={this.endHalf}>
+            <Button
+              variant="warning"
+              onClick={this.endHalf}
+              style={{ marginLeft: "25px" }}
+            >
               End Half
             </Button>
           )}
+
         {/* If timer isnt running right now and timer has been started previously
             and we're in the second half */}
         {this.state.timerOn === false &&
           this.state.timerTime > 0 &&
           this.state.halfTime !== 0 && (
-            <Button variant="danger" onClick={() => {}}>
+            <Button
+              variant="danger"
+              onClick={() => {}}
+              style={{ marginLeft: "25px" }}
+            >
               End Game
             </Button>
           )}
