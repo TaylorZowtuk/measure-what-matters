@@ -6,7 +6,6 @@ import {
   Get,
   HttpCode,
   InternalServerErrorException,
-  Logger,
   Post,
   Request,
 } from '@nestjs/common';

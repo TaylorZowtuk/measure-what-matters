@@ -4,14 +4,9 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { MatchService } from '../src/match/match.service';
 import { Match } from '../src/db/entities/match.entity';
 import { CreateMatchDTO } from '../src/dto/match/createMatch.dto';
-import { CreateUserDTO } from '../src/dto/users/createUser.dto';
 import { repositoryMockFactory } from './mocks/repositoryMockFactory';
 import { MockType } from './mocks/mockType';
 import { StartMatchDTO } from '../src/dto/match/startMatch.dto';
-import { Team } from '../src/db/entities/team.entity';
-import { User } from '../src/db/entities/user.entity';
-import { BadRequestException } from '@nestjs/common';
-import { HalfTimeDTO } from '../src/dto/match/halfTime.dto';
 
 describe('MatchService Test', () => {
   const matchRepoToken = getRepositoryToken(Match);
