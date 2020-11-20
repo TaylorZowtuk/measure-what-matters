@@ -1,25 +1,24 @@
 import React from "react";
 import { StaticContext } from "react-router";
-import { Link, RouteComponentProps } from "react-router-dom";
+import { RouteComponentProps } from "react-router-dom";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { TouchBackend } from "react-dnd-touch-backend";
 import axios from "axios";
 import authHeader from "../../services/auth.header";
 
-import Button from "@material-ui/core/Button";
 import Team from "./Team";
 import Bench from "./Bench";
 import Field from "./Field";
 import Player from "../interfaces/player";
 import CircularBuffer from "../../util/circular-buffer";
 import RecordingProps from "../interfaces/props/recording-props";
-import { fullTimeDTO } from "../interfaces/fullTime";
 import { Col, Row } from "react-bootstrap";
 import { ShotFieldInfo, ShotResultPicker } from "./ShotResultPicker";
 import { MatchStartDTO } from "../interfaces/matchStart";
 import { StartingPlayerDTO } from "../interfaces/startingPlayer";
 import Timer from "./Timer";
+import { RecordingState } from "./State";
 
 // Provide MatchId to each recording component which requires it through context
 export const MatchIdContext: React.Context<number> = React.createContext(0);
@@ -65,10 +64,15 @@ class Recording extends React.Component<
       shotFieldInfo: undefined,
     };
 
+    // Instantiate the global recording state instance
+    window._recordingState = new RecordingState(
+      Number(this.props.location.state.matchId)
+    );
+
     // Make start match call
     let start: MatchStartDTO = {
       matchId: Number(this.props.location.state.matchId),
-      time: Date.now() % 1000,
+      time: Math.floor(Date.now() / 1000),
     };
     axios
       .post(`/match/start`, start, {
@@ -182,20 +186,6 @@ class Recording extends React.Component<
     previousPossessions.clear();
   };
 
-  endGame = (): void => {
-    // Post to the match end game endpoint
-    let endTime: fullTimeDTO = {
-      matchId: Number(this.props.location.state.matchId),
-      time: (Date.now() % 10000) + 1000,
-    };
-
-    axios
-      .post(`/match/fullTime`, endTime, { headers: authHeader() })
-      .then((res) => {
-        console.log("Post full time response:", res); // TODO: catch error and handle if needed
-      });
-  };
-
   deviceSupportsTouch(): boolean {
     // Dont catch laptops with touch
     try {
@@ -251,11 +241,6 @@ class Recording extends React.Component<
             addToField={this.state.subBench}
             resetSubs={this.setSubs}
           />
-          <Link to="/dashboard">
-            <Button variant="contained" onClick={this.endGame}>
-              Finish Recording
-            </Button>
-          </Link>
         </MatchIdContext.Provider>
       </DndProvider>
     );

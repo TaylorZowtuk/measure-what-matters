@@ -1,5 +1,9 @@
 import React from "react";
 import Button from "react-bootstrap/esm/Button";
+import { Link } from "react-router-dom";
+import axios from "axios";
+import authHeader from "../../services/auth.header";
+import { fullTimeDTO } from "../interfaces/fullTime";
 
 type TimerProps = {};
 
@@ -20,15 +24,21 @@ class Timer extends React.Component<
   }
 
   startTimer = () => {
+    // Perform initial update and turn timing state on
     this.setState({
       timerOn: true,
       timerStart: Date.now() - this.state.timerTime,
     });
+    window._recordingState.setTimerIsOn(true);
     // Set up an interval which calls the setState callback every 10ms
     this.timer = window.setInterval(() => {
+      const accumulated: number = Date.now() - this.state.timerStart;
       this.setState({
-        timerTime: Date.now() - this.state.timerStart,
+        timerTime: accumulated,
       });
+      window._recordingState.setCurrentTotalPlayTime(
+        accumulated + this.state.halfTime
+      );
     }, 10);
   };
 
@@ -42,6 +52,7 @@ class Timer extends React.Component<
   stopTimer = () => {
     this.setState({ timerOn: false }); // Set timer to off state
     clearInterval(this.timer); // Clear the interval
+    window._recordingState.setTimerIsOn(false);
   };
 
   endHalf = () => {
@@ -50,6 +61,22 @@ class Timer extends React.Component<
 
     // Reset the timer
     this.resetTimer();
+  };
+
+  endGame = (): void => {
+    this.stopTimer();
+
+    // Post to the match end game endpoint
+    let endTime: fullTimeDTO = {
+      matchId: window._recordingState.getMatchId(),
+      time: window._recordingState.getCurrentTotalPlayTime(),
+    };
+
+    axios
+      .post(`/match/fullTime`, endTime, { headers: authHeader() })
+      .then((res) => {
+        console.log("Post full time response:", res); // TODO: catch error and handle if needed
+      });
   };
 
   componentWillUnmount() {
@@ -116,13 +143,15 @@ class Timer extends React.Component<
         {this.state.timerOn === false &&
           this.state.timerTime > 0 &&
           this.state.halfTime !== 0 && (
-            <Button
-              variant="danger"
-              onClick={() => {}}
-              style={{ marginLeft: "25px" }}
-            >
-              End Game
-            </Button>
+            <Link to="/dashboard">
+              <Button
+                variant="danger"
+                onClick={this.endGame}
+                style={{ marginLeft: "25px" }}
+              >
+                End Game
+              </Button>
+            </Link>
           )}
       </div>
     );
