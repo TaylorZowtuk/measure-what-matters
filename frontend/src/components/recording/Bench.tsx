@@ -95,7 +95,7 @@ class Bench extends React.Component<
       ].playerId, // Player who is coming onto field
       playerIdOut: this.state.substituteFor.playerId, // Player who is leaving field
       matchId: matchId,
-      time: Date.now() % 1000,
+      time: window._recordingState.getCurrentTotalPlayTime(),
     };
     axios
       .post(`/event/substitutions`, sub, { headers: authHeader() })

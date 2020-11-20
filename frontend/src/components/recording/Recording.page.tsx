@@ -91,7 +91,7 @@ class Recording extends React.Component<
       let sub: StartingPlayerDTO = {
         playerId: starting[i].playerId,
         matchId: Number(this.props.location.state.matchId),
-        timeOn: Date.now() % 1000,
+        timeOn: 0,
       };
       lineupSubs.push(sub);
     }
@@ -141,7 +141,7 @@ class Recording extends React.Component<
     // Create a GoalDTO object
     let goal: Goal = {
       matchId: Number(this.props.location.state.matchId),
-      time: Date.now(), // Epoch time in ms
+      time: window._recordingState.getCurrentTotalPlayTime(),
       playerId: scorer.playerId !== -1 ? scorer.playerId : null,
       lineup: ids,
     };
@@ -161,7 +161,7 @@ class Recording extends React.Component<
           // The last possession wasnt the opposition
           let assist: CreateAssistDTO = {
             matchId: Number(this.props.location.state.matchId),
-            time: Date.now(),
+            time: window._recordingState.getCurrentTotalPlayTime(),
             playerId: assisterId,
           };
           axios

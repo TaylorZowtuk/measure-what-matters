@@ -101,7 +101,7 @@ function changePossession(
   if (playerId === -1) {
     let possessionEvent: OppositionPossessionDTO = {
       matchId: matchId,
-      time: Date.now() % 10000, // TODO: switch to game time
+      time: window._recordingState.getCurrentTotalPlayTime(),
     };
     axios
       .post(`/event/possession/opposition`, possessionEvent, {
@@ -113,7 +113,7 @@ function changePossession(
   } else {
     let possessionEvent: PlayerPossessionDTO = {
       matchId: matchId,
-      time: Date.now() % 10000, // TODO: switch to game time
+      time: window._recordingState.getCurrentTotalPlayTime(),
       playerId: playerId,
     };
     axios

@@ -15,16 +15,18 @@ export class RecordingState {
   }
   setTimerIsOn(isOn: boolean) {
     this.timerIsOn = isOn;
-    console.log(this.timerIsOn);
+    // console.log(this.timerIsOn);
   }
   getTimerIsOn(): boolean {
+    console.log(this.timerIsOn);
     return this.timerIsOn;
   }
   setCurrentTotalPlayTime(currentTotalPlayTime: number) {
     this.currentTotalPlayTime = currentTotalPlayTime;
-    console.log(this.currentTotalPlayTime);
+    // console.log(this.currentTotalPlayTime);
   }
   getCurrentTotalPlayTime(): number {
+    console.log(this.currentTotalPlayTime);
     return this.currentTotalPlayTime;
   }
 }

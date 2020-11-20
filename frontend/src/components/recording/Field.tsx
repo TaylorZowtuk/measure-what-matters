@@ -162,7 +162,7 @@ class Field extends React.Component<
     // Post to neutral ball endpoint
     let possessionEvent: NeutralPossessionDTO = {
       matchId: this.props.matchId,
-      time: Date.now() % 10000, // TODO: switch to game time
+      time: window._recordingState.getCurrentTotalPlayTime(),
     };
     axios
       .post(`/event/possession/neutral`, possessionEvent, {
