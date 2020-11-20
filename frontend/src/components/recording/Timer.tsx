@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import authHeader from "../../services/auth.header";
 import { fullTimeDTO } from "../interfaces/fullTime";
+import { halftimeDTO } from "../interfaces/halftime";
 
 type TimerProps = {};
 
@@ -61,6 +62,18 @@ class Timer extends React.Component<
 
     // Reset the timer
     this.resetTimer();
+
+    // Post to the match halftime endpoint
+    let halftime: halftimeDTO = {
+      matchId: window._recordingState.getMatchId(),
+      time: window._recordingState.getCurrentTotalPlayTime(),
+    };
+
+    axios
+      .post(`/match/halftime`, halftime, { headers: authHeader() })
+      .then((res) => {
+        console.log("Post halftime response:", res); // TODO: catch error and handle if needed
+      });
   };
 
   endGame = (): void => {
