@@ -98,6 +98,7 @@ function changePossession(
   notifyOfPossessionChange: Function,
   matchId: number
 ) {
+  if (!window._recordingState.getTimerIsOn()) return;
   if (playerId === -1) {
     let possessionEvent: OppositionPossessionDTO = {
       matchId: matchId,
