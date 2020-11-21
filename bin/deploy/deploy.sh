@@ -1,7 +1,12 @@
 #!/bin/bash
 set -ex
 PATH=$PATH:/home/ubuntu/n/bin:/home/ubuntu/bin
+TARGET='/home/ubuntu/mwm'
+cd TARGET
 
-../nginx/create_lnk.sh && sudo systemctl restart nginx
+pwd
+whoami
 
-pm2 reload all
+./bin/nginx/create_lnk.sh && sudo systemctl restart nginx
+
+pm2 reload ecosystem.config.json
