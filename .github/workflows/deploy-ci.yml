@@ -41,4 +41,4 @@ jobs:
           host: '2605:fd00:4:1001:f816:3eff:fe43:a221'
           username: ubuntu
           privateKey: ${{ secrets.SSHKEY }}
-          command: sudo ./mwm/deploy/deploy.sh
+          command: sudo ./mwm/bin/deploy/deploy.sh
