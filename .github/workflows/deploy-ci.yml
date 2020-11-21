@@ -35,17 +35,10 @@ jobs:
           REMOTE_USER: ubuntu
           REMOTE_PORT: 22
           TARGET: /home/ubuntu/mwm/
-      - name: Reload Nginx Config
+      - name: Run deploy script
         uses: garygrossgarten/github-action-ssh@release
         with:
           host: '2605:fd00:4:1001:f816:3eff:fe43:a221'
           username: ubuntu
           privateKey: ${{ secrets.SSHKEY }}
-          command: sudo ./mwm/config/nginx/create_lnk.sh && sudo systemctl restart nginx
-      - name: Restart PM2
-        uses: garygrossgarten/github-action-ssh@release
-        with:
-          host: '2605:fd00:4:1001:f816:3eff:fe43:a221'
-          username: ubuntu
-          privateKey: ${{ secrets.SSHKEY }}
-          command: /home/ubuntu/n/bin/pm2 start ./mwm/ecosystem.config.js
+          command: sudo ./mwm/deploy/deploy.sh
