@@ -156,7 +156,7 @@ export class PlayerStatsService {
    * @returns the DTO array of players on the field during the time of the goal
    */
 
-  async getPlayersOnForGoal(goal: GoalDTO) {
+  async getPlayersOnForGoal(goal: GoalDTO): Promise<PlayerDTO[]> {
     const players: Player[] = [];
 
     for (let i = 0; i < goal.lineup.length; i++) {
@@ -177,7 +177,7 @@ export class PlayerStatsService {
    * @returns the DTO array of players on the field during the time of the goal
    */
 
-  async onForGoal(matchId: number) {
+  async onForGoal(matchId: number): Promise<OnForGoalDTO[]> {
     const onForGoalsMatch: OnForGoalDTO[] = [];
 
     const goals: Goal[] = await this.goalRepo.find({ where: { matchId } });
@@ -248,7 +248,7 @@ export class PlayerStatsService {
    *
    * @returns the DTO array of players and their touches for a given match
    */
-  async touchesPlayersForMatch(matchId: number) {
+  async touchesPlayersForMatch(matchId: number): Promise<ReturnTouchesDTO> {
     const lineup: Lineup = await this.lineupRepo.findOneOrFail({
       where: { matchId },
     });
@@ -372,7 +372,9 @@ export class PlayerStatsService {
    *
    * @returns 3 parameters, one carrying possessions for first half, one for second and one for whole game
    */
-  async playerPossessionsStat(matchId: number) {
+  async playerPossessionsStat(
+    matchId: number,
+  ): Promise<PlayerPossessionsReturnDTO> {
     const lineup: Lineup = await this.lineupRepo.findOneOrFail({
       where: { matchId },
     });
