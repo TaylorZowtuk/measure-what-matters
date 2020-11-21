@@ -68,3 +68,17 @@ Then navigate to [http://localhost:3001/api](http://localhost:3001/api)
 ## License
 
 **TODO** Add a license
+
+## Migrations
+
+Migrations are a way to synchronize database entity changes to the database. Once this is on `devel` all PRs will be _REQUIRED_ to generate a migration for any changes made to the entities.
+
+To generate migrations, make sure your build is succeeding and the dist/ folder is up to date, also, ensure that the database is running.
+
+The following command will scan your database and compare it with the entities in the dist folder. If it finds any changes it will generate a new file in the src/db/migrations directory.
+
+`yarn migrations:generate -n <aNameWithSpacesDescribingTheChange>`
+
+Next time you start the backend the changes will be synced to the database. Make sure you don't generate and run the same migration twice as this will cause issues and you may have to delete your /dist folder and clean the db.
+
+A note: Since we are no longer using `sync: true` you will have to generate migrations and restart the backend to see the changes reflected in the database. So if you are getting `column not errors` etc. it is likely that you just need to do the migration.
