@@ -65,12 +65,11 @@ async function fetchRows(
     return hardCodedRows;
   }
 
-  const res = await axios.get(
-    `/player-stats/timeOnField?matchId=${matchId}`, // TODO: Remove hardcoded matchId
-    { headers: authHeader() }
-  );
+  const res = await axios.get(`/player-stats/timeOnField?matchId=${matchId}`, {
+    headers: authHeader(),
+  });
 
-  console.log("Time on field response:", res.data);
+  console.log("Time on field response:", res.data); // Handle errors
   let rows: FormattedData[] = [];
   for (let i = 0; i < res.data.length; i++) {
     let player: timeOnFieldDTO = res.data[i];

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   FlexibleWidthXYPlot,
   XAxis,
@@ -10,6 +10,9 @@ import {
 } from "react-vis";
 import { Container } from "react-bootstrap";
 import ReportProps from "../interfaces/props/report-props";
+import axios from "axios";
+import authHeader from "../../services/auth.header";
+import { playerTouchDTO, touchesDTO } from "../interfaces/touches";
 
 type DataType = {
   x: string;
@@ -36,14 +39,54 @@ export const secondData: DataType[] = [
   { x: "Jack", y: 3 },
 ];
 
-export function fetchTouches(debug = true): DataType[][] {
+function formatData(data: touchesDTO): DataType[][] {
+  let first: DataType[] = [];
+  let second: DataType[] = [];
+  for (let i = 0; i < data.firstHalfTouches.length; i++) {
+    let firstPlayerAndTouches: playerTouchDTO = data.firstHalfTouches[i];
+    // If the player represents their team, then ignore
+    if (!firstPlayerAndTouches.player) continue;
+    let secondPlayerAndTouches: playerTouchDTO = data.secondHalfTouches[i];
+    let player = firstPlayerAndTouches.player;
+    // Create a shorthand string of the player initials and number
+    let name: string =
+      player.firstName[0] +
+      "." +
+      player.lastName[0] +
+      "." +
+      " #" +
+      player.jerseyNum;
+    console.log(name);
+    let firstObservation: DataType = {
+      x: name,
+      y: firstPlayerAndTouches.touches,
+    };
+    let secondObservation: DataType = {
+      x: name,
+      y: secondPlayerAndTouches.touches,
+    };
+    first[i] = firstObservation;
+    second[i] = secondObservation;
+  }
+  return [first, second];
+}
+
+export async function fetchTouches(
+  matchId: number,
+  debug = false
+): Promise<DataType[][]> {
   if (debug) {
     // Return hardcoded values
     return [firstData, secondData];
   }
 
-  // TODO: connect to backend
-  return [firstData, secondData];
+  const res = await axios.get(`/player-stats/touches?matchId=${matchId}`, {
+    headers: authHeader(),
+  });
+  let resData: touchesDTO = res.data;
+  console.log("Get touches response:", resData); // Handle errors
+
+  return formatData(resData);
 }
 
 type TouchesBarProps = {
@@ -51,21 +94,23 @@ type TouchesBarProps = {
 };
 
 export default function TouchesBar(props: TouchesBarProps & ReportProps) {
-  let bothHalvesData: DataType[][] = props.fetchTouches();
+  const [bothHalvesData, setTouches] = useState<DataType[][] | null>(null);
+  useEffect(() => {
+    async function getTouches() {
+      if (props.matchId) {
+        setTouches(await props.fetchTouches(props.matchId));
+      }
+    }
+    getTouches();
+  }, [props]);
+
   if (!bothHalvesData) {
-    bothHalvesData = [];
+    return null;
   }
+  console.log(bothHalvesData);
   return (
     <Container>
       <h4>Number of Touches</h4>
-      <FlexibleWidthXYPlot xType="ordinal" height={300} xDistance={100}>
-        <VerticalGridLines />
-        <HorizontalGridLines />
-        <XAxis />
-        <YAxis />
-        <VerticalBarSeries data={bothHalvesData[0]} barWidth={0.8} />
-        <VerticalBarSeries data={bothHalvesData[1]} barWidth={0.8} />
-      </FlexibleWidthXYPlot>
       <DiscreteColorLegend
         orientation="horizontal"
         items={[
@@ -79,6 +124,14 @@ export default function TouchesBar(props: TouchesBarProps & ReportProps) {
           },
         ]}
       />
+      <FlexibleWidthXYPlot xType="ordinal" height={300} xDistance={100}>
+        <VerticalGridLines />
+        <HorizontalGridLines />
+        <XAxis />
+        <YAxis />
+        <VerticalBarSeries data={bothHalvesData[0]} barWidth={0.8} />
+        <VerticalBarSeries data={bothHalvesData[1]} barWidth={0.8} />
+      </FlexibleWidthXYPlot>
     </Container>
   );
 }
