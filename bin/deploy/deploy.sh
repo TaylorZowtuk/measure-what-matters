@@ -2,7 +2,7 @@
 set -ex
 PATH=$PATH:/home/ubuntu/n/bin:/home/ubuntu/bin
 TARGET='/home/ubuntu/mwm'
-cd TARGET
+cd $TARGET
 
 pwd
 whoami
