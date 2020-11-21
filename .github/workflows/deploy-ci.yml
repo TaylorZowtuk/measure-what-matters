@@ -48,4 +48,4 @@ jobs:
           host: '2605:fd00:4:1001:f816:3eff:fe43:a221'
           username: ubuntu
           privateKey: ${{ secrets.SSHKEY }}
-          command: /home/ubuntu/n/bin/pm2 restart all
+          command: /home/ubuntu/n/bin/pm2 restart all --interpreter=/home/ubuntu/n/n/versions/node/14.15.1/bin/node
