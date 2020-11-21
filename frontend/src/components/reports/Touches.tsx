@@ -48,7 +48,7 @@ function createData(
   };
 }
 
-const hardCodedRows = [
+export const hardCodedRows = [
   createData("Rob", "Park", 7, 12, 11, 23),
   createData("Jake", "Floyd", 1, 1, 0, 1),
   createData("Jim", "Floyd", 12, 18, 3, 21),
@@ -90,7 +90,7 @@ function formatData(data: touchesDTO): FormattedData[] {
 }
 
 // Enable using a hardcoded set of values for testing or to use data from an api call
-export async function fetchRows(
+export async function fetchTouchesRows(
   matchId: number,
   debug = false
 ): Promise<FormattedData[]> {
@@ -293,11 +293,11 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-type TouchesBarProps = {
+type TouchesTableProps = {
   fetchTouches: Function; // Dependency inject for testing
 };
 
-export default function TouchesTable(props: TouchesBarProps & ReportProps) {
+export default function TouchesTable(props: TouchesTableProps & ReportProps) {
   const classes = useStyles();
   const [order, setOrder] = React.useState<Order>("asc");
   const [orderBy, setOrderBy] = React.useState<keyof FormattedData>("overall");
@@ -328,7 +328,7 @@ export default function TouchesTable(props: TouchesBarProps & ReportProps) {
   useEffect(() => {
     async function getRows() {
       if (props.matchId) {
-        setRows(await fetchRows(props.matchId));
+        setRows(await props.fetchTouches(props.matchId));
       }
     }
     getRows();

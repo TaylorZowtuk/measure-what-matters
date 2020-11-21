@@ -39,7 +39,7 @@ function createData(
   return { name, number, minutes };
 }
 
-const hardCodedRows = [
+export const hardCodedRows = [
   createData("Rob", "Park", 7, 125),
   createData("Jake", "Floyd", 1, 1256),
   createData("Jim", "Floyd", 12, 1678),

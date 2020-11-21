@@ -6,7 +6,7 @@ import LineupGoal from "./reports/LineupGoal";
 import { Col, Container, Row } from "react-bootstrap";
 import MatchDropdown from "./reports/MatchDropdown";
 import PossessionCircular, { fetchTimes } from "./reports/Possession";
-import TouchesTable, { fetchRows } from "./reports/Touches";
+import TouchesTable, { fetchTouchesRows } from "./reports/Touches";
 import PlusMinusComponent from "./reports/PlusMinus";
 
 const Dashboard = () => {
@@ -48,7 +48,7 @@ const Dashboard = () => {
         </Row>
         <Row style={{ margin: "20px" }}>
           <Col>
-            <TouchesTable fetchTouches={fetchRows} matchId={matchId} />
+            <TouchesTable fetchTouches={fetchTouchesRows} matchId={matchId} />
           </Col>
         </Row>
         <Row style={{ margin: "20px" }}>
