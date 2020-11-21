@@ -3,7 +3,8 @@ module.exports = {
     {
       name: 'mwm-backend',
       script: 'backend/dist/main.js',
-      env_production: {
+      interpreter: '/home/ubuntu/n/n/versions/node/14.15.1/bin/node',
+      env: {
         NODE_ENV: 'production',
         APP_PORT: 4019,
       },
