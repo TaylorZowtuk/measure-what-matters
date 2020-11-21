@@ -41,11 +41,11 @@ jobs:
           host: '2605:fd00:4:1001:f816:3eff:fe43:a221'
           username: ubuntu
           privateKey: ${{ secrets.SSHKEY }}
-          command: ./mwm/config/nginx/create_lnk.sh && sudo systemctl restart nginx
+          command: sudo ./mwm/config/nginx/create_lnk.sh && sudo systemctl restart nginx
       - name: Restart PM2
         uses: garygrossgarten/github-action-ssh@release
         with:
           host: '2605:fd00:4:1001:f816:3eff:fe43:a221'
           username: ubuntu
           privateKey: ${{ secrets.SSHKEY }}
-          command: pm2 restart ./mwm/ecosystem.config.js
+          command: /home/node/n/bin/pm2 restart ./mwm/ecosystem.config.js
