@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import CircularProgress, {
   CircularProgressProps,
 } from "@material-ui/core/CircularProgress";
@@ -7,6 +7,9 @@ import Box from "@material-ui/core/Box";
 import { Col, Container, Row } from "react-bootstrap";
 import { withStyles } from "@material-ui/core/styles";
 import ReportProps from "../interfaces/props/report-props";
+import { teamPossessionDTO } from "../interfaces/team-possession";
+import axios from "axios";
+import authHeader from "../../services/auth.header";
 
 export function CircularProgressWithLabel(
   props: CircularProgressProps & { value: number }
@@ -47,14 +50,28 @@ export function CircularProgressWithLabel(
   );
 }
 
-export function fetchTimes(debug = true): number[] {
+export async function fetchTimes(
+  matchId: number,
+  debug = false
+): Promise<number[]> {
   if (debug) {
     // Return 3 hardcoded values
     return [68, 32, 50];
   }
 
-  // TODO: connect to backend
-  return [68, 32, 50];
+  const res = await axios.get(
+    `/player-stats/team-possession?matchId=${matchId}`,
+    {
+      headers: authHeader(),
+    }
+  );
+  let resData: teamPossessionDTO = res.data;
+  console.log("Get possession times response:", resData); // Handle errors
+  return [
+    resData.firstHalfPossOurTeam,
+    resData.secondHalfPossOurTeam,
+    resData.fullGamePossOurTeam,
+  ];
 }
 
 type PossessionCircularProps = {
@@ -64,11 +81,19 @@ type PossessionCircularProps = {
 export default function PossessionCircular(
   props: PossessionCircularProps & ReportProps
 ) {
-  let times: number[] = props.fetchTimes();
-  if (!times || times.length < 3) {
-    // If there was a problem with fetch, then display 0's
-    times = [0, 0, 0];
-  }
+  const [possessions, setPossessions] = useState<number[] | null>(null);
+  useEffect(() => {
+    async function getPossessions() {
+      if (props.matchId) {
+        setPossessions(await props.fetchTimes(props.matchId));
+      }
+    }
+    getPossessions();
+  }, [props]);
+  // If no match is selected on the dashboard, display nothing
+  if (!props.matchId) return null;
+  // If we havent completed the asynchronous data fetch yet
+  if (!possessions) return <CircularProgress />;
 
   return (
     <Container>
@@ -76,15 +101,15 @@ export default function PossessionCircular(
       <Row>
         <Col>
           <h5>First Half</h5>
-          <CircularProgressWithLabel value={times[0]} />
+          <CircularProgressWithLabel value={possessions[0]} />
         </Col>
         <Col>
           <h5>Second Half</h5>
-          <CircularProgressWithLabel value={times[1]} />
+          <CircularProgressWithLabel value={possessions[1]} />
         </Col>
         <Col>
           <h5>Overall</h5>
-          <CircularProgressWithLabel value={times[2]} />
+          <CircularProgressWithLabel value={possessions[2]} />
         </Col>
       </Row>
     </Container>
