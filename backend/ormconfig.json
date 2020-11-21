@@ -5,14 +5,10 @@
     "port": 5432,
     "username": "mwm",
     "password": "mwm",
-    "database": "mwm",
-    "entities": [
-      "dist/db/**/*.entity{.ts,.js}"
-    ],
+    "database": "VOtgTCqCIA3IpLEGqtV6GCVp",
+    "entities": ["dist/db/**/*.entity{.ts,.js}"],
     "synchronize": false,
-    "migrations": [
-      "dist/db/migrations/*{.ts,.js}"
-    ],
+    "migrations": ["dist/db/migrations/*{.ts,.js}"],
     "migrationsRun": true,
     "logging": true,
     "logger": "simple-console"
