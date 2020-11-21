@@ -51,6 +51,8 @@ class Recording extends React.Component<
 > {
   // Ref to timer child component for accessing timer methods
   timer: React.RefObject<Timer> = React.createRef<Timer>();
+  // Ref to field child component for accessing possession methods
+  field: React.RefObject<Field> = React.createRef<Field>();
 
   team_name: string = "Blue Blazers";
   opp_name: string = "Red Rockets";
@@ -193,6 +195,13 @@ class Recording extends React.Component<
     previousPossessions.clear();
   };
 
+  wrapResetPlayers = () => {
+    // If the ref to field has been set, call the resetPlayerWithPossession func
+    if (this.field.current) {
+      this.field.current.resetPlayerWithPossession();
+    } // Else, if the ref to field hasnt been set yet, then do nothing
+  };
+
   deviceSupportsTouch(): boolean {
     // Dont catch laptops with touch
     try {
@@ -221,7 +230,7 @@ class Recording extends React.Component<
               <Team name={this.opp_name} score={this.state.goals_against} />
             </Col>
           </Row>
-          <Timer ref={this.timer} />
+          <Timer ref={this.timer} resetPossession={this.wrapResetPlayers} />
           <Bench
             getStartingBench={this.provideStartingBench}
             notifyOfSubs={this.setSubs}
@@ -240,6 +249,7 @@ class Recording extends React.Component<
           ) : null}
 
           <Field
+            ref={this.field}
             matchId={Number(this.props.location.state.matchId)}
             getStartingLine={this.provideStartingLine}
             inShootingState={this.state.shooting}
