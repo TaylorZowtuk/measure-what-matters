@@ -40,7 +40,7 @@ jobs:
         with:
           host: '2605:fd00:4:1001:f816:3eff:fe43:a221'
           username: ubuntu
-          key: ${{ secrets.SSHKEY }}
+          privateKey: ${{ secrets.SSHKEY }}
           command: ./mwm/config/nginx/create_lnk.sh && sudo systemctl restart nginx
       - name: Restart PM2
         uses: garygrossgarten/github-action-ssh@release
