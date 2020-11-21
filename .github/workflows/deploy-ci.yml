@@ -36,16 +36,16 @@ jobs:
           REMOTE_PORT: 22
           TARGET: /home/ubuntu/mwm/
       - name: Reload Nginx Config
-        uses: garygrossgarten/github-action-ssh@release
+        uses: appleboy/ssh-action@master
         with:
-          command: ./config/nginx/create_lnk.sh && sudo systemctl restart nginx
           host: '2605:fd00:4:1001:f816:3eff:fe43:a221'
           username: ubuntu
-          privateKey: ${{ secrets.SSHKEY }}
-      - name: Restart pm2
-        uses: garygrossgarten/github-action-ssh@release
+          key: ${{ secrets.SSHKEY }}
+          script: ./mwm/config/nginx/create_lnk.sh && sudo systemctl restart nginx
+      - name: Restart PM2
+        uses: appleboy/ssh-action@master
         with:
-          command: pm2 restart ecosystem.config.js
           host: '2605:fd00:4:1001:f816:3eff:fe43:a221'
           username: ubuntu
-          privateKey: ${{ secrets.SSHKEY }}
+          key: ${{ secrets.SSHKEY }}
+          script: pm2 restart ./mwm/ecosystem.config.js
