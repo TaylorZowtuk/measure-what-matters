@@ -30,8 +30,22 @@ jobs:
         uses: easingthemes/ssh-deploy@v2.1.5
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSHKEY }}
-          ARGS: '-rltgoDzvO --delete'
+          ARGS: '-rltgoDzO --delete'
           REMOTE_HOST: '[2605:fd00:4:1001:f816:3eff:fe43:a221]'
           REMOTE_USER: ubuntu
           REMOTE_PORT: 22
           TARGET: /home/ubuntu/mvm/
+      - name: Reload Nginx Config
+        uses: garygrossgarten/github-action-ssh@release
+        with:
+          command: ./config/nginx/create_lnk.sh && sudo systemctl restart nginx
+          host: '[2605:fd00:4:1001:f816:3eff:fe43:a221]'
+          username: ubuntu
+          privateKey: ${{ secrets.SSHKEY }}
+      - name: Restart pm2
+        uses: garygrossgarten/github-action-ssh@release
+        with:
+          command: pm2 restart ecosystem.config.js
+          host: '[2605:fd00:4:1001:f816:3eff:fe43:a221]'
+          username: ubuntu
+          privateKey: ${{ secrets.SSHKEY }}
