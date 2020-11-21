@@ -18,7 +18,7 @@ export class RecordingState {
     // console.log(this.timerIsOn);
   }
   getTimerIsOn(): boolean {
-    console.log(this.timerIsOn);
+    // console.log(this.timerIsOn);
     return this.timerIsOn;
   }
   setCurrentTotalPlayTime(currentTotalPlayTime: number) {
@@ -26,7 +26,7 @@ export class RecordingState {
     // console.log(this.currentTotalPlayTime);
   }
   getCurrentTotalPlayTime(): number {
-    console.log(this.currentTotalPlayTime);
+    // console.log(this.currentTotalPlayTime);
     return this.currentTotalPlayTime;
   }
 }

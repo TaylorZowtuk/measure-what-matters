@@ -230,7 +230,11 @@ class Recording extends React.Component<
               <Team name={this.opp_name} score={this.state.goals_against} />
             </Col>
           </Row>
-          <Timer ref={this.timer} resetPossession={this.wrapResetPlayers} />
+          <Timer
+            ref={this.timer}
+            resetPossession={this.wrapResetPlayers}
+            resetShootingState={this.setShooting}
+          />
           <Bench
             getStartingBench={this.provideStartingBench}
             notifyOfSubs={this.setSubs}

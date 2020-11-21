@@ -6,7 +6,7 @@ import authHeader from "../../services/auth.header";
 import { fullTimeDTO } from "../interfaces/fullTime";
 import { halftimeDTO } from "../interfaces/halftime";
 
-type TimerProps = { resetPossession: Function };
+type TimerProps = { resetPossession: Function; resetShootingState: Function };
 
 class Timer extends React.Component<
   TimerProps,
@@ -54,8 +54,7 @@ class Timer extends React.Component<
     this.setState({ timerOn: false }); // Set timer to off state
     clearInterval(this.timer); // Clear the interval
     window._recordingState.setTimerIsOn(false);
-    // Reset ball possession to neutral
-    this.props.resetPossession();
+    this.setPausedInterface();
   };
 
   endHalf = () => {
@@ -65,8 +64,7 @@ class Timer extends React.Component<
     // Reset the timer
     this.resetTimer();
 
-    // Reset ball possession to neutral
-    this.props.resetPossession();
+    this.setPausedInterface();
 
     // Post to the match halftime endpoint
     let halftime: halftimeDTO = {
@@ -95,6 +93,14 @@ class Timer extends React.Component<
       .then((res) => {
         console.log("Post full time response:", res); // TODO: catch error and handle if needed
       });
+  };
+
+  // Resets all interface that depends on the timer being running
+  setPausedInterface = (): void => {
+    // Reset ball possession to neutral
+    this.props.resetPossession();
+    // Exit shooting state if we were selecting a shot result
+    this.props.resetShootingState();
   };
 
   componentWillUnmount() {
