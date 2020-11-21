@@ -66,9 +66,9 @@ export class PlayerStatsController {
   })
   @ApiResponse({ status: 500, description: 'Unknown error occured' })
   @Get('/onForGoal')
-  async getPlayersOnForGoal(@Query('goalId', ParseIntPipe) goalId: number) {
+  async getPlayersOnForGoals(@Query('matchId', ParseIntPipe) matchId: number) {
     try {
-      return await this.playerStatsService.getPlayersOnForGoal(goalId);
+      return await this.playerStatsService.onForGoal(matchId);
     } catch (error) {
       if (error instanceof QueryFailedError) {
         if (error.message.includes('invalid input syntax for type integer')) {
