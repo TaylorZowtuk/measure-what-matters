@@ -6,4 +6,4 @@ cd $TARGET
 
 ./bin/nginx/create_lnk.sh && sudo systemctl restart nginx
 
-pm2 reload ecosystem.config.js
+pm2 restart ecosystem.config.js --update-env

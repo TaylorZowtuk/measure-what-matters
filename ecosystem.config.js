@@ -7,6 +7,12 @@ module.exports = {
       env: {
         NODE_ENV: 'production',
         APP_PORT: 4019,
+        DATABASE_TYPE: 'postgres',
+        DATABASE_HOST: 'localhost',
+        DATABASE_PORT: 5984,
+        DATABASE_NAME: 'mwm',
+        DATABASE_USER: 'mwm',
+        DATABASE_PASSWORD: 'VOtgTCqCIA3IpLEGqtV6GCVp',
       },
     },
     {
