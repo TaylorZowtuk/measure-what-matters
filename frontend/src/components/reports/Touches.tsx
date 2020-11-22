@@ -116,7 +116,7 @@ export async function fetchTouchesRows(
 
 function validateTouches(rows: FormattedData[]): boolean {
   // No returned touches info
-  if (!rows || rows.length == 0) return false;
+  if (!rows || rows.length === 0) return false;
 
   // Validate each record
   for (let i = 0; i < rows.length; i++) {
@@ -138,7 +138,7 @@ function validateTouches(rows: FormattedData[]): boolean {
   }
 
   // If after optimistic handling of issue rows, our array is empty
-  if (rows.length == 0) return false;
+  if (rows.length === 0) return false;
 
   // Was valid
   return true;
@@ -379,7 +379,7 @@ export default function TouchesTable(props: TouchesTableProps & ReportProps) {
   // If no match is selected on the dashboard, display nothing
   if (!props.matchId) return null;
   // If we havent completed the asynchronous data fetch yet; return a loading indicator
-  if (rows == null) return <CircularProgress />;
+  if (rows === null) return <CircularProgress />;
   if (!validateTouches(rows))
     return (
       <Button variant="warning" onClick={reloadOnClick}>

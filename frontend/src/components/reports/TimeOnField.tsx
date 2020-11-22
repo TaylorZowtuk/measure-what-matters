@@ -97,7 +97,7 @@ export async function fetchTimeOnFieldRows(
 
 function validateRows(rows: FormattedData[]): boolean {
   // No returned time on field info
-  if (!rows || rows.length == 0) return false;
+  if (!rows || rows.length === 0) return false;
 
   // Validate each record
   for (let i = 0; i < rows.length; i++) {
@@ -114,7 +114,7 @@ function validateRows(rows: FormattedData[]): boolean {
   }
 
   // If after optimistic handling of issue rows, our array is empty
-  if (rows.length == 0) return false;
+  if (rows.length === 0) return false;
 
   // Was valid
   return true;

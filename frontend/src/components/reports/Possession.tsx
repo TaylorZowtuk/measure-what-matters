@@ -80,7 +80,7 @@ export async function fetchTimes(
 
 function validatePossessions(possessions: number[]): boolean {
   // No returned possession info
-  if (!possessions || possessions.length == 0) return false;
+  if (!possessions || possessions.length === 0) return false;
 
   // Proper dimension array returned
   if (possessions.length !== 3) return false;
