@@ -11,7 +11,7 @@ interface LineupState {
 
 interface Lineups {
   index: number;
-  lineup: number[];
+  lineup: string[];
 }
 
 class LineupGoal extends React.Component<ReportProps, LineupState> {
@@ -27,13 +27,21 @@ class LineupGoal extends React.Component<ReportProps, LineupState> {
   getLineup = async (): Promise<Lineups[]> => {
     if (this.props.matchId) {
       const res = await axios.get(
-        `/event/goals?matchId=${this.props.matchId}`,
+        `/player-stats/onForGoal?matchId=${this.props.matchId}`,
         { headers: authHeader() }
       );
       if (res.data) {
         const tempLineupList: any = [];
         for (let i = 1; i < res.data.length + 1; i++) {
-          tempLineupList.push({ index: i, lineup: res.data[i - 1].lineup });
+          const players: any = [];
+          for (let j = 0; j < res.data[i - 1].players.length; j++) {
+            players.push(
+              res.data[i - 1].players[j].firstName +
+                " " +
+                res.data[i - 1].players[j].lastName
+            );
+          }
+          tempLineupList.push({ index: i, lineup: players });
         }
         return tempLineupList;
       }
@@ -88,12 +96,12 @@ class LineupGoal extends React.Component<ReportProps, LineupState> {
             <thead>
               <tr>
                 <th style={{ padding: "10px" }}>Goal</th>
-                <th style={{ padding: "10px" }}>Lineup</th>
+                <th style={{ padding: "10px" }}>On For Goal</th>
               </tr>
             </thead>
             <tbody>
               {this.state.lineupList.map((lineup: Lineups) => {
-                const lineupString = lineup.lineup.join(" ");
+                const lineupString = lineup.lineup.join(", ");
                 return (
                   <tr key={lineup.index}>
                     <td>{lineup.index}</td>
