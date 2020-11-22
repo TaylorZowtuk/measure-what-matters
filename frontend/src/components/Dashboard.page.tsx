@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import Button from "@material-ui/core/Button";
-import TimeOnField from "./reports/TimeOnField";
+import TimeOnField, { fetchTimeOnFieldRows } from "./reports/TimeOnField";
 import LineupGoal from "./reports/LineupGoal";
 import { Col, Container, Row } from "react-bootstrap";
 import MatchDropdown from "./reports/MatchDropdown";
@@ -53,7 +53,10 @@ const Dashboard = () => {
         </Row>
         <Row style={{ margin: "20px" }}>
           <Col>
-            <TimeOnField matchId={matchId} />
+            <TimeOnField
+              fetchTimeOnField={fetchTimeOnFieldRows}
+              matchId={matchId}
+            />
           </Col>
         </Row>
         <Row style={{ margin: "20px" }}>

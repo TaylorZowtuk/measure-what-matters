@@ -133,7 +133,7 @@ export default function PossessionCircular(
     return (
       <Button variant="warning" onClick={reloadOnClick}>
         {" "}
-        Something Went Wrong... Click To Reload
+        Something Went Wrong... Click To Reload Report
       </Button>
     );
 
