@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import CircularProgress, {
   CircularProgressProps,
 } from "@material-ui/core/CircularProgress";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
-import { Col, Container, Row } from "react-bootstrap";
+import { Button, Col, Container, Row } from "react-bootstrap";
 import { withStyles } from "@material-ui/core/styles";
 import ReportProps from "../interfaces/props/report-props";
 import { teamPossessionDTO } from "../interfaces/team-possession";
@@ -59,19 +59,45 @@ export async function fetchTimes(
     return [68, 32, 50];
   }
 
-  const res = await axios.get(
-    `/player-stats/team-possession?matchId=${matchId}`,
-    {
-      headers: authHeader(),
-    }
-  );
-  let resData: teamPossessionDTO = res.data;
-  console.log("Get possession times response:", resData); // Handle errors
-  return [
-    resData.firstHalfPossOurTeam,
-    resData.secondHalfPossOurTeam,
-    resData.fullGamePossOurTeam,
-  ];
+  try {
+    const res = await axios.get(
+      `/player-stats/team-possession?matchId=${matchId}`,
+      {
+        headers: authHeader(),
+      }
+    );
+    let resData: teamPossessionDTO = res.data;
+    console.log("Get possession times response:", resData);
+    return [
+      resData.firstHalfPossOurTeam,
+      resData.secondHalfPossOurTeam,
+      resData.fullGamePossOurTeam,
+    ];
+  } catch (error) {
+    return [];
+  }
+}
+
+function validatePossessions(possessions: number[]): boolean {
+  // No returned possession info
+  if (possessions == null || possessions.length == 0) return false;
+
+  // Proper dimension array returned
+  if (possessions.length != 3) return false;
+
+  // Out of bounds values
+  if (
+    possessions[0] > 100 ||
+    possessions[0] < 0 ||
+    possessions[1] > 100 ||
+    possessions[1] < 0 ||
+    possessions[2] > 100 ||
+    possessions[2] < 0
+  )
+    return false;
+
+  // Was valid
+  return true;
 }
 
 type PossessionCircularProps = {
@@ -81,6 +107,13 @@ type PossessionCircularProps = {
 export default function PossessionCircular(
   props: PossessionCircularProps & ReportProps
 ) {
+  // State for allowing user to reload component
+  const [reload, setReload] = useState(0);
+  const reloadOnClick = () => {
+    setReload(reload + 1);
+  };
+
+  // State for updating after fetch
   const [possessions, setPossessions] = useState<number[] | null>(null);
   useEffect(() => {
     async function getPossessions() {
@@ -89,11 +122,20 @@ export default function PossessionCircular(
       }
     }
     getPossessions();
-  }, [props]);
+  }, [props, reload]);
+
   // If no match is selected on the dashboard, display nothing
   if (!props.matchId) return null;
-  // If we havent completed the asynchronous data fetch yet
-  if (!possessions) return <CircularProgress />;
+  // If we havent completed the asynchronous data fetch yet; return a loading indicator
+  if (possessions == null) return <CircularProgress />;
+  // Invalid data returned from fetch
+  if (!validatePossessions(possessions))
+    return (
+      <Button variant="warning" onClick={reloadOnClick}>
+        {" "}
+        Something Went Wrong... Click To Reload
+      </Button>
+    );
 
   return (
     <Container>
