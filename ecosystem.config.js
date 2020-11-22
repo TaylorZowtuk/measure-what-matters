@@ -2,7 +2,7 @@ module.exports = {
   apps: [
     {
       name: 'mwm-backend',
-      script: 'dist/main',
+      script: 'node dist/main',
       cwd: '/home/ubuntu/mwm/backend',
       env: {
         NODE_ENV: 'production',
