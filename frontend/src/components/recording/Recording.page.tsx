@@ -54,9 +54,6 @@ class Recording extends React.Component<
   // Ref to field child component for accessing possession methods
   field: React.RefObject<Field> = React.createRef<Field>();
 
-  team_name: string = "Blue Blazers";
-  opp_name: string = "Red Rockets";
-
   constructor(props: RouteComponentProps<{}, StaticContext, RecordingProps>) {
     super(props);
     this.state = {
@@ -224,10 +221,16 @@ class Recording extends React.Component<
           <h1>Recording</h1>
           <Row>
             <Col md="auto">
-              <Team name={this.team_name} score={this.state.goalsFor} />
+              <Team
+                name={this.props.location.state.ourTeamName}
+                score={this.state.goalsFor}
+              />
             </Col>
             <Col md="auto">
-              <Team name={this.opp_name} score={this.state.goalsAgainst} />
+              <Team
+                name={this.props.location.state.oppTeamName}
+                score={this.state.goalsAgainst}
+              />
             </Col>
           </Row>
           <Timer
