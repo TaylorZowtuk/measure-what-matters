@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import CircularProgress, {
   CircularProgressProps,
 } from "@material-ui/core/CircularProgress";
@@ -80,10 +80,10 @@ export async function fetchTimes(
 
 function validatePossessions(possessions: number[]): boolean {
   // No returned possession info
-  if (possessions == null || possessions.length == 0) return false;
+  if (!possessions || possessions.length == 0) return false;
 
   // Proper dimension array returned
-  if (possessions.length != 3) return false;
+  if (possessions.length !== 3) return false;
 
   // Out of bounds values
   if (

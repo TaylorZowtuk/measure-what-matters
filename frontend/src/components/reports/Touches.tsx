@@ -20,6 +20,8 @@ import axios from "axios";
 import authHeader from "../../services/auth.header";
 import ReportProps from "../interfaces/props/report-props";
 import { playerTouchDTO, touchesDTO } from "../interfaces/touches";
+import { CircularProgress } from "@material-ui/core";
+import { Button } from "react-bootstrap";
 
 interface FormattedData {
   name: string;
@@ -99,13 +101,47 @@ export async function fetchTouchesRows(
     return hardCodedRows;
   }
 
-  const res = await axios.get(`/player-stats/touches?matchId=${matchId}`, {
-    headers: authHeader(),
-  });
-  let resData: touchesDTO = res.data;
-  console.log("Get touches response:", resData); // Handle errors
+  try {
+    const res = await axios.get(`/player-stats/touches?matchId=${matchId}`, {
+      headers: authHeader(),
+    });
+    let resData: touchesDTO = res.data;
+    console.log("Get touches response:", resData);
 
-  return formatData(resData);
+    return formatData(resData);
+  } catch (error) {
+    return [];
+  }
+}
+
+function validateTouches(rows: FormattedData[]): boolean {
+  // No returned touches info
+  if (!rows || rows.length == 0) return false;
+
+  // Validate each record
+  for (let i = 0; i < rows.length; i++) {
+    // Optimistically handle invalid rows by removing improper rows but continuing
+    if (
+      !rows[i].name || // ie. empty string ''
+      !rows[i].number || // ie. 0
+      rows[i].number < 0 || // too small
+      rows[i].number > 100 || // too large
+      rows[i].first < 0 || // invalid
+      rows[i].first > 1000 || // too large
+      rows[i].second < 0 || // invalid
+      rows[i].second > 1000 || // too large
+      rows[i].overall < 0 || // invalid
+      rows[i].overall > 2000 || // too large
+      rows[i].first + rows[i].second !== rows[i].overall // incorrect total
+    )
+      rows.splice(i, 1); // Remove this offending row
+  }
+
+  // If after optimistic handling of issue rows, our array is empty
+  if (rows.length == 0) return false;
+
+  // Was valid
+  return true;
 }
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
@@ -304,6 +340,22 @@ export default function TouchesTable(props: TouchesTableProps & ReportProps) {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
+  // State for allowing user to reload component
+  const [reload, setReload] = useState(0);
+  const reloadOnClick = () => {
+    setReload(reload + 1);
+  };
+
+  const [rows, setRows] = useState<FormattedData[] | null>(null);
+  useEffect(() => {
+    async function getRows() {
+      if (props.matchId) {
+        setRows(await props.fetchTouches(props.matchId));
+      }
+    }
+    getRows();
+  }, [props, reload]);
+
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
     property: keyof FormattedData
@@ -324,17 +376,17 @@ export default function TouchesTable(props: TouchesTableProps & ReportProps) {
     setPage(0);
   };
 
-  const [rows, setRows] = useState<FormattedData[] | null>(null);
-  useEffect(() => {
-    async function getRows() {
-      if (props.matchId) {
-        setRows(await props.fetchTouches(props.matchId));
-      }
-    }
-    getRows();
-  }, [props]);
-
-  if (!rows) return null;
+  // If no match is selected on the dashboard, display nothing
+  if (!props.matchId) return null;
+  // If we havent completed the asynchronous data fetch yet; return a loading indicator
+  if (rows == null) return <CircularProgress />;
+  if (!validateTouches(rows))
+    return (
+      <Button variant="warning" onClick={reloadOnClick}>
+        {" "}
+        Something Went Wrong... Click To Reload
+      </Button>
+    );
 
   const emptyRows =
     rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
