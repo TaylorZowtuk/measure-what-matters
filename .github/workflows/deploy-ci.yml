@@ -2,7 +2,7 @@ name: Deploy To Cybera
 
 on:
   push:
-    branches: [master, devel, joe/134_deploy_ci]
+    branches: [master, devel]
 
 jobs:
   build:
