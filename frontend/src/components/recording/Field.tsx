@@ -166,7 +166,7 @@ class Field extends React.Component<
         time: window._recordingState.getCurrentTotalPlayTime(),
       };
       axios
-        .post(`/event/possession/neutral`, possessionEvent, {
+        .post(`/api/event/possession/neutral`, possessionEvent, {
           headers: authHeader(),
         })
         .then((res) => {

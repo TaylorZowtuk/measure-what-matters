@@ -98,7 +98,7 @@ class Bench extends React.Component<
       time: window._recordingState.getCurrentTotalPlayTime(),
     };
     axios
-      .post(`/event/substitutions`, sub, { headers: authHeader() })
+      .post(`/api/event/substitutions`, sub, { headers: authHeader() })
       .then((res) => {
         console.log("Post sub response:", res); // TODO: catch error and handle if needed
       });

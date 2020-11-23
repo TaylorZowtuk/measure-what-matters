@@ -43,7 +43,7 @@ class Teams extends React.Component<{}, teamState> {
 
         teams.forEach((element: any) => {
           axios
-            .get(`/players/teamId?teamId=${element.teamId}`, {
+            .get(`/api/players/teamId?teamId=${element.teamId}`, {
               headers: authHeader(),
             })
             .then(

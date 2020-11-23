@@ -30,7 +30,7 @@ class AccountView extends React.Component<{}, accountState> {
     };
 
     // get user profile
-    axios.get("/users/profile", { headers: authHeader() }).then((response) => {
+    axios.get("/api/users/profile", { headers: authHeader() }).then((response) => {
       if (response.data) {
         let splitted = response.data.name.split(" ");
         this.setState({
@@ -76,7 +76,7 @@ class AccountView extends React.Component<{}, accountState> {
       });
       axios
         .post(
-          "/users/profile/edit",
+          "/api/users/profile/edit",
           { name: this.state.firstEdit + " " + this.state.lastName },
           { headers: authHeader() }
         )

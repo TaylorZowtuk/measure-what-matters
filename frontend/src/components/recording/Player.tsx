@@ -105,7 +105,7 @@ function changePossession(
       time: window._recordingState.getCurrentTotalPlayTime(),
     };
     axios
-      .post(`/event/possession/opposition`, possessionEvent, {
+      .post(`/api/event/possession/opposition`, possessionEvent, {
         headers: authHeader(),
       })
       .then((res) => {
@@ -118,7 +118,7 @@ function changePossession(
       playerId: playerId,
     };
     axios
-      .post(`/event/possession/player`, possessionEvent, {
+      .post(`/api/event/possession/player`, possessionEvent, {
         headers: authHeader(),
       })
       .then((res) => {

@@ -77,7 +77,7 @@ class Recording extends React.Component<
       time: Math.floor(Date.now() / 1000),
     };
     axios
-      .post(`/match/start`, start, {
+      .post(`/api/match/start`, start, {
         headers: authHeader(),
       })
       .then((res) => {
@@ -98,7 +98,7 @@ class Recording extends React.Component<
       lineupSubs.push(sub);
     }
     axios
-      .post(`/event/substitutions/startingLineup`, lineupSubs, {
+      .post(`/api/event/substitutions/startingLineup`, lineupSubs, {
         headers: authHeader(),
       })
       .then((res) => {
@@ -171,7 +171,7 @@ class Recording extends React.Component<
             playerId: assisterId,
           };
           axios
-            .post(`/event/assists`, assist, { headers: authHeader() })
+            .post(`/api/event/assists`, assist, { headers: authHeader() })
             .then((res) => {
               console.log("Post assist response:", res); // TODO: catch error and handle if needed
             });

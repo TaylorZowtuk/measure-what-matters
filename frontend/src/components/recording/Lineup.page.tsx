@@ -70,7 +70,7 @@ class LineupComponent extends React.Component<
 
   async getPlayers() {
     axios
-      .get(`/players/teamId?teamId=${this.props.location.state.teamId}`, {
+      .get(`/api/players/teamId?teamId=${this.props.location.state.teamId}`, {
         headers: authHeader(),
       })
       .then((res) => {
@@ -126,7 +126,7 @@ class LineupComponent extends React.Component<
         matchId: Number(this.props.location.state.matchId),
       };
       axios
-        .post("/lineups", matchLineup, {
+        .post("/api/lineups", matchLineup, {
           headers: authHeader(),
         })
         .then((res) => {
