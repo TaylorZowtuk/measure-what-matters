@@ -82,7 +82,6 @@ class RestClient {
   }
 
   private postCachedRequest(config: AxiosRequestConfig) {
-    console.log(config);
     this.client
       .request(config)
       .then(() => {
