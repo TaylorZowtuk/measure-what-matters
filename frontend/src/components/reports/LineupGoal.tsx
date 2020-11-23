@@ -12,6 +12,8 @@ interface LineupState {
 interface Lineups {
   index: number;
   lineup: string[];
+  ours: boolean;
+  time: number;
 }
 
 class LineupGoal extends React.Component<ReportProps, LineupState> {
@@ -32,6 +34,10 @@ class LineupGoal extends React.Component<ReportProps, LineupState> {
       );
       if (res.data) {
         const tempLineupList: any = [];
+        // sort by time
+        res.data.sort((a: any, b: any) => {
+          return a.goal.time > b.goal.time ? 1 : -1;
+        });
         for (let i = 1; i < res.data.length + 1; i++) {
           const players: any = [];
           for (let j = 0; j < res.data[i - 1].players.length; j++) {
@@ -41,7 +47,22 @@ class LineupGoal extends React.Component<ReportProps, LineupState> {
                 res.data[i - 1].players[j].lastName
             );
           }
-          tempLineupList.push({ index: i, lineup: players });
+          if (!res.data[i - 1].goal.playerId) {
+            // opponent scored
+            tempLineupList.push({
+              index: i,
+              lineup: players,
+              ours: false,
+              time: res.data[i - 1].goal.time,
+            });
+          } else {
+            tempLineupList.push({
+              index: i,
+              lineup: players,
+              ours: true,
+              time: res.data[i - 1].goal.time,
+            });
+          }
         }
         return tempLineupList;
       }
@@ -50,16 +71,27 @@ class LineupGoal extends React.Component<ReportProps, LineupState> {
     return [];
   };
 
-  componentDidMount() {
-    if (!this.state.finishLoading) {
-      this.getLineup().then((lineup: Lineups[]) => {
-        this.setState({ lineupList: lineup, finishLoading: true });
-      });
+  updateAndNotify = () => {
+    this.getLineup().then((lineup: Lineups[]) => {
+      this.setState({ lineupList: lineup, finishLoading: true });
+    });
+  };
+
+  //update when match changed
+  componentDidUpdate(prevProps: ReportProps) {
+    if (prevProps.matchId !== this.props.matchId) {
+      this.updateAndNotify();
     }
   }
 
   render() {
+    if (!this.props.matchId) {
+      return null;
+    }
     if (!this.state.finishLoading || this.state.lineupList.length <= 0) {
+      this.getLineup().then((lineup: Lineups[]) => {
+        this.setState({ lineupList: lineup, finishLoading: true });
+      });
       return (
         <div
           style={{
@@ -86,6 +118,22 @@ class LineupGoal extends React.Component<ReportProps, LineupState> {
           }}
         >
           <h2 style={{ padding: 0, margin: 0 }}>Lineup for Goals</h2>
+          <div style={{ display: "flex" }}>
+            <p
+              style={{
+                backgroundColor: "#ffb3b3",
+                width: "40px",
+                height: "10px",
+                margin: "auto 10px",
+                opacity: 0.8,
+              }}
+            >
+              &nbsp;
+            </p>
+            <p style={{ fontSize: "16px", margin: "auto 10px" }}>
+              for opponent goal
+            </p>
+          </div>
           <table
             style={{
               margin: "10px auto",
@@ -102,8 +150,13 @@ class LineupGoal extends React.Component<ReportProps, LineupState> {
             <tbody>
               {this.state.lineupList.map((lineup: Lineups) => {
                 const lineupString = lineup.lineup.join(", ");
-                return (
+                return lineup.ours ? (
                   <tr key={lineup.index}>
+                    <td>{lineup.index}</td>
+                    <td>{lineupString}</td>
+                  </tr>
+                ) : (
+                  <tr key={lineup.index} style={{ backgroundColor: "#ffb3b3" }}>
                     <td>{lineup.index}</td>
                     <td>{lineupString}</td>
                   </tr>
