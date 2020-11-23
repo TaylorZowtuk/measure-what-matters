@@ -1,6 +1,8 @@
 name: Deploy To Cybera
 
-on: [push]
+on:
+  push:
+    branches: [master, devel, joe/134_deploy_ci]
 
 jobs:
   build:
@@ -16,16 +18,21 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
+      - name: Run backend tests
       - name: Install yarn
         run: npm i -g yarn
       - name: Install backend dependencies
         run: yarn --cwd ./backend install
       - name: Build backend
         run: yarn --cwd ./backend build
+      - name: Test backend
+        run: yarn --cwd ./backend test
       - name: Install frontend dependencies
-        run: npm --prefix ./frontend install
+        run: npm --prefix ./frontend ci
       - name: Build frontend
         run: npm --prefix ./frontend run build
+      - name: Test frontend
+        run: npm --prefix ./frontend test
       - name: Deploy to server
         uses: easingthemes/ssh-deploy@v2.1.5
         env:
