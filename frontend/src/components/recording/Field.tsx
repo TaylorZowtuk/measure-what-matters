@@ -4,13 +4,13 @@ import { useDrop } from "react-dnd";
 import { Container, Row, Col } from "react-bootstrap";
 import { cloneDeep } from "lodash";
 import { CircularBuffer } from "../../util/circular-buffer";
-import axios from "axios";
 
 import { createPlayerDraggable, createPlayerDraggables } from "./Player";
 import Player from "../interfaces/player";
 import authHeader from "../../services/auth.header";
 import { NeutralPossessionDTO } from "../interfaces/neutralPossession";
 import { ShotFieldInfo } from "./ShotResultPicker";
+import RestClient from "../../services/restClient.service";
 
 type FieldProps = {
   matchId: number;
@@ -29,9 +29,10 @@ class Field extends React.Component<
     playerIndexWithPossession: number; // The index into onField of the player who currently has possession of the ball
   }
 > {
+  private restClient: RestClient;
   constructor(props: FieldProps) {
     super(props);
-
+    this.restClient = RestClient.getInstance();
     // Create the element that will represent the opposing team on the field
     const oppositionPlayer: Player = {
       firstName: "Opposing",
@@ -164,10 +165,8 @@ class Field extends React.Component<
       matchId: this.props.matchId,
       time: Date.now() % 10000, // TODO: switch to game time
     };
-    axios
-      .post(`/event/possession/neutral`, possessionEvent, {
-        headers: authHeader(),
-      })
+    this.restClient
+      .post(`/event/possession/neutral`, possessionEvent)
       .then((res) => {
         console.log("Post neutral possession response:", res); // TODO: catch error and handle if needed
       });

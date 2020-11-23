@@ -4,7 +4,7 @@ import { Link, RouteComponentProps } from "react-router-dom";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { TouchBackend } from "react-dnd-touch-backend";
-import axios from "axios";
+import RestClient from "../../services/restClient.service";
 import authHeader from "../../services/auth.header";
 
 import Button from "@material-ui/core/Button";
@@ -52,6 +52,8 @@ class Recording extends React.Component<
   team_name: string = "Blue Blazers";
   opp_name: string = "Red Rockets";
 
+  private restClient: RestClient;
+
   constructor(props: RouteComponentProps<{}, StaticContext, RecordingProps>) {
     super(props);
     this.state = {
@@ -64,18 +66,16 @@ class Recording extends React.Component<
       shotFieldInfo: undefined,
     };
 
+    this.restClient = RestClient.getInstance();
+
     // Make start match call
     let start: MatchStartDTO = {
       matchId: Number(this.props.location.state.matchId),
       time: Date.now() % 1000,
     };
-    axios
-      .post(`/match/start`, start, {
-        headers: authHeader(),
-      })
-      .then((res) => {
-        console.log("Post game start response:", res); // TODO: catch error and handle if needed
-      });
+    this.restClient.post(`/match/start`, start).then((res) => {
+      console.log("Post game start response:", res); // TODO: catch error and handle if needed
+    });
   }
 
   provideStartingLine = (): Player[] => {
@@ -90,10 +90,8 @@ class Recording extends React.Component<
       };
       lineupSubs.push(sub);
     }
-    axios
-      .post(`/event/substitutions/startingLineup`, lineupSubs, {
-        headers: authHeader(),
-      })
+    this.restClient
+      .post(`/event/substitutions/startingLineup`, lineupSubs)
       .then((res) => {
         console.log("Post starting lineup response:", res); // TODO: catch error and handle if needed
       });
@@ -159,11 +157,9 @@ class Recording extends React.Component<
             time: Date.now(),
             playerId: assisterId,
           };
-          axios
-            .post(`/event/assists`, assist, { headers: authHeader() })
-            .then((res) => {
-              console.log("Post assist response:", res); // TODO: catch error and handle if needed
-            });
+          this.restClient.post(`/event/assists`, assist).then((res) => {
+            console.log("Post assist response:", res); // TODO: catch error and handle if needed
+          });
         }
       }
     } else {
@@ -173,7 +169,7 @@ class Recording extends React.Component<
     }
 
     // Post to the goal endpoint
-    axios.post(`/event/goals`, goal, { headers: authHeader() }).then((res) => {
+    this.restClient.post(`/event/goals`, goal).then((res) => {
       console.log("Post goal response:", res); // TODO: catch error and handle if needed
     });
 
@@ -188,11 +184,9 @@ class Recording extends React.Component<
       time: (Date.now() % 10000) + 1000,
     };
 
-    axios
-      .post(`/match/fullTime`, endTime, { headers: authHeader() })
-      .then((res) => {
-        console.log("Post full time response:", res); // TODO: catch error and handle if needed
-      });
+    this.restClient.post(`/match/fullTime`, endTime).then((res) => {
+      console.log("Post full time response:", res); // TODO: catch error and handle if needed
+    });
   };
 
   deviceSupportsTouch(): boolean {
