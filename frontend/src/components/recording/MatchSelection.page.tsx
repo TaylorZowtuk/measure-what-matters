@@ -153,6 +153,8 @@ export function AlignItemsList() {
     const lineupProps: LineupProps = {
       matchId: matchAndTeam.match.matchId.toString(),
       teamId: matchAndTeam.match.teamId.toString(),
+      ourTeamName: matchAndTeam.teamName,
+      oppTeamName: matchAndTeam.match.opponentTeamName,
     };
     history.push("/match/lineup", lineupProps);
   };
