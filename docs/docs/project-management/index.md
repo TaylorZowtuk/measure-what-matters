@@ -136,6 +136,5 @@ Here are the general rules for assigning tasks on the team:
 | Manifest | Taylor / Bard | November 21 |
 | Match Timer FE | Taylor | November 22 |
 | Caching Events + Offline FE | Ayub | November 23 |
-| Player Summary FE | Chloe | November 25 |
-| Player Summary BE | Bard | November 25 |
+| Selenium Testing + Test Docs | Bard | November 25 |
 | Styling | TEAM EFFORT | November 26 |
