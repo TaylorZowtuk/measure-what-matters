@@ -118,6 +118,8 @@ class LineupComponent extends React.Component<
         matchId: this.props.location.state.matchId,
         teamId: this.props.location.state.teamId,
         startingLineup: this.state.lineup,
+        ourTeamName: this.props.location.state.ourTeamName,
+        oppTeamName: this.props.location.state.oppTeamName,
       };
       const matchLineup: CreateLineupDTO = {
         lineup: startingLineupPlayerIds,

@@ -40,8 +40,8 @@ type CreateAssistDTO = {
 class Recording extends React.Component<
   RouteComponentProps<{}, StaticContext, RecordingProps>,
   {
-    goals_against: number;
-    goals_for: number;
+    goalsAgainst: number;
+    goalsFor: number;
     subField: Player | undefined; // Player to remove from field
     subBench: Player | undefined; // Player to add to field from bench
     lineup: Player[]; // List of Players in this game for our team
@@ -54,14 +54,11 @@ class Recording extends React.Component<
   // Ref to field child component for accessing possession methods
   field: React.RefObject<Field> = React.createRef<Field>();
 
-  team_name: string = "Blue Blazers";
-  opp_name: string = "Red Rockets";
-
   constructor(props: RouteComponentProps<{}, StaticContext, RecordingProps>) {
     super(props);
     this.state = {
-      goals_for: 0,
-      goals_against: 0,
+      goalsFor: 0,
+      goalsAgainst: 0,
       subField: undefined,
       subBench: undefined,
       lineup: this.props.location.state.startingLineup,
@@ -158,7 +155,7 @@ class Recording extends React.Component<
     if (goal_for) {
       // Our goal
       // Update our score
-      this.setState({ goals_for: this.state.goals_for + 1 });
+      this.setState({ goalsFor: this.state.goalsFor + 1 });
 
       // Using the previousPossessions, automatically register an assist
       if (previousPossessions.size() >= 2) {
@@ -183,7 +180,7 @@ class Recording extends React.Component<
     } else {
       // Opposing teams goal
       // Update their score
-      this.setState({ goals_against: this.state.goals_against + 1 });
+      this.setState({ goalsAgainst: this.state.goalsAgainst + 1 });
     }
 
     // Post to the goal endpoint
@@ -224,10 +221,16 @@ class Recording extends React.Component<
           <h1>Recording</h1>
           <Row>
             <Col md="auto">
-              <Team name={this.team_name} score={this.state.goals_for} />
+              <Team
+                name={this.props.location.state.ourTeamName}
+                score={this.state.goalsFor}
+              />
             </Col>
             <Col md="auto">
-              <Team name={this.opp_name} score={this.state.goals_against} />
+              <Team
+                name={this.props.location.state.oppTeamName}
+                score={this.state.goalsAgainst}
+              />
             </Col>
           </Row>
           <Timer
