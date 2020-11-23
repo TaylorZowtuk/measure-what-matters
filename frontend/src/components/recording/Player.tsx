@@ -2,7 +2,6 @@ import React from "react";
 import { useDrag } from "react-dnd";
 import { DraggableTypes } from "../../constants";
 import { Button } from "react-bootstrap";
-import authHeader from "../../services/auth.header";
 import { MatchIdContext } from "./Recording.page";
 import Player from "../interfaces/player";
 import { OppositionPossessionDTO } from "../interfaces/oppositionPossession";

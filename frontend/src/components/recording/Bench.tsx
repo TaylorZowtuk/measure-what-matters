@@ -4,7 +4,6 @@ import { DropTargetMonitor, useDrop } from "react-dnd";
 
 import { Button, Table } from "react-bootstrap";
 
-import authHeader from "../../services/auth.header";
 import RestClient from "../../services/restClient.service";
 import Player from "./Player";
 import { MatchIdContext } from "./Recording.page";

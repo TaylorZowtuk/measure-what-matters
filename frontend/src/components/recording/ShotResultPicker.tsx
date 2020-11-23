@@ -1,6 +1,5 @@
 import React from "react";
 import { Button, Col, Row } from "react-bootstrap";
-import authHeader from "../../services/auth.header";
 import RestClient from "../../services/restClient.service";
 
 import CircularBuffer from "../../util/circular-buffer";

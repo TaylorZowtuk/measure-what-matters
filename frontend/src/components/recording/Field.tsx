@@ -7,7 +7,6 @@ import { CircularBuffer } from "../../util/circular-buffer";
 
 import { createPlayerDraggable, createPlayerDraggables } from "./Player";
 import Player from "../interfaces/player";
-import authHeader from "../../services/auth.header";
 import { NeutralPossessionDTO } from "../interfaces/neutralPossession";
 import { ShotFieldInfo } from "./ShotResultPicker";
 import RestClient from "../../services/restClient.service";
