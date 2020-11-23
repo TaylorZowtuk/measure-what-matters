@@ -1,8 +1,9 @@
 import React from "react";
 import axios from "axios";
 import authHeader from "../../services/auth.header";
-import { TextField } from "@material-ui/core";
+import { Button, TextField } from "@material-ui/core";
 import EditIcon from "@material-ui/icons/Edit";
+import { Link } from "react-router-dom";
 
 interface accountState {
   firstName: string;
@@ -285,6 +286,11 @@ class AccountView extends React.Component<{}, accountState> {
           </div>
           <EditIcon onClick={this.handleLastDisable}></EditIcon>
         </div>
+        <Link to="/dashboard">
+          <Button variant="contained" style={{ margin: "10px" }}>
+            Back
+          </Button>
+        </Link>
       </div>
     );
   }
