@@ -44,7 +44,7 @@ async function fetchMatches(debug = false): Promise<MatchAndTeam[]> {
   } else {
     // Get all the users teams
     const teamsRes = await axios.get(
-      `/teams?userId=1`, // TODO: Remove hardcoded userId
+      `/api/teams?userId=1`, // TODO: Remove hardcoded userId
       { headers: authHeader() }
     ); // TODO: catch error and handle
     console.log("Get teams response:", teamsRes);

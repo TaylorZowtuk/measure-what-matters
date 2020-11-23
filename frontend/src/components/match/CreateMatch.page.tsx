@@ -35,7 +35,7 @@ class CreateMatch extends React.Component<{}, matchState> {
     };
 
     //get all teams
-    axios.get("/teams", { headers: authHeader() }).then((response) => {
+    axios.get("/api/teams", { headers: authHeader() }).then((response) => {
       if (response.data) {
         console.log(response.data);
         this.setState({ teams: response.data });

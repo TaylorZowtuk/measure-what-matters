@@ -34,7 +34,7 @@ class Teams extends React.Component<{}, teamState> {
     this.state = {
       teamList: [],
     };
-    axios.get(`/teams`, { headers: authHeader() }).then(
+    axios.get(`/api/teams`, { headers: authHeader() }).then(
       (response) => {
         console.log("got teams");
         console.log(response.data);

@@ -126,7 +126,7 @@ function shotOnClick(props: ShotOnClickProps) {
       onTarget: props.onTarget,
     };
 
-    axios.post(`/event/shots`, shot, { headers: authHeader() }).then((res) => {
+    axios.post(`/api/event/shots`, shot, { headers: authHeader() }).then((res) => {
       console.log("Post shot response:", res); // TODO: catch error and handle if needed
     });
   }

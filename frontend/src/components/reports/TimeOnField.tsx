@@ -70,7 +70,7 @@ export async function fetchTimeOnFieldRows(
 
   try {
     const res = await axios.get(
-      `/player-stats/timeOnField?matchId=${matchId}`,
+      `/api/player-stats/timeOnField?matchId=${matchId}`,
       {
         headers: authHeader(),
       }

@@ -184,7 +184,7 @@ class Recording extends React.Component<
     }
 
     // Post to the goal endpoint
-    axios.post(`/event/goals`, goal, { headers: authHeader() }).then((res) => {
+    axios.post(`/api/event/goals`, goal, { headers: authHeader() }).then((res) => {
       console.log("Post goal response:", res); // TODO: catch error and handle if needed
     });
 
