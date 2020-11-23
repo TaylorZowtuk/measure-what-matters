@@ -11,7 +11,7 @@ const buttonStyling: CSS.Properties = {
 export default function AppNavbar() {
   return (
     <Navbar bg="light" expand="md">
-      <Navbar.Brand href="#home">Measure What Matters</Navbar.Brand>
+      <Navbar.Brand>Measure What Matters</Navbar.Brand>
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">
         <Nav className="ml-auto">
