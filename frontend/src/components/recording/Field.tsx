@@ -156,19 +156,21 @@ class Field extends React.Component<
   };
 
   resetPlayerWithPossession = (): void => {
-    // Reset possession state
-    this.changePossession(Number.NEGATIVE_INFINITY);
+    if (this.state.playerIndexWithPossession !== Number.NEGATIVE_INFINITY) {
+      // Reset possession state
+      this.changePossession(Number.NEGATIVE_INFINITY);
 
-    // Post to neutral ball endpoint
-    let possessionEvent: NeutralPossessionDTO = {
-      matchId: this.props.matchId,
-      time: Date.now() % 10000, // TODO: switch to game time
-    };
-    this.restClient
-      .post(`/event/possession/neutral`, possessionEvent)
-      .then((res) => {
-        console.log("Post neutral possession response:", res); // TODO: catch error and handle if needed
-      });
+      // Post to neutral ball endpoint
+      let possessionEvent: NeutralPossessionDTO = {
+        matchId: this.props.matchId,
+        time: window._recordingState.getCurrentTotalPlayTime(),
+      };
+      this.restClient
+        .post(`/event/possession/neutral`, possessionEvent)
+        .then((res) => {
+          console.log("Post neutral possession response:", res); // TODO: catch error and handle if needed
+        });
+    } // Else, nobody currently has the ball, so do nothing
   };
 
   async componentDidUpdate(prevProps: any, _prevState: any) {
@@ -191,6 +193,7 @@ class Field extends React.Component<
       <FieldTarget
         enterShootingState={this.props.enterShootingState}
         draggablePlayers={this.state.onField}
+        playerIndexWithPossession={this.state.playerIndexWithPossession}
         previousPossessions={this.previousPossessions}
         resetPlayerWithPossession={this.resetPlayerWithPossession}
         getLineup={this.getOnField}
@@ -202,6 +205,7 @@ class Field extends React.Component<
 type FieldTargetProps = {
   enterShootingState: Function;
   draggablePlayers: any[];
+  playerIndexWithPossession: number;
   previousPossessions: CircularBuffer<number>;
   resetPlayerWithPossession: Function;
   getLineup: Function;
@@ -212,7 +216,12 @@ export function FieldTarget(props: FieldTargetProps) {
     accept: DraggableTypes.PLAYER,
     drop: (item: any, monitor) => {
       // A shot was taken
-      if (item.player.playerId === props.previousPossessions.peekBack()) {
+      if (
+        props.playerIndexWithPossession !== Number.NEGATIVE_INFINITY &&
+        item.player.playerId ===
+          props.draggablePlayers[props.playerIndexWithPossession].props.player
+            .playerId
+      ) {
         // Only allow the player who currently has the ball to 'shoot'
         props.resetPlayerWithPossession();
         let shotFieldInfo: ShotFieldInfo = {

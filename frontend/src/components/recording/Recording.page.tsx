@@ -1,23 +1,23 @@
 import React from "react";
 import { StaticContext } from "react-router";
-import { Link, RouteComponentProps } from "react-router-dom";
+import { RouteComponentProps } from "react-router-dom";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { TouchBackend } from "react-dnd-touch-backend";
 import RestClient from "../../services/restClient.service";
 
-import Button from "@material-ui/core/Button";
 import Team from "./Team";
 import Bench from "./Bench";
 import Field from "./Field";
 import Player from "../interfaces/player";
 import CircularBuffer from "../../util/circular-buffer";
 import RecordingProps from "../interfaces/props/recording-props";
-import { fullTimeDTO } from "../interfaces/fullTime";
 import { Col, Row } from "react-bootstrap";
 import { ShotFieldInfo, ShotResultPicker } from "./ShotResultPicker";
 import { MatchStartDTO } from "../interfaces/matchStart";
 import { StartingPlayerDTO } from "../interfaces/startingPlayer";
+import Timer from "./Timer";
+import { RecordingState } from "./State";
 
 // Provide MatchId to each recording component which requires it through context
 export const MatchIdContext: React.Context<number> = React.createContext(0);
@@ -39,8 +39,8 @@ type CreateAssistDTO = {
 class Recording extends React.Component<
   RouteComponentProps<{}, StaticContext, RecordingProps>,
   {
-    goals_against: number;
-    goals_for: number;
+    goalsAgainst: number;
+    goalsFor: number;
     subField: Player | undefined; // Player to remove from field
     subBench: Player | undefined; // Player to add to field from bench
     lineup: Player[]; // List of Players in this game for our team
@@ -48,16 +48,18 @@ class Recording extends React.Component<
     shotFieldInfo: ShotFieldInfo | undefined; // A collection on field information passed to ShotResultPicker
   }
 > {
-  team_name: string = "Blue Blazers";
-  opp_name: string = "Red Rockets";
+  // Ref to timer child component for accessing timer methods
+  timer: React.RefObject<Timer> = React.createRef<Timer>();
+  // Ref to field child component for accessing possession methods
+  field: React.RefObject<Field> = React.createRef<Field>();
 
   private restClient: RestClient;
 
   constructor(props: RouteComponentProps<{}, StaticContext, RecordingProps>) {
     super(props);
     this.state = {
-      goals_for: 0,
-      goals_against: 0,
+      goalsFor: 0,
+      goalsAgainst: 0,
       subField: undefined,
       subBench: undefined,
       lineup: this.props.location.state.startingLineup,
@@ -66,11 +68,15 @@ class Recording extends React.Component<
     };
 
     this.restClient = RestClient.getInstance();
+    // Instantiate the global recording state instance
+    window._recordingState = new RecordingState(
+      Number(this.props.location.state.matchId)
+    );
 
     // Make start match call
     let start: MatchStartDTO = {
       matchId: Number(this.props.location.state.matchId),
-      time: Date.now() % 1000,
+      time: Math.floor(Date.now() / 1000),
     };
     this.restClient.post(`/match/start`, start).then((res) => {
       console.log("Post game start response:", res); // TODO: catch error and handle if needed
@@ -85,7 +91,7 @@ class Recording extends React.Component<
       let sub: StartingPlayerDTO = {
         playerId: starting[i].playerId,
         matchId: Number(this.props.location.state.matchId),
-        timeOn: Date.now() % 1000,
+        timeOn: 0,
       };
       lineupSubs.push(sub);
     }
@@ -125,6 +131,9 @@ class Recording extends React.Component<
     previousPossessions: CircularBuffer<number>,
     lineup: any[]
   ): void => {
+    // Stop the timer
+    this.timer.current?.stopTimer();
+
     let ids: number[] = [];
     // Gather the player ids of all of our players on the field
     for (let i = 0; i < lineup.length; i++) {
@@ -133,7 +142,8 @@ class Recording extends React.Component<
     // Create a GoalDTO object
     let goal: Goal = {
       matchId: Number(this.props.location.state.matchId),
-      time: Date.now(), // Epoch time in ms
+      time: window._recordingState.getCurrentTotalPlayTime(),
+      // When playerId is null it is their goal
       playerId: scorer.playerId !== -1 ? scorer.playerId : null,
       lineup: ids,
     };
@@ -141,7 +151,7 @@ class Recording extends React.Component<
     if (goal_for) {
       // Our goal
       // Update our score
-      this.setState({ goals_for: this.state.goals_for + 1 });
+      this.setState({ goalsFor: this.state.goalsFor + 1 });
 
       // Using the previousPossessions, automatically register an assist
       if (previousPossessions.size() >= 2) {
@@ -153,7 +163,7 @@ class Recording extends React.Component<
           // The last possession wasnt the opposition
           let assist: CreateAssistDTO = {
             matchId: Number(this.props.location.state.matchId),
-            time: Date.now(),
+            time: window._recordingState.getCurrentTotalPlayTime(),
             playerId: assisterId,
           };
           this.restClient.post(`/event/assists`, assist).then((res) => {
@@ -164,7 +174,7 @@ class Recording extends React.Component<
     } else {
       // Opposing teams goal
       // Update their score
-      this.setState({ goals_against: this.state.goals_against + 1 });
+      this.setState({ goalsAgainst: this.state.goalsAgainst + 1 });
     }
 
     // Post to the goal endpoint
@@ -176,16 +186,11 @@ class Recording extends React.Component<
     previousPossessions.clear();
   };
 
-  endGame = (): void => {
-    // Post to the match end game endpoint
-    let endTime: fullTimeDTO = {
-      matchId: Number(this.props.location.state.matchId),
-      time: (Date.now() % 10000) + 1000,
-    };
-
-    this.restClient.post(`/match/fullTime`, endTime).then((res) => {
-      console.log("Post full time response:", res); // TODO: catch error and handle if needed
-    });
+  wrapResetPlayers = () => {
+    // If the ref to field has been set, call the resetPlayerWithPossession func
+    if (this.field.current) {
+      this.field.current.resetPlayerWithPossession();
+    } // Else, if the ref to field hasnt been set yet, then do nothing
   };
 
   deviceSupportsTouch(): boolean {
@@ -210,12 +215,23 @@ class Recording extends React.Component<
           <h1>Recording</h1>
           <Row>
             <Col md="auto">
-              <Team name={this.team_name} score={this.state.goals_for} />
+              <Team
+                name={this.props.location.state.ourTeamName}
+                score={this.state.goalsFor}
+              />
             </Col>
             <Col md="auto">
-              <Team name={this.opp_name} score={this.state.goals_against} />
+              <Team
+                name={this.props.location.state.oppTeamName}
+                score={this.state.goalsAgainst}
+              />
             </Col>
           </Row>
+          <Timer
+            ref={this.timer}
+            resetPossession={this.wrapResetPlayers}
+            resetShootingState={this.setShooting}
+          />
           <Bench
             getStartingBench={this.provideStartingBench}
             notifyOfSubs={this.setSubs}
@@ -234,6 +250,7 @@ class Recording extends React.Component<
           ) : null}
 
           <Field
+            ref={this.field}
             matchId={Number(this.props.location.state.matchId)}
             getStartingLine={this.provideStartingLine}
             inShootingState={this.state.shooting}
@@ -242,11 +259,6 @@ class Recording extends React.Component<
             addToField={this.state.subBench}
             resetSubs={this.setSubs}
           />
-          <Link to="/dashboard">
-            <Button variant="contained" onClick={this.endGame}>
-              Finish Recording
-            </Button>
-          </Link>
         </MatchIdContext.Provider>
       </DndProvider>
     );

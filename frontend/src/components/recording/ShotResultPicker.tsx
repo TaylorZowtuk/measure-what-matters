@@ -122,7 +122,7 @@ function shotOnClick(props: ShotOnClickProps) {
     // If the shooter was our player, send a post to the shot endpoint
     let shot: ShotDTO = {
       matchId: props.matchId,
-      time: Date.now() % 100000,
+      time: window._recordingState.getCurrentTotalPlayTime(),
       playerId: props.shooter.playerId,
       onTarget: props.onTarget,
     };
