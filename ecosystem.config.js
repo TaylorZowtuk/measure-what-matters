@@ -21,8 +21,9 @@ module.exports = {
     {
       name: 'mwm-frontend',
       script: 'serve',
+      cwd: '/home/ubuntu/mwm/frontend/build',
       env: {
-        PM2_SERVE_PATH: '/frontend/build',
+        PM2_SERVE_PATH: '.',
         PM2_SERVE_PORT: 4018,
         PM2_SERVE_SPA: 'true',
         PM2_SERVE_HOMEPAGE: '/index.html',
