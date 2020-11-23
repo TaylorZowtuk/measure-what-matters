@@ -12,18 +12,39 @@ import AssignmentIcon from "@material-ui/icons/Assignment";
 
 export const mainListItems = (
   <div>
-    <ListItem button>
-      <ListItemText primary="User" />
-    </ListItem>
-    <ListItem button>
-      <ListItemText primary="Dashboard" />
-    </ListItem>
-    <ListItem button>
-      <ListItemText primary="Create Match" />
-    </ListItem>
-    <ListItem button>
-      <ListItemText primary="Recording" />
-    </ListItem>
+    <a href="#start" style={{ textDecoration: "none", color: "#000000DE" }}>
+      <ListItem button>
+        <ListItemText primary="Start" />
+      </ListItem>
+    </a>
+    <a href="#dashboard" style={{ textDecoration: "none", color: "#000000DE" }}>
+      <ListItem button>
+        <ListItemText primary="Dashboard" />
+      </ListItem>
+    </a>
+    <a
+      href="#create-match"
+      style={{ textDecoration: "none", color: "#000000DE" }}
+    >
+      <ListItem button>
+        <ListItemText primary="Create Match" />
+      </ListItem>
+    </a>
+    <a href="#recording" style={{ textDecoration: "none", color: "#000000DE" }}>
+      <ListItem button>
+        <ListItemText primary="Recording" />
+      </ListItem>
+    </a>
+    <a href="#teams" style={{ textDecoration: "none", color: "#000000DE" }}>
+      <ListItem button>
+        <ListItemText primary="Teams" />
+      </ListItem>
+    </a>
+    <a href="#account" style={{ textDecoration: "none", color: "#000000DE" }}>
+      <ListItem button>
+        <ListItemText primary="Account" />
+      </ListItem>
+    </a>
   </div>
 );
 
