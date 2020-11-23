@@ -18,7 +18,6 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - name: Run backend tests
       - name: Install yarn
         run: npm i -g yarn
       - name: Install backend dependencies
