@@ -22,6 +22,7 @@ import ReportProps from "../interfaces/props/report-props";
 import { playerTouchDTO, touchesDTO } from "../interfaces/touches";
 import { CircularProgress } from "@material-ui/core";
 import { Button } from "react-bootstrap";
+import RefreshIcon from "@material-ui/icons/Refresh";
 
 interface FormattedData {
   name: string;
@@ -382,10 +383,11 @@ export default function TouchesTable(props: TouchesTableProps & ReportProps) {
   if (rows === null) return <CircularProgress />;
   if (!validateTouches(rows))
     return (
-      <Button variant="warning" onClick={reloadOnClick}>
-        {" "}
-        Something Went Wrong... Click To Reload Report
-      </Button>
+      <div>
+        <Button variant="danger" onClick={reloadOnClick}>
+          Couldn't Load Report <RefreshIcon />
+        </Button>
+      </div>
     );
 
   const emptyRows =

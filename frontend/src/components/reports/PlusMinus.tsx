@@ -100,7 +100,7 @@ export default function PlusMinusComponent(props: ReportProps) {
   } else if (plusMinus.length === 0) {
     return (
       <div>
-        <Button variant="warning" onClick={reloadOnClick}>
+        <Button variant="danger" onClick={reloadOnClick}>
           Couldn't Load Report <RefreshIcon />
         </Button>
       </div>
