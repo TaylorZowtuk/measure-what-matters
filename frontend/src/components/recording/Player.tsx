@@ -2,12 +2,11 @@ import React from "react";
 import { useDrag } from "react-dnd";
 import { DraggableTypes } from "../../constants";
 import { Button } from "react-bootstrap";
-import axios from "axios";
-import authHeader from "../../services/auth.header";
 import { MatchIdContext } from "./Recording.page";
 import Player from "../interfaces/player";
 import { OppositionPossessionDTO } from "../interfaces/oppositionPossession";
 import { PlayerPossessionDTO } from "../interfaces/playerPossession";
+import RestClient from "../../services/restClient.service";
 
 type Possession = {
   hasPossession: boolean; // Whether or not the the player has possession of the ball
@@ -18,6 +17,8 @@ type DraggableProps = {
   player: Player;
   possession: Possession;
 };
+
+const restClient: RestClient = RestClient.getInstance();
 
 export const PlayerDraggable = (props: DraggableProps) => {
   const player: Player = {
@@ -104,10 +105,8 @@ function changePossession(
       matchId: matchId,
       time: window._recordingState.getCurrentTotalPlayTime(),
     };
-    axios
-      .post(`/api/event/possession/opposition`, possessionEvent, {
-        headers: authHeader(),
-      })
+    restClient
+      .post(`/api/event/possession/opposition`, possessionEvent)
       .then((res) => {
         console.log("Post opposition possession response:", res); // TODO: catch error and handle if needed
       });
@@ -117,13 +116,9 @@ function changePossession(
       time: window._recordingState.getCurrentTotalPlayTime(),
       playerId: playerId,
     };
-    axios
-      .post(`/api/event/possession/player`, possessionEvent, {
-        headers: authHeader(),
-      })
-      .then((res) => {
-        console.log("Post player possession response:", res); // TODO: catch error and handle if needed
-      });
+    restClient.post(`/api/event/possession/player`, possessionEvent).then((res) => {
+      console.log("Post player possession response:", res); // TODO: catch error and handle if needed
+    });
   }
 
   notifyOfPossessionChange(playerId);
