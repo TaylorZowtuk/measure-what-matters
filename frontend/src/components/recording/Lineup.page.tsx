@@ -5,6 +5,7 @@ import { StaticContext } from "react-router";
 import {
   Button,
   Checkbox,
+  Container,
   Paper,
   Table,
   TableBody,
@@ -14,22 +15,14 @@ import {
   TableRow,
 } from "@material-ui/core";
 import CSS from "csstype";
-import { RouteComponentProps } from "react-router-dom";
+import { Link, RouteComponentProps } from "react-router-dom";
 import Player from "../interfaces/player";
 import RecordingProps from "../interfaces/props/recording-props";
 import LineupProps from "../interfaces/props/lineup-props";
 import { CreateLineupDTO } from "../interfaces/createLineup";
 
-const styling: CSS.Properties = {
-  height: "100%",
-  width: "100%",
-  margin: "auto",
-};
-
 const tableStyling: CSS.Properties = {
   height: "70vh",
-  width: "60vw",
-  margin: "auto",
 };
 
 const textHeaderStyling: CSS.Properties = {
@@ -141,7 +134,7 @@ class LineupComponent extends React.Component<
 
   render() {
     return (
-      <div className="Lineup" style={styling}>
+      <Container>
         <h1 style={textHeaderStyling}>Choose Your Match Lineup</h1>
         <TableContainer component={Paper} style={tableStyling}>
           <Table stickyHeader>
@@ -150,7 +143,7 @@ class LineupComponent extends React.Component<
                 <TableCell></TableCell>
                 <TableCell>First Name</TableCell>
                 <TableCell>Last Name</TableCell>
-                <TableCell>Jersey Number</TableCell>
+                <TableCell align="center">Jersey Number</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -165,12 +158,17 @@ class LineupComponent extends React.Component<
                   </TableCell>
                   <TableCell>{player.firstName}</TableCell>
                   <TableCell>{player.lastName}</TableCell>
-                  <TableCell>{player.jerseyNum}</TableCell>
+                  <TableCell align="center">{player.jerseyNum}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
         </TableContainer>
+        <Link to="/matches/upcoming">
+          <Button variant="contained" style={buttonStyling}>
+            Back
+          </Button>
+        </Link>
         <Button
           style={buttonStyling}
           onClick={() => {
@@ -180,7 +178,7 @@ class LineupComponent extends React.Component<
         >
           Next
         </Button>
-      </div>
+      </Container>
     );
   }
 }
