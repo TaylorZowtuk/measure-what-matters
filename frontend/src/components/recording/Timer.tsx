@@ -1,10 +1,10 @@
 import React from "react";
-import Button from "react-bootstrap/esm/Button";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import authHeader from "../../services/auth.header";
 import { fullTimeDTO } from "../interfaces/fullTime";
 import { halftimeDTO } from "../interfaces/halftime";
+import { Button } from "react-bootstrap";
 
 type TimerProps = { resetPossession: Function; resetShootingState: Function };
 
@@ -73,7 +73,7 @@ class Timer extends React.Component<
     };
 
     axios
-      .post(`/match/halftime`, halftime, { headers: authHeader() })
+      .post(`/api/match/halftime`, halftime, { headers: authHeader() })
       .then((res) => {
         console.log("Post halftime response:", res); // TODO: catch error and handle if needed
       });
@@ -89,7 +89,7 @@ class Timer extends React.Component<
     };
 
     axios
-      .post(`/match/fullTime`, endTime, { headers: authHeader() })
+      .post(`/api/match/fullTime`, endTime, { headers: authHeader() })
       .then((res) => {
         console.log("Post full time response:", res); // TODO: catch error and handle if needed
       });

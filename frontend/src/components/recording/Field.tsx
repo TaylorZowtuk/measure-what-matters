@@ -166,7 +166,7 @@ class Field extends React.Component<
         time: window._recordingState.getCurrentTotalPlayTime(),
       };
       this.restClient
-        .post(`/event/possession/neutral`, possessionEvent)
+        .post(`/api/event/possession/neutral`, possessionEvent)
         .then((res) => {
           console.log("Post neutral possession response:", res); // TODO: catch error and handle if needed
         });

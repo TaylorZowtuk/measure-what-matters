@@ -97,7 +97,7 @@ class Bench extends React.Component<
       matchId: matchId,
       time: window._recordingState.getCurrentTotalPlayTime(),
     };
-    this.restClient.post(`/event/substitutions`, sub).then((res) => {
+    this.restClient.post(`/api/event/substitutions`, sub).then((res) => {
       console.log("Post sub response:", res); // TODO: catch error and handle if needed
     });
     let moveToField = this.removeFromBench(playerId); // Remove player from bench

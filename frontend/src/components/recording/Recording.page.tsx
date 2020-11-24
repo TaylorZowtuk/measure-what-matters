@@ -78,7 +78,7 @@ class Recording extends React.Component<
       matchId: Number(this.props.location.state.matchId),
       time: Math.floor(Date.now() / 1000),
     };
-    this.restClient.post(`/match/start`, start).then((res) => {
+    this.restClient.post(`/api/match/start`, start).then((res) => {
       console.log("Post game start response:", res); // TODO: catch error and handle if needed
     });
   }
@@ -96,7 +96,7 @@ class Recording extends React.Component<
       lineupSubs.push(sub);
     }
     this.restClient
-      .post(`/event/substitutions/startingLineup`, lineupSubs)
+      .post(`/api/event/substitutions/startingLineup`, lineupSubs)
       .then((res) => {
         console.log("Post starting lineup response:", res); // TODO: catch error and handle if needed
       });
@@ -166,7 +166,7 @@ class Recording extends React.Component<
             time: window._recordingState.getCurrentTotalPlayTime(),
             playerId: assisterId,
           };
-          this.restClient.post(`/event/assists`, assist).then((res) => {
+          this.restClient.post(`/api/event/assists`, assist).then((res) => {
             console.log("Post assist response:", res); // TODO: catch error and handle if needed
           });
         }
@@ -178,7 +178,7 @@ class Recording extends React.Component<
     }
 
     // Post to the goal endpoint
-    this.restClient.post(`/event/goals`, goal).then((res) => {
+    this.restClient.post(`/api/event/goals`, goal).then((res) => {
       console.log("Post goal response:", res); // TODO: catch error and handle if needed
     });
 

@@ -33,7 +33,7 @@ class LineupGoal extends React.Component<ReportProps, LineupState> {
   };
 
   getLineup = async (): Promise<TeamLineup[]> => {
-    const res = await axios.get("/teams", { headers: authHeader() });
+    const res = await axios.get("/api/teams", { headers: authHeader() });
     if (res.data) {
       const tempTeamList: any = [];
       for (let i = 0; i < res.data.length; i++) {
@@ -45,7 +45,7 @@ class LineupGoal extends React.Component<ReportProps, LineupState> {
           const tempMatchList: any = [];
           for (let j = 0; j < matchRes.data.length; j++) {
             const goalRes = await axios.get(
-              `/event/goals?matchId=${matchRes.data[j].matchId}`,
+              `/api/event/goals?matchId=${matchRes.data[j].matchId}`,
               { headers: authHeader() }
             );
             if (goalRes.data) {

@@ -106,7 +106,7 @@ function changePossession(
       time: window._recordingState.getCurrentTotalPlayTime(),
     };
     restClient
-      .post(`/event/possession/opposition`, possessionEvent)
+      .post(`/api/event/possession/opposition`, possessionEvent)
       .then((res) => {
         console.log("Post opposition possession response:", res); // TODO: catch error and handle if needed
       });
@@ -116,7 +116,7 @@ function changePossession(
       time: window._recordingState.getCurrentTotalPlayTime(),
       playerId: playerId,
     };
-    restClient.post(`/event/possession/player`, possessionEvent).then((res) => {
+    restClient.post(`/api/event/possession/player`, possessionEvent).then((res) => {
       console.log("Post player possession response:", res); // TODO: catch error and handle if needed
     });
   }
