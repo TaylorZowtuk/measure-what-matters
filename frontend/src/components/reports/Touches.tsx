@@ -103,7 +103,7 @@ export async function fetchTouchesRows(
   }
 
   try {
-    const res = await axios.get(`/player-stats/touches?matchId=${matchId}`, {
+    const res = await axios.get(`/api/player-stats/touches?matchId=${matchId}`, {
       headers: authHeader(),
     });
     let resData: touchesDTO = res.data;

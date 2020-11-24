@@ -91,7 +91,7 @@ class Roster extends React.Component<
 
   getPlayers = async () => {
     axios
-      .get(`/players/teamId?teamId=${this.state.teamId}`, {
+      .get(`/api/players/teamId?teamId=${this.state.teamId}`, {
         headers: authHeader(),
       })
       .then((res) => {
@@ -132,7 +132,7 @@ class Roster extends React.Component<
   handleEditConfirmation = () => {
     if (this.state.action === Actions.Edit) {
       axios
-        .post("/players/edit", this.state.playerToAction, {
+        .post("/api/players/edit", this.state.playerToAction, {
           headers: authHeader(),
         })
         .then(() => {
@@ -149,7 +149,7 @@ class Roster extends React.Component<
         jerseyNum: this.state.playerToAction.jerseyNum,
       };
       axios
-        .post("/players", [dto], {
+        .post("/api/players", [dto], {
           headers: authHeader(),
         })
         .then(() => {
@@ -168,7 +168,7 @@ class Roster extends React.Component<
     );
     if (ind > -1) {
       axios
-        .delete(`/players?playerId=${this.state.playerToAction.playerId}`, {
+        .delete(`/api/players?playerId=${this.state.playerToAction.playerId}`, {
           headers: authHeader(),
         })
         .then(() => {

@@ -62,7 +62,7 @@ export async function fetchTimes(
 
   try {
     const res = await axios.get(
-      `/player-stats/team-possession?matchId=${matchId}`,
+      `/api/player-stats/team-possession?matchId=${matchId}`,
       {
         headers: authHeader(),
       }

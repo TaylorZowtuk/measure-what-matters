@@ -49,7 +49,7 @@ export async function fetchTimeOnFieldRows(
 ): Promise<FormattedData[]> {
   try {
     const res = await axios.get(
-      `/player-stats/timeOnField?matchId=${matchId}`,
+      `/api/player-stats/timeOnField?matchId=${matchId}`,
       {
         headers: authHeader(),
       }

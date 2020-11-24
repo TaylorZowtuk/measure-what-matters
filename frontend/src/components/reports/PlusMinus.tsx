@@ -69,7 +69,7 @@ const tableStyling: CSS.Properties = {
 
 async function fetchPlusMinus(matchId: number): Promise<PlusMinus[]> {
   const response = await axios.get(
-    `/player-stats/plus-minus?matchId=${matchId}`,
+    `/api/player-stats/plus-minus?matchId=${matchId}`,
     {
       headers: authHeader(),
     }

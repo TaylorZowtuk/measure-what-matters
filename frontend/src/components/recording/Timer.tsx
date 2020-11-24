@@ -73,7 +73,7 @@ class Timer extends React.Component<
     };
 
     axios
-      .post(`/match/halftime`, halftime, { headers: authHeader() })
+      .post(`/api/match/halftime`, halftime, { headers: authHeader() })
       .then((res) => {
         console.log("Post halftime response:", res); // TODO: catch error and handle if needed
       });
@@ -89,7 +89,7 @@ class Timer extends React.Component<
     };
 
     axios
-      .post(`/match/fullTime`, endTime, { headers: authHeader() })
+      .post(`/api/match/fullTime`, endTime, { headers: authHeader() })
       .then((res) => {
         console.log("Post full time response:", res); // TODO: catch error and handle if needed
       });

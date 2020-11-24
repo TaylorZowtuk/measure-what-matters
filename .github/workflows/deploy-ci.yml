@@ -1,0 +1,50 @@
+name: Deploy To Cybera
+
+on:
+  push:
+    branches: [master, devel]
+
+jobs:
+  build:
+    runs-on: self-hosted
+
+    strategy:
+      matrix:
+        node-version: [12.x]
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Install yarn
+        run: npm i -g yarn
+      - name: Install backend dependencies
+        run: yarn --cwd ./backend install
+      - name: Build backend
+        run: yarn --cwd ./backend build
+      - name: Test backend
+        run: yarn --cwd ./backend test
+      - name: Install frontend dependencies
+        run: npm --prefix ./frontend ci
+      - name: Build frontend
+        run: npm --prefix ./frontend run build
+      - name: Test frontend
+        run: npm --prefix ./frontend test
+      - name: Deploy to server
+        uses: easingthemes/ssh-deploy@v2.1.5
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSHKEY }}
+          ARGS: '-rltgoDzO --delete'
+          REMOTE_HOST: '[2605:fd00:4:1001:f816:3eff:fe43:a221]'
+          REMOTE_USER: ubuntu
+          REMOTE_PORT: 22
+          TARGET: /home/ubuntu/mwm/
+      - name: Run deploy script
+        uses: garygrossgarten/github-action-ssh@release
+        with:
+          host: '2605:fd00:4:1001:f816:3eff:fe43:a221'
+          username: ubuntu
+          privateKey: ${{ secrets.SSHKEY }}
+          command: sudo ./mwm/bin/deploy/deploy.sh
