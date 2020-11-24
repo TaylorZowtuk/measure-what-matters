@@ -1,7 +1,6 @@
 import React from "react";
 import {
   cleanup,
-  screen,
   fireEvent,
   render,
   waitForElement,
@@ -110,7 +109,7 @@ test("renders the attempt reload button on empty fetch", async () => {
   expect(reloadButton).toBeInTheDocument();
 
   // When we click the reload button
-  fireEvent.click(screen.getByText(/load/i));
+  fireEvent.click(reloadButton);
   // And we get new, proper data
   expect(mockFetch.mock.calls.length).toBe(2); // Called the second time
   await waitForElementToBeRemoved(() => getByText(/load/i));
@@ -153,7 +152,7 @@ test("renders the attempt reload button on invalid length data fetched", async (
   expect(reloadButton).toBeInTheDocument();
 
   // When we click the reload button
-  fireEvent.click(screen.getByText(/load/i));
+  fireEvent.click(reloadButton);
   // And we get more improper data
   expect(mockFetch.mock.calls.length).toBe(2); // Called the second time
   // We immediately get the same reload option
@@ -188,7 +187,7 @@ test("renders the attempt reload button on invalid values fetched", async () => 
   expect(reloadButton).toBeInTheDocument();
 
   // When we click the reload button
-  fireEvent.click(screen.getByText(/load/i));
+  fireEvent.click(reloadButton);
   // And we get more improper data
   expect(mockFetch.mock.calls.length).toBe(2); // Called the second time
   // We immediately get the same reload option

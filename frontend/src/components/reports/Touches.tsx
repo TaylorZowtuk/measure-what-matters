@@ -120,10 +120,12 @@ function validateTouches(rows: FormattedData[]): boolean {
   if (!rows || rows.length === 0) return false;
 
   // Validate each record
-  for (let i = 0; i < rows.length; i++) {
+  let i: number = rows.length;
+  while (i--) {
     // Optimistically handle invalid rows by removing improper rows but continuing
     if (
       !rows[i].name || // ie. empty string ''
+      rows[i].name === " " || // ie. empty string ' '
       !rows[i].number || // ie. 0
       rows[i].number < 0 || // too small
       rows[i].number > 100 || // too large
