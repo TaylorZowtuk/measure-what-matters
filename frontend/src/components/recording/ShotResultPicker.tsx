@@ -1,7 +1,6 @@
 import React from "react";
 import { Button, Col, Row } from "react-bootstrap";
-import axios from "axios";
-import authHeader from "../../services/auth.header";
+import RestClient from "../../services/restClient.service";
 
 import CircularBuffer from "../../util/circular-buffer";
 import Player from "../interfaces/player";
@@ -12,6 +11,8 @@ export type ShotResultPickerProps = {
   shooting: boolean;
   propsIfGoal: GoalOnClickProps;
 };
+
+const restClient: RestClient = RestClient.getInstance();
 
 export function ShotResultPicker(props: ShotResultPickerProps) {
   // If the recording state is not shooting, then dont render
@@ -126,7 +127,7 @@ function shotOnClick(props: ShotOnClickProps) {
       onTarget: props.onTarget,
     };
 
-    axios.post(`/event/shots`, shot, { headers: authHeader() }).then((res) => {
+    restClient.post(`/event/shots`, shot).then((res) => {
       console.log("Post shot response:", res); // TODO: catch error and handle if needed
     });
   }

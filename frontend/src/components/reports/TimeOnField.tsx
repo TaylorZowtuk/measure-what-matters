@@ -23,6 +23,7 @@ import ReportProps from "../interfaces/props/report-props";
 import { CircularProgress } from "@material-ui/core";
 import { Button } from "react-bootstrap";
 import round from "lodash/round";
+import RefreshIcon from "@material-ui/icons/Refresh";
 
 interface FormattedData {
   name: string;
@@ -348,10 +349,11 @@ export default function EnhancedTable(
   if (rows == null) return <CircularProgress />;
   if (!validateRows(rows))
     return (
-      <Button variant="warning" onClick={reloadOnClick}>
-        {" "}
-        Something Went Wrong... Click To Reload Report
-      </Button>
+      <div>
+        <Button variant="danger" onClick={reloadOnClick}>
+          Couldn't Load Report <RefreshIcon />
+        </Button>
+      </div>
     );
 
   const emptyRows =

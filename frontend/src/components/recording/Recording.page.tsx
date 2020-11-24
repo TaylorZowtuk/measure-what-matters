@@ -4,8 +4,7 @@ import { RouteComponentProps } from "react-router-dom";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { TouchBackend } from "react-dnd-touch-backend";
-import axios from "axios";
-import authHeader from "../../services/auth.header";
+import RestClient from "../../services/restClient.service";
 
 import Team from "./Team";
 import Bench from "./Bench";
@@ -54,6 +53,8 @@ class Recording extends React.Component<
   // Ref to field child component for accessing possession methods
   field: React.RefObject<Field> = React.createRef<Field>();
 
+  private restClient: RestClient;
+
   constructor(props: RouteComponentProps<{}, StaticContext, RecordingProps>) {
     super(props);
     this.state = {
@@ -66,6 +67,7 @@ class Recording extends React.Component<
       shotFieldInfo: undefined,
     };
 
+    this.restClient = RestClient.getInstance();
     // Instantiate the global recording state instance
     window._recordingState = new RecordingState(
       Number(this.props.location.state.matchId)
@@ -76,13 +78,9 @@ class Recording extends React.Component<
       matchId: Number(this.props.location.state.matchId),
       time: Math.floor(Date.now() / 1000),
     };
-    axios
-      .post(`/match/start`, start, {
-        headers: authHeader(),
-      })
-      .then((res) => {
-        console.log("Post game start response:", res); // TODO: catch error and handle if needed
-      });
+    this.restClient.post(`/match/start`, start).then((res) => {
+      console.log("Post game start response:", res); // TODO: catch error and handle if needed
+    });
   }
 
   provideStartingLine = (): Player[] => {
@@ -97,10 +95,8 @@ class Recording extends React.Component<
       };
       lineupSubs.push(sub);
     }
-    axios
-      .post(`/event/substitutions/startingLineup`, lineupSubs, {
-        headers: authHeader(),
-      })
+    this.restClient
+      .post(`/event/substitutions/startingLineup`, lineupSubs)
       .then((res) => {
         console.log("Post starting lineup response:", res); // TODO: catch error and handle if needed
       });
@@ -170,11 +166,9 @@ class Recording extends React.Component<
             time: window._recordingState.getCurrentTotalPlayTime(),
             playerId: assisterId,
           };
-          axios
-            .post(`/event/assists`, assist, { headers: authHeader() })
-            .then((res) => {
-              console.log("Post assist response:", res); // TODO: catch error and handle if needed
-            });
+          this.restClient.post(`/event/assists`, assist).then((res) => {
+            console.log("Post assist response:", res); // TODO: catch error and handle if needed
+          });
         }
       }
     } else {
@@ -184,7 +178,7 @@ class Recording extends React.Component<
     }
 
     // Post to the goal endpoint
-    axios.post(`/event/goals`, goal, { headers: authHeader() }).then((res) => {
+    this.restClient.post(`/event/goals`, goal).then((res) => {
       console.log("Post goal response:", res); // TODO: catch error and handle if needed
     });
 
