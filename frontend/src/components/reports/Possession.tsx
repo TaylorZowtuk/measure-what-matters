@@ -10,6 +10,7 @@ import ReportProps from "../interfaces/props/report-props";
 import { teamPossessionDTO } from "../interfaces/team-possession";
 import axios from "axios";
 import authHeader from "../../services/auth.header";
+import RefreshIcon from "@material-ui/icons/Refresh";
 
 export function CircularProgressWithLabel(
   props: CircularProgressProps & { value: number }
@@ -127,14 +128,16 @@ export default function PossessionCircular(
   // If no match is selected on the dashboard, display nothing
   if (!props.matchId) return null;
   // If we havent completed the asynchronous data fetch yet; return a loading indicator
-  if (possessions == null) return <CircularProgress />;
+  if (possessions == null)
+    return <CircularProgress data-testid="loading_indicator" />;
   // Invalid data returned from fetch
   if (!validatePossessions(possessions))
     return (
-      <Button variant="warning" onClick={reloadOnClick}>
-        {" "}
-        Something Went Wrong... Click To Reload Report
-      </Button>
+      <div>
+        <Button variant="danger" onClick={reloadOnClick}>
+          Couldn't Load Report <RefreshIcon />
+        </Button>
+      </div>
     );
 
   return (
