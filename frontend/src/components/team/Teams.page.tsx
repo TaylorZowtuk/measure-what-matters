@@ -24,10 +24,6 @@ interface Player {
   playerId: number;
 }
 
-const rosterProps: RosterProps = {
-  teamId: 1,
-};
-
 class Teams extends React.Component<{}, teamState> {
   constructor(props: {}) {
     super(props);
@@ -85,6 +81,9 @@ class Teams extends React.Component<{}, teamState> {
       <Container>
         <h3>Your Teams</h3>
         {this.state.teamList.map((team) => {
+          const rosterProps: RosterProps = {
+            teamId: team.teamId,
+          };
           return (
             <Row key={team.teamId.toString()}>
               <Col>
