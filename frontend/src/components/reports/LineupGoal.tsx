@@ -42,6 +42,8 @@ class LineupGoal extends React.Component<ReportProps, LineupState> {
           { headers: authHeader() }
         );
         if (res.data) {
+          console.log(this.props.matchId);
+          console.log(res);
           const tempLineupList: any = [];
           // sort by time
           res.data.sort((a: any, b: any) => {
@@ -110,6 +112,14 @@ class LineupGoal extends React.Component<ReportProps, LineupState> {
     }
   }
 
+  componentDidMount() {
+    if (!this.state.finishLoading) {
+      this.getLineup().then((lineup: Lineups[] | null) => {
+        this.setState({ lineupList: lineup, finishLoading: true });
+      });
+    }
+  }
+
   render() {
     if (!this.props.matchId) {
       return null;
@@ -165,7 +175,7 @@ class LineupGoal extends React.Component<ReportProps, LineupState> {
                 &nbsp;
               </p>
               <p style={{ fontSize: "16px", margin: "auto 10px" }}>
-                for opponent goal
+                opponents goal
               </p>
             </div>
             <table
@@ -178,7 +188,7 @@ class LineupGoal extends React.Component<ReportProps, LineupState> {
               <thead>
                 <tr>
                   <th style={{ padding: "10px" }}>Goal</th>
-                  <th style={{ padding: "10px" }}>On For Goal</th>
+                  <th style={{ padding: "10px" }}>Line During Goal</th>
                 </tr>
               </thead>
               <tbody>
