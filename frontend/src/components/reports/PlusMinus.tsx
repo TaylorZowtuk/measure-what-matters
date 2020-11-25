@@ -109,7 +109,7 @@ export default function PlusMinusComponent(props: ReportProps) {
       <Container>
         <TableContainer component={Paper} style={tableStyling}>
           <EnhancedTableToolbar />
-          <Table stickyHeader>
+          <Table>
             <TableHead>
               <TableRow>
                 <TableCell>First Name</TableCell>

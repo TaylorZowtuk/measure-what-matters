@@ -137,7 +137,7 @@ class LineupComponent extends React.Component<
       <Container>
         <h1 style={textHeaderStyling}>Choose Your Match Lineup</h1>
         <TableContainer component={Paper} style={tableStyling}>
-          <Table stickyHeader>
+          <Table>
             <TableHead>
               <TableRow>
                 <TableCell></TableCell>

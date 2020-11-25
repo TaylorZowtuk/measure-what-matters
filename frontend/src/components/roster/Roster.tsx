@@ -321,7 +321,7 @@ class Roster extends React.Component<
       <Container>
         <h1 style={textHeaderStyling}>Edit Roster</h1>
         <TableContainer component={Paper} style={tableStyling}>
-          <Table stickyHeader>
+          <Table>
             <TableHead>
               <TableRow>
                 <TableCell>First Name</TableCell>
