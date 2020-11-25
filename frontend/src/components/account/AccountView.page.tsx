@@ -1,9 +1,9 @@
-import React from 'react';
-import axios from 'axios';
-import authHeader from '../../services/auth.header';
-import { Button, TextField } from '@material-ui/core';
-import EditIcon from '@material-ui/icons/Edit';
-import { Link } from 'react-router-dom';
+import React from "react";
+import axios from "axios";
+import authHeader from "../../services/auth.header";
+import { Button, TextField } from "@material-ui/core";
+import EditIcon from "@material-ui/icons/Edit";
+import { Link } from "react-router-dom";
 
 interface accountState {
   firstName: string;
@@ -20,22 +20,22 @@ class AccountView extends React.Component<{}, accountState> {
   constructor(props: {}) {
     super(props);
     this.state = {
-      firstName: '',
-      lastName: '',
-      username: '',
+      firstName: "",
+      lastName: "",
+      username: "",
       firstDisable: true,
       lastDisable: true,
-      firstEdit: '',
-      lastEdit: '',
-      errorMessage: '',
+      firstEdit: "",
+      lastEdit: "",
+      errorMessage: "",
     };
 
     // get user profile
     axios
-      .get('/api/users/profile', { headers: authHeader() })
+      .get("/api/users/profile", { headers: authHeader() })
       .then((response) => {
         if (response.data) {
-          let splitted = response.data.name.split(' ');
+          let splitted = response.data.name.split(" ");
           this.setState({
             firstName: splitted[0],
             lastName: splitted[1],
@@ -68,19 +68,19 @@ class AccountView extends React.Component<{}, accountState> {
   };
 
   handleFirstSave = (): void => {
-    if (this.state.firstEdit.trim() === '') {
-      this.setState({ errorMessage: 'Cannot have empty first/last name' });
+    if (this.state.firstEdit.trim() === "") {
+      this.setState({ errorMessage: "Cannot have empty first/last name" });
     } else {
       let tempFirst = this.state.firstEdit;
       this.setState({
         firstName: tempFirst,
         firstDisable: true,
-        errorMessage: '',
+        errorMessage: "",
       });
       axios
         .post(
-          '/api/users/profile/edit',
-          { name: this.state.firstEdit + ' ' + this.state.lastName },
+          "/api/users/profile/edit",
+          { name: this.state.firstEdit + " " + this.state.lastName },
           { headers: authHeader() }
         )
         .then(
@@ -97,24 +97,24 @@ class AccountView extends React.Component<{}, accountState> {
     this.setState({
       firstEdit: tempFirst,
       firstDisable: true,
-      errorMessage: '',
+      errorMessage: "",
     });
   };
 
   handleLastSave = (): void => {
-    if (this.state.lastEdit.trim() === '') {
-      this.setState({ errorMessage: 'Cannot have empty first/last name' });
+    if (this.state.lastEdit.trim() === "") {
+      this.setState({ errorMessage: "Cannot have empty first/last name" });
     } else {
       let tempLast = this.state.lastEdit;
       this.setState({
         lastName: tempLast,
         lastDisable: true,
-        errorMessage: '',
+        errorMessage: "",
       });
       axios
         .post(
-          '/api/users/profile/edit',
-          { name: this.state.firstName + ' ' + this.state.lastEdit },
+          "/api/users/profile/edit",
+          { name: this.state.firstName + " " + this.state.lastEdit },
           { headers: authHeader() }
         )
         .then(
@@ -128,103 +128,107 @@ class AccountView extends React.Component<{}, accountState> {
 
   handleLastCancel = (): void => {
     let tempLast = this.state.lastName;
-    this.setState({ lastEdit: tempLast, lastDisable: true, errorMessage: '' });
+    this.setState({ lastEdit: tempLast, lastDisable: true, errorMessage: "" });
   };
 
   render() {
     return (
       <div
         style={{
-          backgroundColor: 'white',
-          color: '#282c34',
-          borderRadius: '5px',
+          backgroundColor: "white",
+          color: "#282c34",
+          borderRadius: "5px",
         }}
       >
-        <h2 style={{ padding: 0, margin: '20px' }}>Account Information</h2>
+        <h2 style={{ padding: 0, margin: "20px" }}>Account Information</h2>
         <p
           style={{
-            color: 'crimson',
+            color: "crimson",
             fontSize: 14,
-            width: '30ch',
-            marginLeft: 'auto',
-            marginRight: 'auto',
+            width: "30ch",
+            marginLeft: "auto",
+            marginRight: "auto",
           }}
         >
           {this.state.errorMessage}
         </p>
         <div
           style={{
-            display: 'flex',
-            marginBottom: '20px',
-            marginLeft: '20px',
-            marginRight: '20px',
+            display: "flex",
+            marginBottom: "20px",
+            marginLeft: "20px",
+            marginRight: "20px",
           }}
         >
           <p
             style={{
-              textAlign: 'left',
-              margin: '0',
-              padding: '10px',
-              fontSize: '22px',
-              width: '12ch',
+              textAlign: "left",
+              margin: "0",
+              padding: "10px",
+              fontSize: "22px",
+              width: "12ch",
             }}
           >
             Username:
           </p>
           <TextField
-            margin='dense'
-            variant='outlined'
-            color='secondary'
+            margin="dense"
+            variant="outlined"
+            color="secondary"
             value={this.state.username}
             disabled={true}
           />
         </div>
         <div
           style={{
-            display: 'flex',
-            marginBottom: '20px',
-            marginLeft: '20px',
-            marginRight: '20px',
+            display: "flex",
+            marginBottom: "20px",
+            marginLeft: "20px",
+            marginRight: "20px",
           }}
         >
           <p
             style={{
-              textAlign: 'left',
-              margin: 'auto',
+              textAlign: "left",
+              margin: "auto",
               marginTop: 0,
-              padding: '10px',
-              fontSize: '22px',
-              width: '12ch',
+              padding: "10px",
+              fontSize: "22px",
+              width: "12ch",
             }}
           >
             First Name:
           </p>
-          <div style={{ display: 'block' }}>
+          <div style={{ display: "block" }}>
             <TextField
-              margin='dense'
-              variant='outlined'
-              color='secondary'
+              margin="dense"
+              variant="outlined"
+              color="secondary"
               value={this.state.firstEdit}
               disabled={this.state.firstDisable}
-              style={{ margin: 'auto' }}
+              style={{ margin: "auto" }}
               onChange={
                 this.state.firstDisable ? (): void => {} : this.handleFirstEdit
               }
             />
             <div
               style={{
-                display: this.state.firstDisable ? 'none' : 'flex',
+                display: this.state.firstDisable ? "none" : "flex",
                 margin: 0,
               }}
             >
               <p
-                style={{ fontSize: '14px', margin: '0 10px', color: 'crimson' }}
+                style={{ fontSize: "14px", margin: "0 10px", color: "crimson" }}
                 onClick={this.handleFirstSave}
               >
                 Save
               </p>
               <p
-                style={{ fontSize: '14px', margin: '0 10px', color: 'crimson' }}
+                style={{
+                  fontSize: "14px",
+                  margin: "0 10px",
+                  color: "dodgerblue",
+                }}
                 onClick={this.handleFirstCancel}
               >
                 Cancel
@@ -237,49 +241,53 @@ class AccountView extends React.Component<{}, accountState> {
 
         <div
           style={{
-            display: 'flex',
-            marginBottom: '20px',
-            marginLeft: '20px',
-            marginRight: '20px',
+            display: "flex",
+            marginBottom: "20px",
+            marginLeft: "20px",
+            marginRight: "20px",
           }}
         >
           <p
             style={{
-              textAlign: 'left',
-              margin: 'auto',
-              padding: '10px',
-              fontSize: '22px',
-              width: '12ch',
+              textAlign: "left",
+              margin: "auto",
+              padding: "10px",
+              fontSize: "22px",
+              width: "12ch",
             }}
           >
             Last Name:
           </p>
-          <div style={{ display: 'block' }}>
+          <div style={{ display: "block" }}>
             <TextField
-              margin='dense'
-              variant='outlined'
-              color='secondary'
+              margin="dense"
+              variant="outlined"
+              color="secondary"
               value={this.state.lastEdit}
               disabled={this.state.lastDisable}
-              style={{ margin: 'auto' }}
+              style={{ margin: "auto" }}
               onChange={
                 this.state.lastDisable ? (): void => {} : this.handleLastEdit
               }
             />
             <div
               style={{
-                display: this.state.lastDisable ? 'none' : 'flex',
+                display: this.state.lastDisable ? "none" : "flex",
                 margin: 0,
               }}
             >
               <p
-                style={{ fontSize: '14px', margin: '0 10px', color: 'crimson' }}
+                style={{ fontSize: "14px", margin: "0 10px", color: "crimson" }}
                 onClick={this.handleLastSave}
               >
                 Save
               </p>
               <p
-                style={{ fontSize: '14px', margin: '0 10px', color: 'crimson' }}
+                style={{
+                  fontSize: "14px",
+                  margin: "0 10px",
+                  color: "dodgerblue",
+                }}
                 onClick={this.handleLastCancel}
               >
                 Cancel
@@ -288,8 +296,8 @@ class AccountView extends React.Component<{}, accountState> {
           </div>
           <EditIcon onClick={this.handleLastDisable}></EditIcon>
         </div>
-        <Link to='/dashboard'>
-          <Button variant='contained' style={{ margin: '10px' }}>
+        <Link to="/dashboard">
+          <Button variant="contained" style={{ margin: "10px" }}>
             Back
           </Button>
         </Link>
