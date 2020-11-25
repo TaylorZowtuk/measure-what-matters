@@ -93,6 +93,8 @@ export class PlayerStatsController {
         if (error.message.includes('Cannot read property')) {
           throw new BadRequestException('matchId does not exist in database');
         }
+      } else if (error instanceof BadRequestException) {
+        throw error;
       } else {
         throw new InternalServerErrorException('Unknown error occured');
       }

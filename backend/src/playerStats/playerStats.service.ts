@@ -180,6 +180,12 @@ export class PlayerStatsService {
   async onForGoal(matchId: number): Promise<OnForGoalDTO[]> {
     const onForGoalsMatch: OnForGoalDTO[] = [];
 
+    if (matchId === null) {
+      throw new BadRequestException('matchId cannot be null');
+    }
+    // checking to see if match exists, OrFail will throw error if match does not exist
+    // cant just check if goals are null as 0:0 matches possible
+    await this.matchRepo.findOneOrFail({ where: { matchId } });
     const goals: Goal[] = await this.goalRepo.find({ where: { matchId } });
     const goalDtos: GoalDTO[] = this.convertToDto(goals);
 
