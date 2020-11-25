@@ -7,6 +7,7 @@ import {
   Checkbox,
   Container,
   Paper,
+  Snackbar,
   Table,
   TableBody,
   TableCell,
@@ -14,6 +15,7 @@ import {
   TableHead,
   TableRow,
 } from "@material-ui/core";
+import MuiAlert, { AlertProps } from "@material-ui/lab/Alert";
 import CSS from "csstype";
 import { Link, RouteComponentProps } from "react-router-dom";
 import Player from "../interfaces/player";
@@ -34,6 +36,10 @@ const buttonStyling: CSS.Properties = {
   margin: "2vh",
 };
 
+function Alert(props: AlertProps) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
+
 interface StartingLineup {
   playerId: number;
   matchId: number;
@@ -43,6 +49,7 @@ interface StartingLineup {
 interface State {
   players: Player[];
   lineup: Player[];
+  numPlayerSnackbarOpen: boolean;
 }
 
 class LineupComponent extends React.Component<
@@ -54,6 +61,7 @@ class LineupComponent extends React.Component<
     this.state = {
       players: [],
       lineup: [],
+      numPlayerSnackbarOpen: false,
     };
   }
 
@@ -93,6 +101,14 @@ class LineupComponent extends React.Component<
     }
   }
 
+  openNumPlayersSnackbar = () => {
+    this.setState({ numPlayerSnackbarOpen: true });
+  };
+
+  closeNumPlayersSnackbar = () => {
+    this.setState({ numPlayerSnackbarOpen: false });
+  };
+
   async handleNextClicked() {
     if (this.state.lineup.length >= 7) {
       const startingLineup: StartingLineup[] = [];
@@ -128,7 +144,7 @@ class LineupComponent extends React.Component<
 
       this.props.history.push("/match/recording", recordingState);
     } else {
-      alert("Must select at least 7 players."); // 6 on field plus one on the bench
+      this.openNumPlayersSnackbar();
     }
   }
 
@@ -178,6 +194,15 @@ class LineupComponent extends React.Component<
         >
           Next
         </Button>
+        <Snackbar
+          open={this.state.numPlayerSnackbarOpen}
+          autoHideDuration={6000}
+          onClose={this.closeNumPlayersSnackbar}
+        >
+          <Alert severity="error" onClose={this.closeNumPlayersSnackbar}>
+            Must select at least 7 players.
+          </Alert>
+        </Snackbar>
       </Container>
     );
   }
