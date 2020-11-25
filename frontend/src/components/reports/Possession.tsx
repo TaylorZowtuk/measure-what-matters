@@ -143,7 +143,7 @@ export default function PossessionCircular(
   return (
     <Container>
       <h4>Possession Time</h4>
-      <Row>
+      <Row style={{ margin: "5px", justifyContent: "center" }}>
         <Col>
           <h5>First Half</h5>
           <CircularProgressWithLabel value={possessions[0]} />
@@ -152,10 +152,10 @@ export default function PossessionCircular(
           <h5>Second Half</h5>
           <CircularProgressWithLabel value={possessions[1]} />
         </Col>
-        <Col>
-          <h5>Overall</h5>
-          <CircularProgressWithLabel value={possessions[2]} />
-        </Col>
+      </Row>
+      <h5>Overall</h5>
+      <Row style={{ margin: "5px", justifyContent: "center" }}>
+        <CircularProgressWithLabel value={possessions[2]} />
       </Row>
     </Container>
   );
