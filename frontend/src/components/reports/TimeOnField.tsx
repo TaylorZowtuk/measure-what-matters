@@ -20,6 +20,10 @@ import axios from "axios";
 import authHeader from "../../services/auth.header";
 import { timeOnFieldDTO } from "../interfaces/timeOnField";
 import ReportProps from "../interfaces/props/report-props";
+import { CircularProgress } from "@material-ui/core";
+import { Button } from "react-bootstrap";
+import round from "lodash/round";
+import RefreshIcon from "@material-ui/icons/Refresh";
 
 interface FormattedData {
   name: string;
@@ -28,63 +32,74 @@ interface FormattedData {
 }
 
 // Parse data in a consistent manner for display in table columns
-function createData(
+export function createData(
   first: string,
   last: string,
   number: number,
   milliseconds: number
 ) {
   let name: string = first + " " + last;
-  let minutes = Math.floor(milliseconds / (60 * 1000));
+  let minutes = round(milliseconds / (60 * 1000), 1);
   return { name, number, minutes };
 }
 
-const hardCodedRows = [
-  createData("Rob", "Park", 7, 125),
-  createData("Jake", "Floyd", 1, 1256),
-  createData("Jim", "Floyd", 12, 1678),
-  createData("Sly", "Jackson", 6, 1256),
-  createData("Rod", "Nedson", 16, 563),
-  createData("Fin", "Clarkson", 13, 346),
-  createData("Tanner", "Greggel", 11, 256),
-  createData("Shirl", "Benter", 24, 0),
-  createData("Becky", "Clarke", 31, 547),
-  createData("Steph", "Sampson", 26, 586),
-  createData("Jenn", "Winston", 23, 868),
-  createData("Bruce", "Banner", 28, 1646),
-  createData("Greyson", "Grey", 18, 1256),
-  createData("Herman", "Blake", 19, 2356),
-];
-
 // Enable using a hardcoded set of values for testing or to use data from an api call
-async function fetchRows(
-  matchId: number,
-  debug = false
+export async function fetchTimeOnFieldRows(
+  matchId: number
 ): Promise<FormattedData[]> {
-  if (debug) {
-    return hardCodedRows;
-  }
-
-  const res = await axios.get(
-    `/player-stats/timeOnField?matchId=${matchId}`, // TODO: Remove hardcoded matchId
-    { headers: authHeader() }
-  );
-
-  console.log("Time on field response:", res.data);
-  let rows: FormattedData[] = [];
-  for (let i = 0; i < res.data.length; i++) {
-    let player: timeOnFieldDTO = res.data[i];
-    rows.push(
-      createData(
-        player.firstName,
-        player.lastName,
-        player.jerseyNum,
-        player.millisecondsPlayed
-      )
+  try {
+    const res = await axios.get(
+      `/api/player-stats/timeOnField?matchId=${matchId}`,
+      {
+        headers: authHeader(),
+      }
     );
+
+    console.log("Time on field response:", res.data); // Handle errors
+    let rows: FormattedData[] = [];
+    for (let i = 0; i < res.data.length; i++) {
+      let player: timeOnFieldDTO = res.data[i];
+      rows.push(
+        createData(
+          player.firstName,
+          player.lastName,
+          player.jerseyNum,
+          player.millisecondsPlayed
+        )
+      );
+    }
+    return rows;
+  } catch (error) {
+    return [];
+  }
+}
+
+function validateRows(rows: FormattedData[]): boolean {
+  // No returned time on field info
+  if (!rows || rows.length === 0) return false;
+
+  // Validate each record
+  let i: number = rows.length;
+  while (i--) {
+    // Optimistically handle invalid rows by removing improper rows but continuing
+    if (
+      !rows[i].name || // ie. empty string ''
+      rows[i].name === " " || // ie. empty string ' '
+      !rows[i].number || // ie. 0
+      rows[i].number < 0 || // too small
+      rows[i].number > 100 || // too large
+      rows[i].minutes < 0 || // invalid
+      rows[i].minutes > 540 // too large; no game should be longer than 3 hours
+    ) {
+      rows.splice(i, 1); // Remove this offending row
+    }
   }
 
-  return rows;
+  // If after optimistic handling of issue rows, our array is empty
+  if (rows.length === 0) return false;
+
+  // Was valid
+  return true;
 }
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
@@ -260,12 +275,34 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export default function EnhancedTable(props: ReportProps) {
+type TimeOnFieldTableProps = {
+  fetchTimeOnField: Function; // Dependency inject for testing
+};
+
+export default function EnhancedTable(
+  props: TimeOnFieldTableProps & ReportProps
+) {
   const classes = useStyles();
-  const [order, setOrder] = React.useState<Order>("asc");
+  const [order, setOrder] = React.useState<Order>("desc");
   const [orderBy, setOrderBy] = React.useState<keyof FormattedData>("minutes");
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
+
+  // State for allowing user to reload component
+  const [reload, setReload] = useState(0);
+  const reloadOnClick = () => {
+    setReload(reload + 1);
+  };
+
+  const [rows, setRows] = useState<FormattedData[] | null>(null);
+  useEffect(() => {
+    async function getRows() {
+      if (props.matchId) {
+        setRows(await props.fetchTimeOnField(props.matchId));
+      }
+    }
+    getRows();
+  }, [props, reload]);
 
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
@@ -287,21 +324,21 @@ export default function EnhancedTable(props: ReportProps) {
     setPage(0);
   };
 
-  const [rows, setRows] = useState<FormattedData[] | null>(null);
-  useEffect(() => {
-    async function getRows() {
-      if (props.matchId) {
-        setRows(await fetchRows(props.matchId));
-      }
-    }
-    getRows();
-  }, [props]);
-
-  let _rows: FormattedData[] = [];
-  if (rows) _rows = rows;
+  // If no match is selected on the dashboard, display nothing
+  if (!props.matchId) return null;
+  // If we havent completed the asynchronous data fetch yet; return a loading indicator
+  if (rows == null) return <CircularProgress data-testid="loading_indicator" />;
+  if (!validateRows(rows))
+    return (
+      <div>
+        <Button variant="danger" onClick={reloadOnClick}>
+          Couldn't Load Report <RefreshIcon />
+        </Button>
+      </div>
+    );
 
   const emptyRows =
-    rowsPerPage - Math.min(rowsPerPage, _rows.length - page * rowsPerPage);
+    rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
 
   return (
     <div className={classes.root}>
@@ -321,7 +358,7 @@ export default function EnhancedTable(props: ReportProps) {
               onRequestSort={handleRequestSort}
             />
             <TableBody>
-              {stableSort(_rows, getComparator(order, orderBy))
+              {stableSort(rows, getComparator(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row) => {
                   return (
@@ -345,7 +382,7 @@ export default function EnhancedTable(props: ReportProps) {
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={_rows.length}
+          count={rows.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onChangePage={handleChangePage}

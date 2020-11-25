@@ -1,12 +1,16 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import CircularProgress, {
   CircularProgressProps,
 } from "@material-ui/core/CircularProgress";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
-import { Col, Container, Row } from "react-bootstrap";
+import { Button, Col, Container, Row } from "react-bootstrap";
 import { withStyles } from "@material-ui/core/styles";
 import ReportProps from "../interfaces/props/report-props";
+import { teamPossessionDTO } from "../interfaces/team-possession";
+import axios from "axios";
+import authHeader from "../../services/auth.header";
+import RefreshIcon from "@material-ui/icons/Refresh";
 
 export function CircularProgressWithLabel(
   props: CircularProgressProps & { value: number }
@@ -47,14 +51,54 @@ export function CircularProgressWithLabel(
   );
 }
 
-export function fetchTimes(debug = true): number[] {
+export async function fetchTimes(
+  matchId: number,
+  debug = false
+): Promise<number[]> {
   if (debug) {
     // Return 3 hardcoded values
     return [68, 32, 50];
   }
 
-  // TODO: connect to backend
-  return [68, 32, 50];
+  try {
+    const res = await axios.get(
+      `/api/player-stats/team-possession?matchId=${matchId}`,
+      {
+        headers: authHeader(),
+      }
+    );
+    let resData: teamPossessionDTO = res.data;
+    console.log("Get possession times response:", resData);
+    return [
+      resData.firstHalfPossOurTeam,
+      resData.secondHalfPossOurTeam,
+      resData.fullGamePossOurTeam,
+    ];
+  } catch (error) {
+    return [];
+  }
+}
+
+function validatePossessions(possessions: number[]): boolean {
+  // No returned possession info
+  if (!possessions || possessions.length === 0) return false;
+
+  // Proper dimension array returned
+  if (possessions.length !== 3) return false;
+
+  // Out of bounds values
+  if (
+    possessions[0] > 100 ||
+    possessions[0] < 0 ||
+    possessions[1] > 100 ||
+    possessions[1] < 0 ||
+    possessions[2] > 100 ||
+    possessions[2] < 0
+  )
+    return false;
+
+  // Was valid
+  return true;
 }
 
 type PossessionCircularProps = {
@@ -64,11 +108,37 @@ type PossessionCircularProps = {
 export default function PossessionCircular(
   props: PossessionCircularProps & ReportProps
 ) {
-  let times: number[] = props.fetchTimes();
-  if (!times || times.length < 3) {
-    // If there was a problem with fetch, then display 0's
-    times = [0, 0, 0];
-  }
+  // State for allowing user to reload component
+  const [reload, setReload] = useState(0);
+  const reloadOnClick = () => {
+    setReload(reload + 1);
+  };
+
+  // State for updating after fetch
+  const [possessions, setPossessions] = useState<number[] | null>(null);
+  useEffect(() => {
+    async function getPossessions() {
+      if (props.matchId) {
+        setPossessions(await props.fetchTimes(props.matchId));
+      }
+    }
+    getPossessions();
+  }, [props, reload]);
+
+  // If no match is selected on the dashboard, display nothing
+  if (!props.matchId) return null;
+  // If we havent completed the asynchronous data fetch yet; return a loading indicator
+  if (possessions == null)
+    return <CircularProgress data-testid="loading_indicator" />;
+  // Invalid data returned from fetch
+  if (!validatePossessions(possessions))
+    return (
+      <div>
+        <Button variant="danger" onClick={reloadOnClick}>
+          Couldn't Load Report <RefreshIcon />
+        </Button>
+      </div>
+    );
 
   return (
     <Container>
@@ -76,15 +146,15 @@ export default function PossessionCircular(
       <Row>
         <Col>
           <h5>First Half</h5>
-          <CircularProgressWithLabel value={times[0]} />
+          <CircularProgressWithLabel value={possessions[0]} />
         </Col>
         <Col>
           <h5>Second Half</h5>
-          <CircularProgressWithLabel value={times[1]} />
+          <CircularProgressWithLabel value={possessions[1]} />
         </Col>
         <Col>
           <h5>Overall</h5>
-          <CircularProgressWithLabel value={times[2]} />
+          <CircularProgressWithLabel value={possessions[2]} />
         </Col>
       </Row>
     </Container>

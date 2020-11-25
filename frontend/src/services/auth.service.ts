@@ -1,18 +1,18 @@
-import axios from "axios";
+import axios from 'axios';
 
 // credit: https://bezkoder.com/react-jwt-auth/#Authentication_service
 
 class AuthService {
   login(username: string, password: string) {
     return axios
-      .post("/auth/login", {
+      .post('/api/auth/login', {
         username,
         password,
       })
       .then((response) => {
-        console.log("Post to login response:", response);
+        console.log('Post to login response:', response);
         if (response.data.accessToken) {
-          localStorage.setItem("user", JSON.stringify(response.data));
+          localStorage.setItem('user', JSON.stringify(response.data));
         }
 
         return response.data;
@@ -20,7 +20,7 @@ class AuthService {
   }
 
   logout() {
-    localStorage.removeItem("user");
+    localStorage.removeItem('user');
   }
 
   register(
@@ -30,7 +30,7 @@ class AuthService {
     password2: string
   ) {
     return axios
-      .post("users/create", {
+      .post('/api/users/create', {
         name,
         username,
         password1,

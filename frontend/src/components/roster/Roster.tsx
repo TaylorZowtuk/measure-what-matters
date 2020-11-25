@@ -3,6 +3,7 @@ import authHeader from "../../services/auth.header";
 import axios from "axios";
 import {
   Button,
+  Container,
   IconButton,
   Paper,
   Table,
@@ -31,12 +32,13 @@ interface State {
   playerToAction: Player;
   action: Actions;
   teamId: number;
+  invalidJerseyNumText: string;
+  invalidFirstNameText: string;
+  invalidLastNameText: string;
 }
 
 const tableStyling: CSS.Properties = {
   height: "70vh",
-  width: "60vw",
-  margin: "auto",
 };
 
 const defaultPlayer: Player = {
@@ -76,6 +78,9 @@ class Roster extends React.Component<
       playerToAction: defaultPlayer,
       action: Actions.None,
       teamId: props.location.state.teamId,
+      invalidJerseyNumText: "",
+      invalidFirstNameText: "",
+      invalidLastNameText: "",
     };
   }
 
@@ -85,7 +90,7 @@ class Roster extends React.Component<
 
   getPlayers = async () => {
     axios
-      .get(`/players/teamId?teamId=${this.state.teamId}`, {
+      .get(`/api/players/teamId?teamId=${this.state.teamId}`, {
         headers: authHeader(),
       })
       .then((res) => {
@@ -116,11 +121,7 @@ class Roster extends React.Component<
   };
 
   handleCancel = () => {
-    this.setState({
-      deleteDialogOpen: false,
-      editDialogOpen: false,
-      playerToAction: defaultPlayer,
-    });
+    this.setStateDefaults();
   };
 
   getTitle = (action: Actions) => {
@@ -130,7 +131,7 @@ class Roster extends React.Component<
   handleEditConfirmation = () => {
     if (this.state.action === Actions.Edit) {
       axios
-        .post("/players/edit", this.state.playerToAction, {
+        .post("/api/players/edit", this.state.playerToAction, {
           headers: authHeader(),
         })
         .then(() => {
@@ -147,7 +148,7 @@ class Roster extends React.Component<
         jerseyNum: this.state.playerToAction.jerseyNum,
       };
       axios
-        .post("/players", [dto], {
+        .post("/api/players", [dto], {
           headers: authHeader(),
         })
         .then(() => {
@@ -166,7 +167,7 @@ class Roster extends React.Component<
     );
     if (ind > -1) {
       axios
-        .delete(`/players?playerId=${this.state.playerToAction.playerId}`, {
+        .delete(`/api/players?playerId=${this.state.playerToAction.playerId}`, {
           headers: authHeader(),
         })
         .then(() => {
@@ -185,6 +186,9 @@ class Roster extends React.Component<
       deleteDialogOpen: false,
       playerToAction: defaultPlayer,
       action: Actions.None,
+      invalidFirstNameText: "",
+      invalidLastNameText: "",
+      invalidJerseyNumText: "",
     });
   };
 
@@ -193,53 +197,131 @@ class Roster extends React.Component<
       <div>
         <TextField
           fullWidth
+          error={this.state.invalidFirstNameText.length === 0 ? false : true}
+          helperText={this.state.invalidFirstNameText}
           autoFocus
           defaultValue={player.firstName}
           label="First Name"
           onChange={(e: any) => {
-            const player = this.state.playerToAction;
+            let player: Player = { ...this.state.playerToAction };
             player.firstName = e.target.value;
-            this.setState({
-              playerToAction: player,
-            });
+            this.validateName(player);
           }}
         ></TextField>
         <TextField
           fullWidth
+          error={this.state.invalidLastNameText.length === 0 ? false : true}
+          helperText={this.state.invalidLastNameText}
           style={{ marginTop: "30px" }}
           defaultValue={player.lastName}
           label="Last Name"
           onChange={(e: any) => {
-            const player = this.state.playerToAction;
+            let player: Player = { ...this.state.playerToAction };
             player.lastName = e.target.value;
-            this.setState({
-              playerToAction: player,
-            });
+            this.validateName(player);
           }}
         ></TextField>
         <TextField
           fullWidth
+          error={this.state.invalidJerseyNumText.length === 0 ? false : true}
+          helperText={this.state.invalidJerseyNumText}
           style={{ marginTop: "30px", marginBottom: "30px" }}
           defaultValue={player.jerseyNum === -1 ? "" : player.jerseyNum} // if default (-1) then we're adding a new player so leave field empty
           label="Jersey Number"
           onChange={(e: any) => {
-            const player = this.state.playerToAction;
-            player.jerseyNum = e.target.value;
-            this.setState({
-              playerToAction: player,
-            });
+            let player: Player = { ...this.state.playerToAction };
+            player.jerseyNum = parseInt(e.target.value);
+            this.validateJerseyNum(player);
           }}
         ></TextField>
       </div>
     );
   };
 
+  disableSaveButton = () => {
+    return (
+      this.state.invalidJerseyNumText.length !== 0 ||
+      this.state.invalidFirstNameText.length !== 0 ||
+      this.state.invalidLastNameText.length !== 0
+    );
+  };
+
+  validateName(playerToAction: Player) {
+    const invalidNameWarning = "Enter a valid name with no spaces.";
+    if (
+      playerToAction.firstName !== "" &&
+      playerToAction.firstName.indexOf(" ") === -1
+    ) {
+      this.setState({
+        playerToAction: playerToAction,
+        invalidFirstNameText: "",
+      });
+    } else {
+      this.setState({
+        playerToAction: playerToAction,
+        invalidFirstNameText: invalidNameWarning,
+      });
+    }
+
+    if (
+      playerToAction.lastName !== "" &&
+      playerToAction.lastName.indexOf(" ") === -1
+    ) {
+      this.setState({
+        playerToAction: playerToAction,
+        invalidLastNameText: "",
+      });
+    } else {
+      this.setState({
+        playerToAction: playerToAction,
+        invalidLastNameText: invalidNameWarning,
+      });
+    }
+  }
+
+  validateJerseyNum(playerToAction: Player) {
+    const invalidJerseyNumWarning: string =
+      "Jersey number must be a number greater than 0.";
+    const uniqueJerseyNumWarning: string = "Jersey number must be unique.";
+    let uniqueJerseyNum: boolean = true;
+    for (let player of this.state.players) {
+      if (
+        player.jerseyNum === playerToAction.jerseyNum &&
+        player.playerId !== playerToAction.playerId
+      ) {
+        uniqueJerseyNum = false;
+      }
+    }
+    if (
+      !isNaN(playerToAction.jerseyNum) &&
+      playerToAction.jerseyNum > 0 &&
+      uniqueJerseyNum
+    ) {
+      this.setState({
+        playerToAction: playerToAction,
+        invalidJerseyNumText: "",
+        invalidFirstNameText: "",
+        invalidLastNameText: "",
+      });
+    } else {
+      if (!uniqueJerseyNum) {
+        this.setState({
+          invalidJerseyNumText: uniqueJerseyNumWarning,
+        });
+      } else {
+        this.setState({
+          invalidJerseyNumText: invalidJerseyNumWarning,
+        });
+      }
+    }
+  }
+
   render() {
     return (
-      <div>
+      <Container>
         <h1 style={textHeaderStyling}>Edit Roster</h1>
         <TableContainer component={Paper} style={tableStyling}>
-          <Table stickyHeader>
+          <Table>
             <TableHead>
               <TableRow>
                 <TableCell>First Name</TableCell>
@@ -251,10 +333,9 @@ class Roster extends React.Component<
                     color="default"
                     endIcon={<PersonAddIcon />}
                     onClick={() => {
-                      this.handleActionClicked(
-                        { ...defaultPlayer },
-                        Actions.Add
-                      );
+                      this.handleActionClicked(defaultPlayer, Actions.Add);
+                      this.validateJerseyNum(defaultPlayer); // to enable the helper text in the text field
+                      this.validateName(defaultPlayer); // to enable the helper text in the text field
                     }}
                   >
                     Add Player
@@ -302,6 +383,7 @@ class Roster extends React.Component<
           confirmationButtonText="Save"
           denyButtonText="Cancel"
           children={this.editDialogContents(this.state.playerToAction)}
+          disableConfirmationButton={this.disableSaveButton}
         ></CustomDialog>
         <CustomDialog
           isOpen={this.state.deleteDialogOpen}
@@ -312,7 +394,7 @@ class Roster extends React.Component<
           confirmationButtonText="Delete"
           denyButtonText="Cancel"
         ></CustomDialog>
-      </div>
+      </Container>
     );
   }
 }
