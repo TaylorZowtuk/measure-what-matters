@@ -3,6 +3,7 @@ import authHeader from "../../services/auth.header";
 import axios from "axios";
 import {
   Button,
+  Container,
   IconButton,
   Paper,
   Table,
@@ -38,8 +39,6 @@ interface State {
 
 const tableStyling: CSS.Properties = {
   height: "70vh",
-  width: "60vw",
-  margin: "auto",
 };
 
 const defaultPlayer: Player = {
@@ -319,10 +318,10 @@ class Roster extends React.Component<
 
   render() {
     return (
-      <div>
+      <Container>
         <h1 style={textHeaderStyling}>Edit Roster</h1>
         <TableContainer component={Paper} style={tableStyling}>
-          <Table stickyHeader>
+          <Table>
             <TableHead>
               <TableRow>
                 <TableCell>First Name</TableCell>
@@ -395,7 +394,7 @@ class Roster extends React.Component<
           confirmationButtonText="Delete"
           denyButtonText="Cancel"
         ></CustomDialog>
-      </div>
+      </Container>
     );
   }
 }
