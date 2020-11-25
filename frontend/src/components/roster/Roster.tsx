@@ -3,6 +3,7 @@ import authHeader from "../../services/auth.header";
 import axios from "axios";
 import {
   Button,
+  Container,
   IconButton,
   Paper,
   Table,
@@ -38,8 +39,6 @@ interface State {
 
 const tableStyling: CSS.Properties = {
   height: "70vh",
-  width: "60vw",
-  margin: "auto",
 };
 
 const defaultPlayer: Player = {
@@ -91,7 +90,7 @@ class Roster extends React.Component<
 
   getPlayers = async () => {
     axios
-      .get(`/players/teamId?teamId=${this.state.teamId}`, {
+      .get(`/api/players/teamId?teamId=${this.state.teamId}`, {
         headers: authHeader(),
       })
       .then((res) => {
@@ -132,7 +131,7 @@ class Roster extends React.Component<
   handleEditConfirmation = () => {
     if (this.state.action === Actions.Edit) {
       axios
-        .post("/players/edit", this.state.playerToAction, {
+        .post("/api/players/edit", this.state.playerToAction, {
           headers: authHeader(),
         })
         .then(() => {
@@ -149,7 +148,7 @@ class Roster extends React.Component<
         jerseyNum: this.state.playerToAction.jerseyNum,
       };
       axios
-        .post("/players", [dto], {
+        .post("/api/players", [dto], {
           headers: authHeader(),
         })
         .then(() => {
@@ -168,7 +167,7 @@ class Roster extends React.Component<
     );
     if (ind > -1) {
       axios
-        .delete(`/players?playerId=${this.state.playerToAction.playerId}`, {
+        .delete(`/api/players?playerId=${this.state.playerToAction.playerId}`, {
           headers: authHeader(),
         })
         .then(() => {
@@ -319,10 +318,10 @@ class Roster extends React.Component<
 
   render() {
     return (
-      <div>
+      <Container>
         <h1 style={textHeaderStyling}>Edit Roster</h1>
         <TableContainer component={Paper} style={tableStyling}>
-          <Table stickyHeader>
+          <Table>
             <TableHead>
               <TableRow>
                 <TableCell>First Name</TableCell>
@@ -395,7 +394,7 @@ class Roster extends React.Component<
           confirmationButtonText="Delete"
           denyButtonText="Cancel"
         ></CustomDialog>
-      </div>
+      </Container>
     );
   }
 }

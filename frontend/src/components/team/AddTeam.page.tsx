@@ -121,7 +121,7 @@ class AddTeam extends React.Component<{}, createTeamState> {
     if (this.state.teamName.trim() !== "") {
       axios
         .post(
-          "/teams",
+          "/api/teams",
           { name: this.state.teamName },
           { headers: authHeader() }
         )
@@ -147,7 +147,7 @@ class AddTeam extends React.Component<{}, createTeamState> {
                 });
                 console.log(playerArray);
                 axios
-                  .post("/players", playerArray, { headers: authHeader() })
+                  .post("/api/players", playerArray, { headers: authHeader() })
                   .then(
                     (response) => {
                       console.log("team added successfully");

@@ -35,7 +35,7 @@ class CreateMatch extends React.Component<{}, matchState> {
     };
 
     //get all teams
-    axios.get("/teams", { headers: authHeader() }).then((response) => {
+    axios.get("/api/teams", { headers: authHeader() }).then((response) => {
       if (response.data) {
         console.log(response.data);
         this.setState({ teams: response.data });
@@ -76,7 +76,7 @@ class CreateMatch extends React.Component<{}, matchState> {
     } else {
       axios
         .post(
-          "/match/create",
+          "/api/match/create",
           {
             teamId: this.state.teamId,
             scheduledTime: this.state.time,

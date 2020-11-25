@@ -127,7 +127,7 @@ function shotOnClick(props: ShotOnClickProps) {
       onTarget: props.onTarget,
     };
 
-    restClient.post(`/event/shots`, shot).then((res) => {
+    restClient.post(`/api/event/shots`, shot).then((res) => {
       console.log("Post shot response:", res); // TODO: catch error and handle if needed
     });
   }

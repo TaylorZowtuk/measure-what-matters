@@ -17,6 +17,7 @@ import {
   makeStyles,
   Theme,
   CircularProgress,
+  Container,
 } from "@material-ui/core";
 import ReportProps from "../interfaces/props/report-props";
 import CSS from "csstype";
@@ -63,13 +64,11 @@ const EnhancedTableToolbar = () => {
 
 const tableStyling: CSS.Properties = {
   height: "50vh",
-  width: "30vw",
-  margin: "auto",
 };
 
 async function fetchPlusMinus(matchId: number): Promise<PlusMinus[]> {
   const response = await axios.get(
-    `/player-stats/plus-minus?matchId=${matchId}`,
+    `/api/player-stats/plus-minus?matchId=${matchId}`,
     {
       headers: authHeader(),
     }
@@ -107,10 +106,10 @@ export default function PlusMinusComponent(props: ReportProps) {
     );
   } else {
     return (
-      <div className="PlusMinus">
+      <Container>
         <TableContainer component={Paper} style={tableStyling}>
           <EnhancedTableToolbar />
-          <Table stickyHeader>
+          <Table>
             <TableHead>
               <TableRow>
                 <TableCell>First Name</TableCell>
@@ -147,7 +146,7 @@ export default function PlusMinusComponent(props: ReportProps) {
             {/* Adds the table body to a table frame just to avoid repeating */}
           </Table>
         </TableContainer>
-      </div>
+      </Container>
     );
   }
 }

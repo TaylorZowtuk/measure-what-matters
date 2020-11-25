@@ -8,6 +8,15 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const APP_PORT: string = app.get('ConfigService').get('APP_PORT');
 
+  // Cors
+  app.enableCors({ origin: false }); // TODO create a cors policy once deployed
+
+  // Global /api prefix
+  app.setGlobalPrefix('api');
+
+  // Validation of data
+  app.useGlobalPipes(new ValidationPipe());
+
   const options = new DocumentBuilder()
     .setTitle('MWM Api')
     .setDescription('The MWM API description')
@@ -17,11 +26,6 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('api', app, document);
-
-  // Cors
-  app.enableCors({ origin: false }); // TODO create a cors policy once deployed
-
-  app.useGlobalPipes(new ValidationPipe());
 
   // Start the app
   await app.listen(APP_PORT);

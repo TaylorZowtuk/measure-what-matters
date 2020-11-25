@@ -100,15 +100,17 @@ class RestClient {
         }
       })
       .catch((err) => {
-        if (err.response.status === 401) {
-          const ind = this.cache.findIndex((cachedRequestConfig) => {
-            return (
-              JSON.stringify(cachedRequestConfig) === JSON.stringify(config)
-            );
-          });
-          if (ind > -1) {
-            this.cache[ind].headers = authHeader(); // if the call is unauthorized the header token may have expired, so we refresh it
-            this.client.defaults.headers = authHeader(); // refresh the default header as well
+        if (err.response) {
+          if (err.response.status === 401) {
+            const ind = this.cache.findIndex((cachedRequestConfig) => {
+              return (
+                JSON.stringify(cachedRequestConfig) === JSON.stringify(config)
+              );
+            });
+            if (ind > -1) {
+              this.cache[ind].headers = authHeader(); // if the call is unauthorized the header token may have expired, so we refresh it
+              this.client.defaults.headers = authHeader(); // refresh the default header as well
+            }
           }
         }
       });

@@ -44,7 +44,7 @@ async function fetchMatches(debug = false): Promise<MatchAndTeam[]> {
   } else {
     // Get all the users teams
     const teamsRes = await axios.get(
-      `/teams?userId=1`, // TODO: Remove hardcoded userId
+      `/api/teams?userId=1`, // TODO: Remove hardcoded userId
       { headers: authHeader() }
     ); // TODO: catch error and handle
     console.log("Get teams response:", teamsRes);
@@ -53,7 +53,7 @@ async function fetchMatches(debug = false): Promise<MatchAndTeam[]> {
     // For each team get all matches
     for (let i = 0; i < teamsData.length; i++) {
       const matchesRes = await axios.get(
-        `/match/teamId?teamId=${teamsData[i].teamId}`,
+        `/api/match/teamId?teamId=${teamsData[i].teamId}`,
         { headers: authHeader() }
       ); // TODO: catch error and handle
       console.log("Get matches response:", matchesRes);
