@@ -4,20 +4,12 @@ import { makeStyles } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Drawer from "@material-ui/core/Drawer";
 import Box from "@material-ui/core/Box";
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
 import List from "@material-ui/core/List";
 import Typography from "@material-ui/core/Typography";
 import Divider from "@material-ui/core/Divider";
-import IconButton from "@material-ui/core/IconButton";
-import Badge from "@material-ui/core/Badge";
 import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
-import Paper from "@material-ui/core/Paper";
 import Link from "@material-ui/core/Link";
-import MenuIcon from "@material-ui/icons/Menu";
-import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
-import NotificationsIcon from "@material-ui/icons/Notifications";
 import { mainListItems, secondaryListItems } from "./ListItems";
 
 function Copyright() {
@@ -116,14 +108,6 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Guide() {
   const classes = useStyles();
-  const [open, setOpen] = React.useState(true);
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
-  const handleDrawerClose = () => {
-    setOpen(false);
-  };
-  const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 
   return (
     <div
@@ -136,46 +120,19 @@ export default function Guide() {
     >
       <div className={classes.root}>
         <CssBaseline />
-        {/* <AppBar
-          position="absolute"
-          className={clsx(classes.appBar, open && classes.appBarShift)}
-        >
-          <Toolbar className={classes.toolbar}>
-            <IconButton
-              edge="start"
-              color="inherit"
-              aria-label="open drawer"
-              onClick={handleDrawerOpen}
-              className={clsx(
-                classes.menuButton,
-                open && classes.menuButtonHidden
-              )}
-            >
-              <MenuIcon />
-            </IconButton>
-            <Typography
-              component="h1"
-              variant="h6"
-              color="inherit"
-              noWrap
-              className={classes.title}
-            >
-              Guide
-            </Typography>
-          </Toolbar>
-        </AppBar> */}
         <Drawer
           variant="permanent"
           classes={{
-            paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose),
+            paper: clsx(classes.drawerPaper, false && classes.drawerPaperClose),
           }}
-          open={open}
         >
           <div className={classes.toolbarIcon}>
             <h3 style={{ margin: 0 }}>Guide</h3>
           </div>
           <Divider />
           <List>{mainListItems}</List>
+          <Divider />
+          <List>{secondaryListItems}</List>
         </Drawer>
         <main className={classes.content}>
           <Container maxWidth="lg" className={classes.container}>
@@ -273,11 +230,11 @@ export default function Guide() {
                 <p style={{ fontSize: "18px", margin: 0, padding: "8px" }}>
                   Before you can start to record a match, you need to create a
                   match to be recorded. To do this, click the Create Match
-                  button on dashboard.
+                  button on the nav bar.
                 </p>
                 <img
-                  src={require("./images/dashboard-create-match.png")}
-                  alt="dashboard create match"
+                  src={require("./images/navbar-create-match.png")}
+                  alt="navbar create match"
                   width="600px"
                   style={{ margin: "10px" }}
                 ></img>
@@ -306,12 +263,12 @@ export default function Guide() {
                   Recording
                 </h3>
                 <p style={{ fontSize: "18px", margin: 0, padding: "8px" }}>
-                  To start to record a game, click the Recording button on
-                  dashboard.
+                  To start to record a game, click the Recording button on the
+                  nav bar.
                 </p>
                 <img
-                  src={require("./images/dashboard-recording.png")}
-                  alt="dashboard recording button"
+                  src={require("./images/navbar-recording.png")}
+                  alt="navbar recording button"
                   width="600px"
                   style={{ margin: "10px" }}
                 ></img>
@@ -339,30 +296,136 @@ export default function Guide() {
                   You can now record the match.
                 </p>
                 <p style={{ fontSize: "18px", margin: 0, padding: "8px" }}>
+                  To start recording, hit the start button. You can pause the
+                  game once the game starts.
+                </p>
+                <div style={{ display: "block" }}>
+                  <img
+                    src={require("./images/start-recording.png")}
+                    alt="start recording"
+                    width="300px"
+                    style={{ margin: "10px" }}
+                  ></img>
+                  <img
+                    src={require("./images/pause-recording.png")}
+                    alt="pause recording"
+                    width="300px"
+                    style={{ margin: "10px" }}
+                  ></img>
+                </div>
+                <p style={{ fontSize: "18px", margin: 0, padding: "8px" }}>
+                  After pausing the game, you can choose to resume the game or
+                  end the first half of the game.
+                </p>
+                <img
+                  src={require("./images/end-half.png")}
+                  alt="resume or end first half"
+                  width="300px"
+                  style={{ margin: "10px" }}
+                ></img>
+                <p style={{ fontSize: "18px", margin: 0, padding: "8px" }}>
+                  Once you end the first half, you can start to record the
+                  second half. Hit the start button whenever you are ready.
+                </p>
+                <img
+                  src={require("./images/2nd-half.png")}
+                  alt="second half"
+                  width="300px"
+                  style={{ margin: "10px" }}
+                ></img>
+                <p style={{ fontSize: "18px", margin: 0, padding: "8px" }}>
+                  When you pause during the second half of the game, you can
+                  choose to resume the game or end the game.
+                </p>
+                <img
+                  src={require("./images/end-game.png")}
+                  alt="resume or end game"
+                  width="300px"
+                  style={{ margin: "10px" }}
+                ></img>
+                <p style={{ fontSize: "18px", margin: 0, padding: "8px" }}>
+                  Once you end the game, you will be brought to the dashboard.
+                </p>
+                <p
+                  style={{
+                    fontSize: "18px",
+                    margin: 0,
+                    padding: "8px",
+                    backgroundColor: "cornflowerblue",
+                    color: "white",
+                  }}
+                >
+                  Ball Possesion
+                </p>
+                <p style={{ fontSize: "18px", margin: 0, padding: "8px" }}>
                   To indicate someone on your team has the ball, simply click
                   their name. If the opponent has the ball, click the opposition
                   button.
                 </p>
+                <p style={{ fontSize: "18px", margin: 0, padding: "8px" }}>
+                  Note:
+                </p>
+                <ul>
+                  <li style={{ fontSize: "18px", margin: 0, padding: "8px" }}>
+                    You can't record ball possesion when the game is on pause
+                  </li>
+                </ul>
                 <img
                   src={require("./images/ball-possesion.png")}
                   alt="ball possesion"
                   width="900px"
                   style={{ margin: "10px" }}
                 ></img>
+                <p
+                  style={{
+                    fontSize: "18px",
+                    margin: 0,
+                    padding: "8px",
+                    backgroundColor: "cornflowerblue",
+                    color: "white",
+                  }}
+                >
+                  Shot
+                </p>
                 <p style={{ fontSize: "18px", margin: 0, padding: "8px" }}>
                   If someone makes a shot, you can click and drag the name in
                   any direction. Then select the result for the shot.
                 </p>
                 <p style={{ fontSize: "18px", margin: 0, padding: "8px" }}>
-                  (Note: the one you are dragging must have the ball and is
-                  indicated by clicking on it)
+                  Note:
                 </p>
+                <ul>
+                  <li style={{ fontSize: "18px", margin: 0, padding: "8px" }}>
+                    You can't record shot when the game is on pause
+                  </li>
+                  <li style={{ fontSize: "18px", margin: 0, padding: "8px" }}>
+                    The one you are dragging must have the ball and is indicated
+                    by clicking on it
+                  </li>
+                </ul>
                 <img
-                  src={require("./images/shot.png")}
+                  src={require("./images/drag-shot.png")}
                   alt="make a shot"
-                  width="500px"
+                  width="900px"
                   style={{ margin: "10px" }}
                 ></img>
+                <img
+                  src={require("./images/shot.png")}
+                  alt="select result of the shot"
+                  width="300px"
+                  style={{ margin: "10px" }}
+                ></img>
+                <p
+                  style={{
+                    fontSize: "18px",
+                    margin: 0,
+                    padding: "8px",
+                    backgroundColor: "cornflowerblue",
+                    color: "white",
+                  }}
+                >
+                  Substitution
+                </p>
                 <p style={{ fontSize: "18px", margin: 0, padding: "8px" }}>
                   To make a substitution, you click and drag a player to the
                   bench area.
@@ -400,8 +463,8 @@ export default function Guide() {
                   teams page.
                 </p>
                 <img
-                  src={require("./images/dashboard-teams.png")}
-                  alt="dashboard teams button"
+                  src={require("./images/navbar-teams.png")}
+                  alt="navbar teams button"
                   width="600px"
                   style={{ margin: "10px" }}
                 ></img>
@@ -449,11 +512,11 @@ export default function Guide() {
                 </h3>
                 <p style={{ fontSize: "18px", margin: 0, padding: "8px" }}>
                   You can view your account info by clicking the Account button
-                  on dashboard.
+                  on the nav bar.
                 </p>
                 <img
-                  src={require("./images/dashboard-account.png")}
-                  alt="dashboard account button"
+                  src={require("./images/navbar-account.png")}
+                  alt="navbar account button"
                   width="600px"
                   style={{ margin: "10px" }}
                 ></img>
@@ -461,6 +524,12 @@ export default function Guide() {
                   This page will show your username and your name. You can edit
                   your name by clicking the edit icon.
                 </p>
+                <img
+                  src={require("./images/edit-account.png")}
+                  alt="edit account"
+                  width="400px"
+                  style={{ margin: "10px" }}
+                ></img>
               </div>
             </Grid>
             <Box pt={4}>

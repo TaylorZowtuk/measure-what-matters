@@ -45,6 +45,11 @@ export default function AppNavbar() {
                 Account
               </Button>
             </Link>
+            <Link to="/guide">
+              <Button variant="outline-secondary" style={buttonStyling}>
+                Help
+              </Button>
+            </Link>
             <Link to="/">
               <Button
                 variant="outline-danger"
