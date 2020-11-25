@@ -33,7 +33,7 @@ interface FormattedData {
 }
 
 // Parse data in a consistent manner for display in table columns
-function createData(
+export function createData(
   first: string,
   last: string,
   jerseyNum: number,
@@ -50,23 +50,6 @@ function createData(
     overall: overall,
   };
 }
-
-export const hardCodedRows = [
-  createData("Rob", "Park", 7, 12, 11, 23),
-  createData("Jake", "Floyd", 1, 1, 0, 1),
-  createData("Jim", "Floyd", 12, 18, 3, 21),
-  createData("Sly", "Jackson", 6, 0, 0, 0),
-  createData("Rod", "Nedson", 16, 1, 1, 2),
-  createData("Fin", "Clarkson", 13, 3, 3, 6),
-  createData("Tanner", "Greggel", 11, 2, 30, 32),
-  createData("Shirl", "Benter", 24, 11, 24, 35),
-  createData("Becky", "Clarke", 31, 5, 4, 9),
-  createData("Steph", "Sampson", 26, 5, 8, 13),
-  createData("Jenn", "Winston", 23, 18, 4, 24),
-  createData("Bruce", "Banner", 28, 16, 4, 20),
-  createData("Greyson", "Grey", 18, 12, 5, 17),
-  createData("Herman", "Blake", 19, 12, 5, 17),
-];
 
 function formatData(data: touchesDTO): FormattedData[] {
   let formatted: FormattedData[] = [];
@@ -94,14 +77,8 @@ function formatData(data: touchesDTO): FormattedData[] {
 
 // Enable using a hardcoded set of values for testing or to use data from an api call
 export async function fetchTouchesRows(
-  matchId: number,
-  debug = false
+  matchId: number
 ): Promise<FormattedData[]> {
-  if (debug) {
-    // Return hardcoded values
-    return hardCodedRows;
-  }
-
   try {
     const res = await axios.get(`/player-stats/touches?matchId=${matchId}`, {
       headers: authHeader(),
@@ -338,7 +315,7 @@ type TouchesTableProps = {
 
 export default function TouchesTable(props: TouchesTableProps & ReportProps) {
   const classes = useStyles();
-  const [order, setOrder] = React.useState<Order>("asc");
+  const [order, setOrder] = React.useState<Order>("desc");
   const [orderBy, setOrderBy] = React.useState<keyof FormattedData>("overall");
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
@@ -382,7 +359,8 @@ export default function TouchesTable(props: TouchesTableProps & ReportProps) {
   // If no match is selected on the dashboard, display nothing
   if (!props.matchId) return null;
   // If we havent completed the asynchronous data fetch yet; return a loading indicator
-  if (rows === null) return <CircularProgress />;
+  if (rows === null)
+    return <CircularProgress data-testid="loading_indicator" />;
   if (!validateTouches(rows))
     return (
       <div>
