@@ -1,0 +1,217 @@
+{
+  "stats": {
+    "suites": 2,
+    "tests": 4,
+    "passes": 4,
+    "pending": 0,
+    "failures": 0,
+    "start": "2020-11-25T19:09:01.950Z",
+    "end": "2020-11-25T19:09:23.320Z",
+    "duration": 21370,
+    "testsRegistered": 4,
+    "passPercent": 100,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "9eb353e4-4a69-4f02-8b10-50df50818f4f",
+      "title": "",
+      "fullFile": "",
+      "file": "",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "36ae2c3c-612d-461e-8f3e-64b33d7fdfce",
+          "title": "MWM tests",
+          "fullFile": "C:\\Users\\bsami\\OneDrive\\Desktop\\teamsnap-game-observation\\selenium_testing\\src\\test\\MWMselenium.ts",
+          "file": "\\src\\test\\MWMselenium.ts",
+          "beforeHooks": [
+            {
+              "title": "\"before all\" hook: Before in \"MWM tests\"",
+              "fullTitle": "MWM tests \"before all\" hook: Before in \"MWM tests\"",
+              "timedOut": false,
+              "duration": 28,
+              "state": null,
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "return __awaiter(void 0, void 0, void 0, function () {\n        return __generator(this, function (_a) {\n            driver = new selenium_webdriver_1.Builder().forBrowser(\"chrome\").build();\n            return [2 /*return*/];\n        });\n    });",
+              "err": {},
+              "uuid": "230ed7cb-f93d-452f-b00d-21fa9cf337dc",
+              "parentUUID": "36ae2c3c-612d-461e-8f3e-64b33d7fdfce",
+              "isHook": true,
+              "skipped": false
+            }
+          ],
+          "afterHooks": [
+            {
+              "title": "\"after all\" hook: After in \"MWM tests\"",
+              "fullTitle": "MWM tests \"after all\" hook: After in \"MWM tests\"",
+              "timedOut": false,
+              "duration": 1,
+              "state": null,
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "return __awaiter(void 0, void 0, void 0, function () {\n        return __generator(this, function (_a) {\n            try {\n                driver.quit();\n            }\n            catch (error) {\n                console.log('error is here on driver quit');\n                console.log(error);\n            }\n            return [2 /*return*/];\n        });\n    });",
+              "err": {},
+              "uuid": "a0778aad-1e45-4aec-8e28-b56880cbb8a5",
+              "parentUUID": "36ae2c3c-612d-461e-8f3e-64b33d7fdfce",
+              "isHook": true,
+              "skipped": false
+            }
+          ],
+          "tests": [],
+          "suites": [
+            {
+              "uuid": "38197a44-505e-4286-bca6-b7cf08812a06",
+              "title": "App run through",
+              "fullFile": "C:\\Users\\bsami\\OneDrive\\Desktop\\teamsnap-game-observation\\selenium_testing\\src\\test\\MWMselenium.ts",
+              "file": "\\src\\test\\MWMselenium.ts",
+              "beforeHooks": [],
+              "afterHooks": [],
+              "tests": [
+                {
+                  "title": "Open MWM and check URL correct",
+                  "fullTitle": "MWM tests App run through Open MWM and check URL correct",
+                  "timedOut": false,
+                  "duration": 4289,
+                  "state": "passed",
+                  "speed": "slow",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "return __awaiter(void 0, void 0, void 0, function () {\n                var driver, currentUrl;\n                return __generator(this, function (_a) {\n                    switch (_a.label) {\n                        case 0: return [4 /*yield*/, new selenium_webdriver_1.Builder().forBrowser('chrome').build()];\n                        case 1:\n                            driver = _a.sent();\n                            return [4 /*yield*/, driver.get('http://2a246.yeg.rac.sh/')];\n                        case 2:\n                            _a.sent();\n                            return [4 /*yield*/, driver.getCurrentUrl()];\n                        case 3:\n                            currentUrl = _a.sent();\n                            // make sure correct URL opened\n                            assert.strictEqual('http://2a246.yeg.rac.sh/', currentUrl, 'Correct URL not opened');\n                            return [2 /*return*/];\n                    }\n                });\n            });",
+                  "err": {},
+                  "uuid": "790e9721-f05b-4a5c-a537-7ab41265fd73",
+                  "parentUUID": "38197a44-505e-4286-bca6-b7cf08812a06",
+                  "isHook": false,
+                  "skipped": false
+                },
+                {
+                  "title": "MWM sign up",
+                  "fullTitle": "MWM tests App run through MWM sign up",
+                  "timedOut": false,
+                  "duration": 5413,
+                  "state": "passed",
+                  "speed": "slow",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "return __awaiter(void 0, void 0, void 0, function () {\n                var driver, nameElements, passwordElements, notMatchingPasswords;\n                return __generator(this, function (_a) {\n                    switch (_a.label) {\n                        case 0: return [4 /*yield*/, new selenium_webdriver_1.Builder().forBrowser('chrome').build()];\n                        case 1:\n                            driver = _a.sent();\n                            return [4 /*yield*/, driver.get('http://2a246.yeg.rac.sh/')];\n                        case 2:\n                            _a.sent();\n                            // opening signup page\n                            return [4 /*yield*/, driver.findElement(selenium_webdriver_1.By.xpath(\"//a[@href ='/signup']\")).click()];\n                        case 3:\n                            // opening signup page\n                            _a.sent();\n                            return [4 /*yield*/, driver.findElements(selenium_webdriver_1.By.id('outlined-margin-dense'))];\n                        case 4:\n                            nameElements = _a.sent();\n                            // sending keys to these elements\n                            return [4 /*yield*/, nameElements[0].sendKeys('firstName')];\n                        case 5:\n                            // sending keys to these elements\n                            _a.sent();\n                            return [4 /*yield*/, nameElements[1].sendKeys('lastName')];\n                        case 6:\n                            _a.sent();\n                            return [4 /*yield*/, nameElements[2].sendKeys('Username')];\n                        case 7:\n                            _a.sent();\n                            return [4 /*yield*/, driver.findElements(selenium_webdriver_1.By.id('outlined-adornment-password'))];\n                        case 8:\n                            passwordElements = _a.sent();\n                            // sending keys to passwords that do not match\n                            return [4 /*yield*/, passwordElements[0].sendKeys('password')];\n                        case 9:\n                            // sending keys to passwords that do not match\n                            _a.sent();\n                            return [4 /*yield*/, passwordElements[1].sendKeys('password2')];\n                        case 10:\n                            _a.sent();\n                            // click signup button\n                            return [4 /*yield*/, driver.findElement(selenium_webdriver_1.By.className('MuiButton-label')).click()];\n                        case 11:\n                            // click signup button\n                            _a.sent();\n                            return [4 /*yield*/, driver.wait(selenium_webdriver_1.until.elementLocated(selenium_webdriver_1.By.xpath(\"//p[@style = 'color: crimson; font-size: 14px; width: 25ch; margin-left: auto; margin-right: auto;']\"))).getText()\n                                // testing that passwords not matching brings up a message to the user saying passwords don't match\n                            ];\n                        case 12:\n                            notMatchingPasswords = _a.sent();\n                            // testing that passwords not matching brings up a message to the user saying passwords don't match\n                            assert.strictEqual(notMatchingPasswords, 'Passwords must match!', 'Password not match error did not come up');\n                            // clearing password elements to put a correct password in\n                            return [4 /*yield*/, passwordElements[0].sendKeys(selenium_webdriver_1.Key.CONTROL + 'a')];\n                        case 13:\n                            // clearing password elements to put a correct password in\n                            _a.sent();\n                            return [4 /*yield*/, passwordElements[0].sendKeys(selenium_webdriver_1.Key.DELETE)];\n                        case 14:\n                            _a.sent();\n                            return [4 /*yield*/, passwordElements[1].sendKeys(selenium_webdriver_1.Key.CONTROL + 'a')];\n                        case 15:\n                            _a.sent();\n                            return [4 /*yield*/, passwordElements[1].sendKeys(selenium_webdriver_1.Key.DELETE)];\n                        case 16:\n                            _a.sent();\n                            // putting in correct passwords\n                            return [4 /*yield*/, passwordElements[0].sendKeys('password')];\n                        case 17:\n                            // putting in correct passwords\n                            _a.sent();\n                            return [4 /*yield*/, passwordElements[1].sendKeys('password')];\n                        case 18:\n                            _a.sent();\n                            // clicking signup button with correct parameters in it\n                            return [4 /*yield*/, driver.findElement(selenium_webdriver_1.By.className('MuiButton-label')).click()];\n                        case 19:\n                            // clicking signup button with correct parameters in it\n                            _a.sent();\n                            return [2 /*return*/];\n                    }\n                });\n            });",
+                  "err": {},
+                  "uuid": "394d5571-da9b-4190-8720-c4defe2b0e05",
+                  "parentUUID": "38197a44-505e-4286-bca6-b7cf08812a06",
+                  "isHook": false,
+                  "skipped": false
+                },
+                {
+                  "title": "Logs into app, showing error handling when incorrect password or empty field present",
+                  "fullTitle": "MWM tests App run through Logs into app, showing error handling when incorrect password or empty field present",
+                  "timedOut": false,
+                  "duration": 4876,
+                  "state": "passed",
+                  "speed": "slow",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "return __awaiter(void 0, void 0, void 0, function () {\n                var driver, userNameElement, passwordElement, loginButton, errorElement, errorMessage, currentUrl;\n                return __generator(this, function (_a) {\n                    switch (_a.label) {\n                        case 0: return [4 /*yield*/, new selenium_webdriver_1.Builder().forBrowser('chrome').build()];\n                        case 1:\n                            driver = _a.sent();\n                            return [4 /*yield*/, driver.get('http://2a246.yeg.rac.sh/')];\n                        case 2:\n                            _a.sent();\n                            return [4 /*yield*/, driver.findElement(selenium_webdriver_1.By.id('outlined-margin-dense'))];\n                        case 3:\n                            userNameElement = _a.sent();\n                            return [4 /*yield*/, driver.findElement(selenium_webdriver_1.By.id('outlined-adornment-password'))];\n                        case 4:\n                            passwordElement = _a.sent();\n                            return [4 /*yield*/, driver.findElement(selenium_webdriver_1.By.className('MuiButton-label'))];\n                        case 5:\n                            loginButton = _a.sent();\n                            return [4 /*yield*/, userNameElement.sendKeys('user')];\n                        case 6:\n                            _a.sent();\n                            return [4 /*yield*/, loginButton.click()];\n                        case 7:\n                            _a.sent();\n                            return [4 /*yield*/, driver.findElement(selenium_webdriver_1.By.xpath(\"//p[@style ='color: crimson; font-size: 14px; width: 30ch; margin-left: auto; margin-right: auto;']\"))];\n                        case 8:\n                            errorElement = _a.sent();\n                            return [4 /*yield*/, errorElement.getText()];\n                        case 9:\n                            errorMessage = _a.sent();\n                            assert.strictEqual(errorMessage, 'Please enter username and password.', 'Empty username or password test failed');\n                            return [4 /*yield*/, passwordElement.sendKeys('pass')];\n                        case 10:\n                            _a.sent();\n                            return [4 /*yield*/, loginButton.click()];\n                        case 11:\n                            _a.sent();\n                            // quick wait to ensure element loaded with error message\n                            //driver.manage().setTimeouts({implicit:2000});\n                            errorElement = driver.wait(selenium_webdriver_1.until.elementLocated(selenium_webdriver_1.By.xpath(\"//p[@style ='color: crimson; font-size: 14px; width: 30ch; margin-left: auto; margin-right: auto;']\")));\n                            return [4 /*yield*/, errorElement.getText()];\n                        case 12:\n                            errorMessage = _a.sent();\n                            assert.strictEqual(errorMessage, 'Wrong username or password.', 'Incorrect username or password test failed');\n                            // clearing username and password elements to put in correct username and password made in signup section\n                            return [4 /*yield*/, userNameElement.sendKeys(selenium_webdriver_1.Key.CONTROL + 'a')];\n                        case 13:\n                            // clearing username and password elements to put in correct username and password made in signup section\n                            _a.sent();\n                            return [4 /*yield*/, userNameElement.sendKeys(selenium_webdriver_1.Key.DELETE)];\n                        case 14:\n                            _a.sent();\n                            return [4 /*yield*/, passwordElement.sendKeys(selenium_webdriver_1.Key.CONTROL + 'a')];\n                        case 15:\n                            _a.sent();\n                            return [4 /*yield*/, passwordElement.sendKeys(selenium_webdriver_1.Key.DELETE)];\n                        case 16:\n                            _a.sent();\n                            return [4 /*yield*/, userNameElement.sendKeys('Username')];\n                        case 17:\n                            _a.sent();\n                            return [4 /*yield*/, passwordElement.sendKeys('password')];\n                        case 18:\n                            _a.sent();\n                            return [4 /*yield*/, loginButton.click()];\n                        case 19:\n                            _a.sent();\n                            // refreshing page as sometimes components don't load fast enough, this has been tested manually and correctly brings up next page\n                            // without this next line selenium would load fast enough ~ 60% of the time, and 40% would throw an error\n                            //TODO try to fix this\n                            return [4 /*yield*/, driver.get('http://2a246.yeg.rac.sh/dashboard')];\n                        case 20:\n                            // refreshing page as sometimes components don't load fast enough, this has been tested manually and correctly brings up next page\n                            // without this next line selenium would load fast enough ~ 60% of the time, and 40% would throw an error\n                            //TODO try to fix this\n                            _a.sent();\n                            return [4 /*yield*/, driver.getCurrentUrl()];\n                        case 21:\n                            currentUrl = _a.sent();\n                            // making sure loads properly before retrieving\n                            // testing that logging in takes the user to the dashboard\n                            assert.strictEqual('http://2a246.yeg.rac.sh/dashboard', currentUrl, 'Should be on dashboard page after log in');\n                            return [2 /*return*/];\n                    }\n                });\n            });",
+                  "err": {},
+                  "uuid": "77659981-3979-4377-8e32-5f1dd7487422",
+                  "parentUUID": "38197a44-505e-4286-bca6-b7cf08812a06",
+                  "isHook": false,
+                  "skipped": false
+                },
+                {
+                  "title": "Create a team and match",
+                  "fullTitle": "MWM tests App run through Create a team and match",
+                  "timedOut": false,
+                  "duration": 6736,
+                  "state": "passed",
+                  "speed": "slow",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "return __awaiter(void 0, void 0, void 0, function () {\n                var driver, userNameElement, passwordElement, loginButton, teamsButton, currentURL, teamPageButtons, addTeamButton, textBoxesAddTeam, randName, createTeamButtons;\n                return __generator(this, function (_a) {\n                    switch (_a.label) {\n                        case 0: return [4 /*yield*/, new selenium_webdriver_1.Builder().forBrowser('chrome').build()];\n                        case 1:\n                            driver = _a.sent();\n                            return [4 /*yield*/, driver.get('http://2a246.yeg.rac.sh/')];\n                        case 2:\n                            _a.sent();\n                            return [4 /*yield*/, driver.findElement(selenium_webdriver_1.By.id('outlined-margin-dense'))];\n                        case 3:\n                            userNameElement = _a.sent();\n                            return [4 /*yield*/, driver.findElement(selenium_webdriver_1.By.id('outlined-adornment-password'))];\n                        case 4:\n                            passwordElement = _a.sent();\n                            return [4 /*yield*/, driver.findElement(selenium_webdriver_1.By.className('MuiButton-label'))];\n                        case 5:\n                            loginButton = _a.sent();\n                            return [4 /*yield*/, userNameElement.sendKeys('Username')];\n                        case 6:\n                            _a.sent();\n                            return [4 /*yield*/, passwordElement.sendKeys('password')];\n                        case 7:\n                            _a.sent();\n                            // log in \n                            return [4 /*yield*/, loginButton.click()];\n                        case 8:\n                            // log in \n                            _a.sent();\n                            // refreshing page as sometimes components don't load fast enough, this has been tested manually and correctly brings up next page\n                            // without this next line selenium would load fast enough ~ 60% of the time, and 40% would throw an error\n                            //TODO try to fix this\n                            driver.get('http://2a246.yeg.rac.sh/dashboard');\n                            return [4 /*yield*/, driver.findElement(selenium_webdriver_1.By.xpath(\"//a[@href ='/teams']\"))];\n                        case 9:\n                            teamsButton = _a.sent();\n                            return [4 /*yield*/, teamsButton.click()];\n                        case 10:\n                            _a.sent();\n                            return [4 /*yield*/, driver.getCurrentUrl()];\n                        case 11:\n                            currentURL = _a.sent();\n                            // testing to see taken to teams page\n                            assert.strictEqual(currentURL, 'http://2a246.yeg.rac.sh/teams', 'Teams page loaded correctly');\n                            return [4 /*yield*/, driver.findElements(selenium_webdriver_1.By.className('MuiButton-label'))];\n                        case 12:\n                            teamPageButtons = _a.sent();\n                            addTeamButton = teamPageButtons[teamPageButtons.length - 2];\n                            return [4 /*yield*/, addTeamButton.click()];\n                        case 13:\n                            _a.sent();\n                            return [4 /*yield*/, driver.getCurrentUrl()];\n                        case 14:\n                            currentURL = _a.sent();\n                            // should be on create team page now\n                            assert.strictEqual(currentURL, 'http://2a246.yeg.rac.sh/create-team', 'Should now be on create team page');\n                            return [4 /*yield*/, driver.findElements(selenium_webdriver_1.By.xpath(\"//input[@type ='text']\"))];\n                        case 15:\n                            textBoxesAddTeam = _a.sent();\n                            randName = Math.floor(Math.random() * 10000000);\n                            return [4 /*yield*/, driver.findElements(selenium_webdriver_1.By.className('MuiButton-label'))];\n                        case 16:\n                            createTeamButtons = _a.sent();\n                            return [4 /*yield*/, textBoxesAddTeam[0].sendKeys(randName)];\n                        case 17:\n                            _a.sent();\n                            // populating players\n                            return [4 /*yield*/, textBoxesAddTeam[1].sendKeys('Joey')];\n                        case 18:\n                            // populating players\n                            _a.sent();\n                            return [4 /*yield*/, textBoxesAddTeam[2].sendKeys('Banks')];\n                        case 19:\n                            _a.sent();\n                            return [4 /*yield*/, textBoxesAddTeam[3].sendKeys(1)];\n                        case 20:\n                            _a.sent();\n                            return [4 /*yield*/, createTeamButtons[0].click()];\n                        case 21:\n                            _a.sent();\n                            return [4 /*yield*/, textBoxesAddTeam[1].sendKeys('Zoey')];\n                        case 22:\n                            _a.sent();\n                            return [4 /*yield*/, textBoxesAddTeam[2].sendKeys('Zoo')];\n                        case 23:\n                            _a.sent();\n                            return [4 /*yield*/, textBoxesAddTeam[3].sendKeys(2)];\n                        case 24:\n                            _a.sent();\n                            return [4 /*yield*/, createTeamButtons[0].click()];\n                        case 25:\n                            _a.sent();\n                            return [4 /*yield*/, textBoxesAddTeam[1].sendKeys('Mr')];\n                        case 26:\n                            _a.sent();\n                            return [4 /*yield*/, textBoxesAddTeam[2].sendKeys('Moo')];\n                        case 27:\n                            _a.sent();\n                            return [4 /*yield*/, textBoxesAddTeam[3].sendKeys(3)];\n                        case 28:\n                            _a.sent();\n                            return [4 /*yield*/, createTeamButtons[0].click()];\n                        case 29:\n                            _a.sent();\n                            return [4 /*yield*/, textBoxesAddTeam[1].sendKeys('GoodOl')];\n                        case 30:\n                            _a.sent();\n                            return [4 /*yield*/, textBoxesAddTeam[2].sendKeys('Lou')];\n                        case 31:\n                            _a.sent();\n                            return [4 /*yield*/, textBoxesAddTeam[3].sendKeys(4)];\n                        case 32:\n                            _a.sent();\n                            return [4 /*yield*/, createTeamButtons[0].click()];\n                        case 33:\n                            _a.sent();\n                            return [4 /*yield*/, textBoxesAddTeam[1].sendKeys('Red')];\n                        case 34:\n                            _a.sent();\n                            return [4 /*yield*/, textBoxesAddTeam[2].sendKeys('Hot')];\n                        case 35:\n                            _a.sent();\n                            return [4 /*yield*/, textBoxesAddTeam[3].sendKeys(5)];\n                        case 36:\n                            _a.sent();\n                            return [4 /*yield*/, createTeamButtons[0].click()];\n                        case 37:\n                            _a.sent();\n                            return [4 /*yield*/, textBoxesAddTeam[1].sendKeys('Mr')];\n                        case 38:\n                            _a.sent();\n                            return [4 /*yield*/, textBoxesAddTeam[2].sendKeys('Robot')];\n                        case 39:\n                            _a.sent();\n                            return [4 /*yield*/, textBoxesAddTeam[3].sendKeys(6)];\n                        case 40:\n                            _a.sent();\n                            return [4 /*yield*/, createTeamButtons[0].click()];\n                        case 41:\n                            _a.sent();\n                            return [4 /*yield*/, textBoxesAddTeam[1].sendKeys('Slow')];\n                        case 42:\n                            _a.sent();\n                            return [4 /*yield*/, textBoxesAddTeam[2].sendKeys('Poke')];\n                        case 43:\n                            _a.sent();\n                            return [4 /*yield*/, textBoxesAddTeam[3].sendKeys(7)];\n                        case 44:\n                            _a.sent();\n                            return [4 /*yield*/, createTeamButtons[0].click()];\n                        case 45:\n                            _a.sent();\n                            return [4 /*yield*/, textBoxesAddTeam[1].sendKeys('No')];\n                        case 46:\n                            _a.sent();\n                            return [4 /*yield*/, textBoxesAddTeam[2].sendKeys('Joke')];\n                        case 47:\n                            _a.sent();\n                            return [4 /*yield*/, textBoxesAddTeam[3].sendKeys(8)];\n                        case 48:\n                            _a.sent();\n                            // supposed to add team doesn't work\n                            return [4 /*yield*/, createTeamButtons[0].click()];\n                        case 49:\n                            // supposed to add team doesn't work\n                            _a.sent();\n                            return [2 /*return*/];\n                    }\n                });\n            });",
+                  "err": {},
+                  "uuid": "93d5902f-f92a-46e2-bc4c-1d2fdf643149",
+                  "parentUUID": "38197a44-505e-4286-bca6-b7cf08812a06",
+                  "isHook": false,
+                  "skipped": false
+                }
+              ],
+              "suites": [],
+              "passes": [
+                "790e9721-f05b-4a5c-a537-7ab41265fd73",
+                "394d5571-da9b-4190-8720-c4defe2b0e05",
+                "77659981-3979-4377-8e32-5f1dd7487422",
+                "93d5902f-f92a-46e2-bc4c-1d2fdf643149"
+              ],
+              "failures": [],
+              "pending": [],
+              "skipped": [],
+              "duration": 21314,
+              "root": false,
+              "rootEmpty": false,
+              "_timeout": 90000
+            }
+          ],
+          "passes": [],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 0,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 90000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 90000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "8.2.1"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": true,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "6.2.1"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "ReportDirectory",
+        "": true
+      },
+      "version": "5.1.0"
+    }
+  }
+}
