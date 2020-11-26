@@ -215,6 +215,59 @@ export default function Guide() {
                   width="600px"
                   style={{ margin: "10px" }}
                 ></img>
+                {/* Teams guide */}
+                <h3
+                  id="teams"
+                  style={{
+                    backgroundColor: "grey",
+                    color: "white",
+                    padding: "8px",
+                    margin: 0,
+                  }}
+                >
+                  Teams
+                </h3>
+                <p style={{ fontSize: "18px", margin: 0, padding: "8px" }}>
+                  You can see all your teams and players on the teams page.
+                  Click on the Teams button and you will be directed to the
+                  teams page.
+                </p>
+                <img
+                  src={require("./images/navbar-teams.png")}
+                  alt="navbar teams button"
+                  width="600px"
+                  style={{ margin: "10px" }}
+                ></img>
+                <p style={{ fontSize: "18px", margin: 0, padding: "8px" }}>
+                  To edit roster for your team, click the Edit Roster button and
+                  you can add players to or delete players from the team. You
+                  can also change player names and their jersey numbers.
+                </p>
+                <div style={{ display: "block" }}>
+                  <img
+                    src={require("./images/teams.png")}
+                    alt="teams page"
+                    width="400px"
+                    style={{ margin: "10px" }}
+                  ></img>
+                  <img
+                    src={require("./images/edit-roster.png")}
+                    alt="edit roster"
+                    width="700px"
+                    style={{ margin: "10px" }}
+                  ></img>
+                </div>
+                <p style={{ fontSize: "18px", margin: 0, padding: "8px" }}>
+                  To add a team, click the Add Team button on Teams page. You
+                  need to enter a unique team name. You can add players to it
+                  while you are creating the team.
+                </p>
+                <img
+                  src={require("./images/add-team.png")}
+                  alt="add team"
+                  width="600px"
+                  style={{ margin: "10px" }}
+                ></img>
                 {/* Create Match guide */}
                 <h3
                   id="create-match"
@@ -355,7 +408,7 @@ export default function Guide() {
                     color: "white",
                   }}
                 >
-                  Ball Possesion
+                  Ball Possession
                 </p>
                 <p style={{ fontSize: "18px", margin: 0, padding: "8px" }}>
                   To indicate someone on your team has the ball, simply click
@@ -367,7 +420,7 @@ export default function Guide() {
                 </p>
                 <ul>
                   <li style={{ fontSize: "18px", margin: 0, padding: "8px" }}>
-                    You can't record ball possesion when the game is on pause
+                    You can't record ball possession when the game is on pause
                   </li>
                 </ul>
                 <img
@@ -445,59 +498,7 @@ export default function Guide() {
                   width="900px"
                   style={{ margin: "10px" }}
                 ></img>
-                {/* Teams guide */}
-                <h3
-                  id="teams"
-                  style={{
-                    backgroundColor: "grey",
-                    color: "white",
-                    padding: "8px",
-                    margin: 0,
-                  }}
-                >
-                  Teams
-                </h3>
-                <p style={{ fontSize: "18px", margin: 0, padding: "8px" }}>
-                  You can see all your teams and players on the teams page.
-                  Click on the Teams button and you will be directed to the
-                  teams page.
-                </p>
-                <img
-                  src={require("./images/navbar-teams.png")}
-                  alt="navbar teams button"
-                  width="600px"
-                  style={{ margin: "10px" }}
-                ></img>
-                <p style={{ fontSize: "18px", margin: 0, padding: "8px" }}>
-                  To edit roster for your team, click the Edit Roster button and
-                  you can add players to or delete players from the team. You
-                  can also change player names and their jersey numbers.
-                </p>
-                <div style={{ display: "block" }}>
-                  <img
-                    src={require("./images/teams.png")}
-                    alt="teams page"
-                    width="400px"
-                    style={{ margin: "10px" }}
-                  ></img>
-                  <img
-                    src={require("./images/edit-roster.png")}
-                    alt="edit roster"
-                    width="700px"
-                    style={{ margin: "10px" }}
-                  ></img>
-                </div>
-                <p style={{ fontSize: "18px", margin: 0, padding: "8px" }}>
-                  To add a team, click the Add Team button on Teams page. You
-                  need to enter a unique team name. You can add players to it
-                  while you are creating the team.
-                </p>
-                <img
-                  src={require("./images/add-team.png")}
-                  alt="add team"
-                  width="600px"
-                  style={{ margin: "10px" }}
-                ></img>
+
                 {/* View/Edit Account guide */}
                 <h3
                   id="account"

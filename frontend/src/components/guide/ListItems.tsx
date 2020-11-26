@@ -15,6 +15,11 @@ export const mainListItems = (
         <ListItemText primary="Dashboard" />
       </ListItem>
     </a>
+    <a href="#teams" style={{ textDecoration: "none", color: "#000000DE" }}>
+      <ListItem button>
+        <ListItemText primary="Teams" />
+      </ListItem>
+    </a>
     <a
       href="#create-match"
       style={{ textDecoration: "none", color: "#000000DE" }}
@@ -26,11 +31,6 @@ export const mainListItems = (
     <a href="#recording" style={{ textDecoration: "none", color: "#000000DE" }}>
       <ListItem button>
         <ListItemText primary="Recording" />
-      </ListItem>
-    </a>
-    <a href="#teams" style={{ textDecoration: "none", color: "#000000DE" }}>
-      <ListItem button>
-        <ListItemText primary="Teams" />
       </ListItem>
     </a>
     <a href="#account" style={{ textDecoration: "none", color: "#000000DE" }}>
