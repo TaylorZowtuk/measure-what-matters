@@ -108,13 +108,15 @@ window.onload = function() {
               "type": "number",
               "format": "int",
               "description": "The time the player came off the field in milliseconds"
+            },
+            "id": {
+              "type": "number"
             }
           },
           "required": [
             "playerId",
             "matchId",
-            "timeOn",
-            "timeOff"
+            "timeOn"
           ]
         },
         "CreateAssistDTO": {
@@ -153,7 +155,6 @@ window.onload = function() {
             }
           },
           "required": [
-            "id",
             "matchId",
             "time",
             "playerId"
@@ -310,9 +311,78 @@ window.onload = function() {
             "time"
           ]
         },
+        "User": {
+          "type": "object",
+          "properties": {
+            "userId": {
+              "type": "number"
+            },
+            "name": {
+              "type": "string"
+            },
+            "username": {
+              "type": "string"
+            },
+            "password": {
+              "type": "string"
+            },
+            "teams": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/Team"
+              }
+            },
+            "createdDate": {
+              "format": "date-time",
+              "type": "string"
+            },
+            "updatedDate": {
+              "format": "date-time",
+              "type": "string"
+            }
+          },
+          "required": [
+            "userId",
+            "name",
+            "username",
+            "password",
+            "teams",
+            "createdDate",
+            "updatedDate"
+          ]
+        },
         "Team": {
           "type": "object",
-          "properties": {}
+          "properties": {
+            "teamId": {
+              "type": "number"
+            },
+            "name": {
+              "type": "string"
+            },
+            "user": {
+              "$ref": "#/components/schemas/User"
+            },
+            "userId": {
+              "type": "number"
+            },
+            "createdDate": {
+              "format": "date-time",
+              "type": "string"
+            },
+            "updatedDate": {
+              "format": "date-time",
+              "type": "string"
+            }
+          },
+          "required": [
+            "teamId",
+            "name",
+            "user",
+            "userId",
+            "createdDate",
+            "updatedDate"
+          ]
         },
         "MatchDTO": {
           "type": "object",
@@ -484,6 +554,47 @@ window.onload = function() {
             "jerseyNum"
           ]
         },
+        "Player": {
+          "type": "object",
+          "properties": {
+            "playerId": {
+              "type": "number"
+            },
+            "teamId": {
+              "type": "number"
+            },
+            "firstName": {
+              "type": "string"
+            },
+            "lastName": {
+              "type": "string"
+            },
+            "jerseyNum": {
+              "type": "number"
+            },
+            "archived": {
+              "type": "boolean"
+            },
+            "createdDate": {
+              "format": "date-time",
+              "type": "string"
+            },
+            "updatedDate": {
+              "format": "date-time",
+              "type": "string"
+            }
+          },
+          "required": [
+            "playerId",
+            "teamId",
+            "firstName",
+            "lastName",
+            "jerseyNum",
+            "archived",
+            "createdDate",
+            "updatedDate"
+          ]
+        },
         "PlayerTimeDTO": {
           "type": "object",
           "properties": {
@@ -610,6 +721,9 @@ window.onload = function() {
           "properties": {
             "name": {
               "type": "string"
+            },
+            "userId": {
+              "type": "number"
             }
           },
           "required": [
@@ -723,7 +837,7 @@ window.onload = function() {
       }
     },
     "paths": {
-      "/event/goals": {
+      "/api/event/goals": {
         "post": {
           "operationId": "GoalController_saveGoalEvent",
           "parameters": [],
@@ -805,7 +919,7 @@ window.onload = function() {
           ]
         }
       },
-      "/event/substitutions": {
+      "/api/event/substitutions": {
         "post": {
           "operationId": "SubstitutionController_saveSubstitutionEvent",
           "parameters": [],
@@ -840,7 +954,7 @@ window.onload = function() {
           ]
         }
       },
-      "/event/substitutions/startingLineup": {
+      "/api/event/substitutions/startingLineup": {
         "post": {
           "operationId": "SubstitutionController_createStartingSubs",
           "parameters": [],
@@ -878,7 +992,7 @@ window.onload = function() {
           ]
         }
       },
-      "/event/assists": {
+      "/api/event/assists": {
         "post": {
           "operationId": "AssistController_saveAssistEvent",
           "parameters": [],
@@ -963,7 +1077,7 @@ window.onload = function() {
           ]
         }
       },
-      "/event/assists/delete": {
+      "/api/event/assists/delete": {
         "delete": {
           "operationId": "AssistController_deleteAssist",
           "parameters": [
@@ -1000,7 +1114,7 @@ window.onload = function() {
           ]
         }
       },
-      "/event/possession/neutral": {
+      "/api/event/possession/neutral": {
         "post": {
           "operationId": "PossessionController_neutralPossession",
           "parameters": [],
@@ -1038,7 +1152,7 @@ window.onload = function() {
           ]
         }
       },
-      "/event/possession/player": {
+      "/api/event/possession/player": {
         "post": {
           "operationId": "PossessionController_playerPossession",
           "parameters": [],
@@ -1076,7 +1190,7 @@ window.onload = function() {
           ]
         }
       },
-      "/event/possession/opposition": {
+      "/api/event/possession/opposition": {
         "post": {
           "operationId": "PossessionController_oppositionPossession",
           "parameters": [],
@@ -1114,7 +1228,7 @@ window.onload = function() {
           ]
         }
       },
-      "/event/possession": {
+      "/api/event/possession": {
         "delete": {
           "operationId": "PossessionController_removePossessionEvent",
           "parameters": [],
@@ -1152,7 +1266,7 @@ window.onload = function() {
           ]
         }
       },
-      "/event/shots": {
+      "/api/event/shots": {
         "post": {
           "operationId": "ShotController_saveShotEvent",
           "parameters": [],
@@ -1226,7 +1340,7 @@ window.onload = function() {
           ]
         }
       },
-      "/event/shots/teamSummary": {
+      "/api/event/shots/teamSummary": {
         "get": {
           "operationId": "ShotController_getTeamShotsSummaryByMatch",
           "parameters": [
@@ -1260,7 +1374,7 @@ window.onload = function() {
           ]
         }
       },
-      "/match/create": {
+      "/api/match/create": {
         "post": {
           "operationId": "MatchController_createMatch",
           "parameters": [],
@@ -1292,7 +1406,7 @@ window.onload = function() {
           ]
         }
       },
-      "/match/start": {
+      "/api/match/start": {
         "post": {
           "operationId": "MatchController_startMatch",
           "parameters": [],
@@ -1324,7 +1438,7 @@ window.onload = function() {
           ]
         }
       },
-      "/match/teamId": {
+      "/api/match/teamId": {
         "get": {
           "operationId": "MatchController_getMatchesByTeamId",
           "parameters": [
@@ -1365,7 +1479,7 @@ window.onload = function() {
           ]
         }
       },
-      "/match/halftime": {
+      "/api/match/halftime": {
         "post": {
           "operationId": "MatchController_updateHalfTimeMatch",
           "parameters": [],
@@ -1400,7 +1514,7 @@ window.onload = function() {
           ]
         }
       },
-      "/match/fullTime": {
+      "/api/match/fullTime": {
         "post": {
           "operationId": "MatchController_updateFullTimeMatch",
           "parameters": [],
@@ -1435,7 +1549,7 @@ window.onload = function() {
           ]
         }
       },
-      "/players": {
+      "/api/players": {
         "post": {
           "operationId": "PlayerController_createPlayers",
           "parameters": [],
@@ -1502,7 +1616,7 @@ window.onload = function() {
           ]
         }
       },
-      "/players/teamId": {
+      "/api/players/teamId": {
         "get": {
           "operationId": "PlayerController_getPlayersByTeamId",
           "parameters": [
@@ -1546,7 +1660,7 @@ window.onload = function() {
           ]
         }
       },
-      "/players/edit": {
+      "/api/players/edit": {
         "post": {
           "operationId": "PlayerController_updatePlayer",
           "parameters": [],
@@ -1563,6 +1677,16 @@ window.onload = function() {
           "responses": {
             "200": {
               "description": "Update player entity"
+            },
+            "201": {
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Player"
+                  }
+                }
+              }
             },
             "400": {
               "description": "Problems with request input"
@@ -1581,7 +1705,7 @@ window.onload = function() {
           ]
         }
       },
-      "/player-stats/timeOnField": {
+      "/api/player-stats/timeOnField": {
         "get": {
           "operationId": "PlayerStatsController_getTimeOnField",
           "parameters": [
@@ -1625,12 +1749,12 @@ window.onload = function() {
           ]
         }
       },
-      "/player-stats/onForGoal": {
+      "/api/player-stats/onForGoal": {
         "get": {
-          "operationId": "PlayerStatsController_getPlayersOnForGoal",
+          "operationId": "PlayerStatsController_getPlayersOnForGoals",
           "parameters": [
             {
-              "name": "goalId",
+              "name": "matchId",
               "required": true,
               "in": "query",
               "schema": {
@@ -1669,7 +1793,7 @@ window.onload = function() {
           ]
         }
       },
-      "/player-stats/plus-minus": {
+      "/api/player-stats/plus-minus": {
         "get": {
           "operationId": "PlayerStatsController_getPlusMinusMatch",
           "parameters": [
@@ -1713,7 +1837,7 @@ window.onload = function() {
           ]
         }
       },
-      "/player-stats/touches": {
+      "/api/player-stats/touches": {
         "get": {
           "operationId": "PlayerStatsController_getPlayerTouchesForMatch",
           "parameters": [
@@ -1757,7 +1881,7 @@ window.onload = function() {
           ]
         }
       },
-      "/player-stats/player-possession": {
+      "/api/player-stats/player-possession": {
         "get": {
           "operationId": "PlayerStatsController_getPlayerPossessionsForMatch",
           "parameters": [
@@ -1801,7 +1925,7 @@ window.onload = function() {
           ]
         }
       },
-      "/player-stats/team-possession": {
+      "/api/player-stats/team-possession": {
         "get": {
           "operationId": "PlayerStatsController_getTeamPossessionSummary",
           "parameters": [
@@ -1845,7 +1969,7 @@ window.onload = function() {
           ]
         }
       },
-      "/teams": {
+      "/api/teams": {
         "post": {
           "operationId": "TeamController_createTeam",
           "parameters": [],
@@ -1923,7 +2047,7 @@ window.onload = function() {
           ]
         }
       },
-      "/teams/edit": {
+      "/api/teams/edit": {
         "post": {
           "operationId": "TeamController_upDateTeamName",
           "parameters": [],
@@ -1940,6 +2064,16 @@ window.onload = function() {
           "responses": {
             "200": {
               "description": "Update team name"
+            },
+            "201": {
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Team"
+                  }
+                }
+              }
             },
             "400": {
               "description": "Problems with request input"
@@ -1958,7 +2092,7 @@ window.onload = function() {
           ]
         }
       },
-      "/auth/login": {
+      "/api/auth/login": {
         "post": {
           "operationId": "AuthController_login",
           "parameters": [],
@@ -1987,7 +2121,7 @@ window.onload = function() {
           ]
         }
       },
-      "/users/profile": {
+      "/api/users/profile": {
         "get": {
           "operationId": "UsersController_getUserDetails",
           "parameters": [],
@@ -2015,7 +2149,7 @@ window.onload = function() {
           ]
         }
       },
-      "/users/profile/edit": {
+      "/api/users/profile/edit": {
         "post": {
           "operationId": "UsersController_editUser",
           "parameters": [],
@@ -2047,7 +2181,7 @@ window.onload = function() {
           ]
         }
       },
-      "/users/create": {
+      "/api/users/create": {
         "post": {
           "operationId": "UsersController_createUser",
           "parameters": [],
@@ -2083,7 +2217,7 @@ window.onload = function() {
           ]
         }
       },
-      "/lineups": {
+      "/api/lineups": {
         "post": {
           "operationId": "LineupController_createLineup",
           "parameters": [],
