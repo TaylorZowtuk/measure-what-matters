@@ -290,7 +290,7 @@ describe("MWM tests", () => {
 
 	})
 
-	it('Records a created match, and pulls up tables after, then logs out', async ()=>{
+	it('Creates a match lineup, records a created match, pulls up tables after, then logs out', async ()=>{
 		const driver = await new Builder().forBrowser('chrome').build();
 		await driver.get('http://2a246.yeg.rac.sh/');
 		// logging in 
