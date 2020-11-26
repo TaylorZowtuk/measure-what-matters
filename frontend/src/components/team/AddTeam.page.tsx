@@ -81,12 +81,16 @@ class AddTeam extends React.Component<{}, createTeamState> {
     }
     // check if player number is valid
     if (
+      this.state.newPlayerNumber.includes(".") ||
       isNaN(Number(this.state.newPlayerNumber)) ||
       this.state.newPlayerNumber === "" ||
       !Number.isInteger(Number(this.state.newPlayerNumber)) ||
-      Number(this.state.newPlayerNumber) < 0
+      Number(this.state.newPlayerNumber) < 0 ||
+      Number(this.state.newPlayerNumber) >= 100
     ) {
-      this.setState({ errorMessage: "Please enter a valid player number" });
+      this.setState({
+        errorMessage: "Please enter a valid player number (between 0 - 100)",
+      });
       return;
     }
     if (
