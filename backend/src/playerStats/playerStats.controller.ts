@@ -7,7 +7,7 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { PlayerTimeDTO } from '../dto/stats/playerTime.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { PlayerStatsService } from './playerStats.service';
@@ -36,10 +36,6 @@ export class PlayerStatsController {
   })
   @ApiResponse({ status: 400, description: 'MatchId not in database' })
   @ApiResponse({ status: 500, description: 'Unknown error occured' })
-  @ApiBody({
-    type: PlayerTimeDTO,
-    isArray: true,
-  })
   async getTimeOnField(
     @Query('matchId', ParseIntPipe) matchId: number,
   ): Promise<PlayerTimeDTO[]> {
@@ -72,10 +68,6 @@ export class PlayerStatsController {
     description: 'Invalid integer entered for goalId or matchId does not exist',
   })
   @ApiResponse({ status: 500, description: 'Unknown error occured' })
-  @ApiBody({
-    type: OnForGoalDTO,
-    isArray: true,
-  })
   @Get('/onForGoal')
   async getPlayersOnForGoals(
     @Query('matchId', ParseIntPipe) matchId: number,
@@ -83,19 +75,12 @@ export class PlayerStatsController {
     try {
       return await this.playerStatsService.onForGoal(matchId);
     } catch (error) {
-      if (error instanceof QueryFailedError) {
-        if (error.message.includes('invalid input syntax for type integer')) {
-          throw new BadRequestException(
-            'Please enter a valid integer for goalId',
-          );
-        }
-      } else if (error instanceof TypeError) {
-        if (error.message.includes('Cannot read property')) {
-          throw new BadRequestException('matchId does not exist in database');
-        }
-      } else {
-        throw new InternalServerErrorException('Unknown error occured');
+      if (error.message.includes('Could not find any entity')) {
+        throw new BadRequestException('matchId does not exist in database');
+      } else if (error instanceof BadRequestException) {
+        throw error;
       }
+      throw new InternalServerErrorException('Unknown error occured');
     }
   }
   @ApiResponse({
@@ -116,10 +101,6 @@ export class PlayerStatsController {
   @ApiResponse({
     status: 500,
     description: 'Unknown error occurred',
-  })
-  @ApiBody({
-    type: PlusMinusDTO,
-    isArray: true,
   })
   @Get('/plus-minus')
   async getPlusMinusMatch(
