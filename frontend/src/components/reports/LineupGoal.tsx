@@ -35,16 +35,17 @@ class LineupGoal extends React.Component<ReportProps, LineupState> {
   };
 
   getLineup = async (): Promise<Lineups[] | null> => {
+    console.log("update");
     if (this.props.matchId) {
       // if match id is invalid
       if (!Number.isInteger(this.props.matchId)) {
-        this.setState({ finishLoading: true });
+        // this.setState({ finishLoading: true });
         return null;
       }
       try {
         console.log("making request");
         const res = await axios.get(
-          `/player-stats/onForGoal?matchId=${this.props.matchId}`,
+          `/api/player-stats/onForGoal?matchId=${this.props.matchId}`,
           { headers: authHeader() }
         );
         if (res.data) {
@@ -118,7 +119,14 @@ class LineupGoal extends React.Component<ReportProps, LineupState> {
     }
   }
 
+  componentDidMount() {
+    if (!this.state.finishLoading) {
+      this.updateAndNotify();
+    }
+  }
+
   render() {
+    console.log(this.props);
     // If match id is null
     if (!this.props.matchId) {
       return null;
