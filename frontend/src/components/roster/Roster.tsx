@@ -281,7 +281,7 @@ class Roster extends React.Component<
 
   validateJerseyNum(playerToAction: Player) {
     const invalidJerseyNumWarning: string =
-      "Jersey number must be a number greater than 0.";
+      "Jersey number must be a number greater than 0 and less than 100.";
     const uniqueJerseyNumWarning: string = "Jersey number must be unique.";
     let uniqueJerseyNum: boolean = true;
     for (let player of this.state.players) {
@@ -295,6 +295,7 @@ class Roster extends React.Component<
     if (
       !isNaN(playerToAction.jerseyNum) &&
       playerToAction.jerseyNum > 0 &&
+      playerToAction.jerseyNum < 100 &&
       uniqueJerseyNum
     ) {
       this.setState({
