@@ -5,6 +5,11 @@ There is the opportunity to use modern technologies to assist in this statistics
 
 If you want to take your game to the next level, you need data to inform decision making.
 
+## Project Health
+![Deployment Status](https://github.com/UAlberta-CMPUT401/teamsnap-game-observation/workflows/Deploy%20To%20Cybera/badge.svg?branch=devel)
+![Frontend Tests](https://github.com/UAlberta-CMPUT401/teamsnap-game-observation/workflows/Mwm%20Frontend%20CI/badge.svg?branch=devel)
+![Backend Tests](https://github.com/UAlberta-CMPUT401/teamsnap-game-observation/workflows/Mwm%20Backend%20CI/badge.svg?branch=devel)
+
 ## Welcome to the project!
 [https://github.com/UAlberta-CMPUT401/teamsnap-game-observation](https://github.com/UAlberta-CMPUT401/teamsnap-game-observation)
 
