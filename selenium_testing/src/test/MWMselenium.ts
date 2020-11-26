@@ -4,7 +4,7 @@ import * as assert from "assert"
 describe("MWM tests", () => {
 	let driver: ThenableWebDriver
 	// enter a new random username and password to run test
-	const username = 'selenium1';
+	const username = 'selenium2';
 	const password = 'password1';
 	before("Before", async () => {
 		driver = new Builder().forBrowser("chrome").build();
@@ -30,10 +30,11 @@ describe("MWM tests", () => {
 		await (await driver.findElement(By.xpath("//a[@href ='/signup']"))).click();
 
 		// getting first name, last name, username elements
-		let nameElements = await driver.findElements(
+		let nameElements = await driver.wait(until.elementsLocated(
 		By.id('outlined-margin-dense'),
-		);
+		));
 		// sending keys to these elements
+		sleep(0.2);
 		await nameElements[0].sendKeys('firstName');
 		await nameElements[1].sendKeys('lastName');
 		await nameElements[2].sendKeys(username);
@@ -47,7 +48,7 @@ describe("MWM tests", () => {
 		await passwordElements[1].sendKeys('password2');
 		// click signup button
 		await (await driver.findElement(By.className('MuiButton-label'))).click();
-
+		sleep(2);
 		
 		// getting text from the password not matching error message
 		let notMatchingPasswords = await driver.wait(until.elementLocated(
@@ -96,14 +97,14 @@ describe("MWM tests", () => {
 		await userNameElement.sendKeys('user');
 		await loginButton.click();
 		// quick wait to ensure element has been updated
-		//driver.manage().setTimeouts({implicit:1000});
-		//driver.sleep(2000);
 
-		let errorElement = await driver.findElement(
+		sleep(1);
+
+		let errorElement = await driver.wait(until.elementLocated(
 			By.xpath(
 			  "//p[@style ='color: crimson; font-size: 14px; width: 30ch; margin-left: auto; margin-right: auto;']",
 			),
-		);
+		));
 		let errorMessage = await errorElement.getText();
 		assert.strictEqual(
 			errorMessage,
@@ -115,7 +116,7 @@ describe("MWM tests", () => {
 		// quick wait to ensure element loaded with error message
 		//driver.manage().setTimeouts({implicit:2000});
 
-
+		sleep(1);
 		errorElement = await driver.wait(
 			until.elementLocated(
 			  By.xpath(
@@ -201,7 +202,7 @@ describe("MWM tests", () => {
 		// will be the second last button, as there will be edit roster buttons to edit each roster, then add team button, and lastly dashboard button
 		const addTeamButton = teamPageButtons[teamPageButtons.length-2];
 		await addTeamButton.click();
-		
+		sleep(1);
 		currentURL = await driver.getCurrentUrl();
 		// should be on create team page now
 		assert.strictEqual(currentURL, 'http://2a246.yeg.rac.sh/create-team', 'Should now be on create team page');
@@ -274,7 +275,7 @@ describe("MWM tests", () => {
 		const clickablesWithSecondMenu = await driver.wait(until.elementsLocated(By.className("MuiSelect-root MuiSelect-select MuiSelect-selectMenu MuiInputBase-input MuiInput-input")));
 
 		clickablesWithSecondMenu[0].click();
-
+		sleep(1);
 		currentURL = await driver.getCurrentUrl();
 		
 		assert.strictEqual(currentURL,'http://2a246.yeg.rac.sh/create-match','Correctly goes to create match page');
@@ -316,7 +317,7 @@ describe("MWM tests", () => {
 		const matchToRecord = await driver.wait(until.elementLocated(By.className("MuiListItem-root MuiListItem-gutters MuiListItem-alignItemsFlexStart")));
 
 		//should be on 'matches/upcoming' page
-
+		
 		const currentURL = await driver.getCurrentUrl();
 		assert.strictEqual('http://2a246.yeg.rac.sh/matches/upcoming',currentURL,"Clicking recordings on dashboard brings the user ");
 
@@ -336,8 +337,6 @@ describe("MWM tests", () => {
 		// click next button
 		await matchLineupButtons[1].click();
 
-	
-		
 		// wait for start button to load and click it to start timer 
 		await (await driver.wait(until.elementLocated(By.className('btn btn-success')))).click()
 
@@ -345,7 +344,8 @@ describe("MWM tests", () => {
 
 		const currentURL3 = await driver.getCurrentUrl();
 		assert.strictEqual(currentURL3,'http://2a246.yeg.rac.sh/match/recording','Check we are on recording page after setting lineup');
-
+		// sleep for a second to make sure timer has incremented
+		sleep(1);
 		// make sure timer time is greater than 0
 		const timer = await driver.findElement(By.className('Timer-display'));
 		const timerTime = await timer.getText();
@@ -354,7 +354,7 @@ describe("MWM tests", () => {
 
 		// pause button should now be present, click it and end the half
 		await (await driver.wait(until.elementLocated(By.className('btn btn-danger')),3000)).click();
-
+		
 		// now click end half
 		await (await driver.wait(until.elementLocated(By.className('btn btn-warning')),3000)).click();
 
@@ -363,7 +363,7 @@ describe("MWM tests", () => {
 		await (await driver.wait(until.elementLocated(By.className('btn btn-success')),5000)).click();
 
 		//find period display and assert it is now the second half
-
+		sleep(0.5);
 		const periodDisplay = await driver.findElement(By.className('Period-display'));
 		const periodDisplayText = await periodDisplay.getText();
 		assert.strictEqual(periodDisplayText,'2nd Half',"Should now display second half after ending half");
@@ -371,6 +371,7 @@ describe("MWM tests", () => {
 		// click pause
 		await (await driver.wait(until.elementLocated(By.className('btn btn-danger')),5000)).click();
 		// click end game
+		sleep(0.5);
 		await (await driver.wait(until.elementLocated(By.className('btn btn-danger')),5000)).click();
 
 		// we will now be on the dashboard page, lets open the stats for the game played and ensure reports are present
@@ -378,15 +379,25 @@ describe("MWM tests", () => {
 		await (await driver.wait(until.elementLocated(By.id('dropdown-basic')))).click();
 		// select first match
 		await (await driver.wait(until.elementLocated(By.className('dropdown-item')))).click();
-
+		// locating that table object is present
+		await driver.wait(until.elementsLocated(By.id('tableTitle')),5000);
+		// giving time for tables to load
+		sleep(1);
+		// getting table headers to make sure correct tables are present
+		const tablesWithIds = await driver.wait(until.elementsLocated(By.id('tableTitle')));
 		const possessionTimeTable = await driver.wait(until.elementLocated(By.tagName('h4')));
+		const onForGoalTable = await driver.wait(until.elementLocated(By.tagName('h2')));
 		const possessionTimeTableText = await possessionTimeTable.getText();
 		// make sure possession time table first one present
 		assert.strictEqual(possessionTimeTableText,'Possession Time','Possession time table is present');
-		const tablesWithIds = await driver.findElements(By.id('tableTitle'));
 		const numberOfTouches = await tablesWithIds[0].getText();
 		const timeOnField = await tablesWithIds[1].getText();
 		const plusMinus = await tablesWithIds[2].getText();
+		const onForGoal = await onForGoalTable.getText();
+		console.log('tables with ids', tablesWithIds);
+		console.log('numberoftouches',numberOfTouches);
+		console.log('time on field', timeOnField);
+		console.log('plus mins', plusMinus);
 
 		// assert table headers equal what they should
 		//number of touches
@@ -397,6 +408,8 @@ describe("MWM tests", () => {
 
 		// plus minus
 		assert.strictEqual(plusMinus,'Plus Minus','Correct header for Plus Minus Table');
+
+		assert.strictEqual(onForGoal,'Lineup for Goals','Correct header for Lineup During Goals table');
 
 		//log out of app by clicking log out button
 		await (await driver.findElement(By.className("btn btn-outline-danger"))).click();
@@ -424,3 +437,9 @@ describe("MWM tests", () => {
 		}
 	}) 
 })
+
+function sleep(seconds) 
+{
+  var e = new Date().getTime() + (seconds * 1000);
+  while (new Date().getTime() <= e) {}
+}

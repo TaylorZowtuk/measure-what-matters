@@ -4,7 +4,7 @@
   "description": "Selenium Testing for MWM",
   "main": "selenium.ts",
   "scripts": {
-    "test": "mocha -r ts-node/register  --timeout 90000 --exit  -R mochawesome --reporter-options reportDir=ReportDirectory, reportFilename=DemoReport 'src/test/*.ts'"
+    "test": "mocha -r ts-node/register  --timeout 100000 --exit  -R mochawesome --reporter-options reportDir=ReportDirectory 'src/test/*.ts'"
   },
   "author": "",
   "license": "ISC",
