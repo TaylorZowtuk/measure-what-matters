@@ -14,17 +14,17 @@ const Dashboard = () => {
   };
   if (matchId) {
     return (
-      <div className="dashboard">
-        <h1>Dashboard</h1>
-        <br></br>
+      <Container style={{ backgroundColor: "#282c34" }}>
+        <div className="dashboard">
+          <h1>Dashboard</h1>
+          <br></br>
 
-        <MatchDropdown
-          matchId={matchId}
-          handleMatchIdChange={handleMatchIdChange}
-        />
+          <MatchDropdown
+            matchId={matchId}
+            handleMatchIdChange={handleMatchIdChange}
+          />
 
-        {/* Reports */}
-        <Container style={{ backgroundColor: "#282c34" }}>
+          {/* Reports */}
           <Row style={{ margin: "20px" }}>
             <Col>
               <PossessionCircular fetchTimes={fetchTimes} matchId={matchId} />
@@ -53,8 +53,8 @@ const Dashboard = () => {
               <PlusMinusComponent matchId={matchId} />
             </Col>
           </Row>
-        </Container>
-      </div>
+        </div>
+      </Container>
     );
   } else {
     return (
