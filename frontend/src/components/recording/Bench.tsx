@@ -4,9 +4,7 @@ import { DropTargetMonitor, useDrop } from "react-dnd";
 
 import { Button, Table } from "react-bootstrap";
 
-import authHeader from "../../services/auth.header";
-import axios from "axios";
-
+import RestClient from "../../services/restClient.service";
 import Player from "./Player";
 import { MatchIdContext } from "./Recording.page";
 
@@ -34,6 +32,7 @@ class Bench extends React.Component<
     substituteFor: Player | undefined;
   }
 > {
+  private restClient: RestClient;
   constructor(props: BenchProps) {
     super(props);
     this.state = {
@@ -41,6 +40,7 @@ class Bench extends React.Component<
       isExpanded: false,
       substituteFor: undefined,
     };
+    this.restClient = RestClient.getInstance();
   }
 
   setBench = (players: Player[]): void => {
@@ -97,11 +97,9 @@ class Bench extends React.Component<
       matchId: matchId,
       time: window._recordingState.getCurrentTotalPlayTime(),
     };
-    axios
-      .post(`/event/substitutions`, sub, { headers: authHeader() })
-      .then((res) => {
-        console.log("Post sub response:", res); // TODO: catch error and handle if needed
-      });
+    this.restClient.post(`/api/event/substitutions`, sub).then((res) => {
+      console.log("Post sub response:", res); // TODO: catch error and handle if needed
+    });
     let moveToField = this.removeFromBench(playerId); // Remove player from bench
     this.addToBench(this.state.substituteFor); // Add player from field to bench
     this.props.notifyOfSubs(this.state.substituteFor, moveToField); // Notify field of a substitution

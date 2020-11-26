@@ -5,8 +5,6 @@ import authHeader from "../../services/auth.header";
 import { TeamDTO } from "../interfaces/team";
 import { Dropdown } from "react-bootstrap";
 
-// Icons from: https://icons8.com
-
 type MatchAndTeam = {
   match: MatchDTO;
   teamName: string;
@@ -23,7 +21,7 @@ async function fetchMatches(): Promise<MatchAndTeam[]> {
 
   // Get all the users teams
   const teamsRes = await axios.get(
-    `/teams?userId=1`, // TODO: Remove hardcoded userId
+    `/api/teams?userId=1`, // TODO: Remove hardcoded userId
     { headers: authHeader() }
   ); // TODO: catch error and handle
   console.log("Get teams response:", teamsRes);
@@ -32,7 +30,7 @@ async function fetchMatches(): Promise<MatchAndTeam[]> {
   // For each team get all matches
   for (let i = 0; i < teamsData.length; i++) {
     const matchesRes = await axios.get(
-      `/match/teamId?teamId=${teamsData[i].teamId}`,
+      `/api/match/teamId?teamId=${teamsData[i].teamId}`,
       { headers: authHeader() }
     ); // TODO: catch error and handle
     console.log("Get matches response:", matchesRes);
@@ -47,7 +45,7 @@ async function fetchMatches(): Promise<MatchAndTeam[]> {
   return matches;
 }
 
-// Remove games that have been recorded already from matches
+// Remove games that haven't been recorded already from matches
 function filterOutUnfinishedGames(matches: MatchAndTeam[]): MatchAndTeam[] {
   matches = matches.filter(
     (matchAndTeam) => matchAndTeam.match.fullTime !== null
@@ -55,8 +53,7 @@ function filterOutUnfinishedGames(matches: MatchAndTeam[]): MatchAndTeam[] {
   return matches;
 }
 
-// Sort matches by earliest start time first (when matches include only upcoming matches,
-// this ordering means upcoming first)
+// Sort matches by earliest start time first
 function sortUpcoming(matches: MatchAndTeam[]): MatchAndTeam[] {
   return matches.sort(function (a, b) {
     return a.match.scheduledTime - b.match.scheduledTime;
@@ -97,17 +94,23 @@ export default function MatchDropdown(props: Props) {
         </Dropdown.Toggle>
 
         <Dropdown.Menu>
-          {matches.map((matchAndTeam: MatchAndTeam) => (
-            <Dropdown.Item
-              as="button"
-              onSelect={() => {
-                props.handleMatchIdChange(matchAndTeam.match.matchId);
-                setDropdownText(getSelectionBoxText(matchAndTeam));
-              }}
-            >
-              {getSelectionBoxText(matchAndTeam)}
-            </Dropdown.Item>
-          ))}
+          {matches.length > 0 ? (
+            matches.map((matchAndTeam: MatchAndTeam) => (
+              <Dropdown.Item
+                as="button"
+                onSelect={() => {
+                  props.handleMatchIdChange(matchAndTeam.match.matchId);
+                  setDropdownText(getSelectionBoxText(matchAndTeam));
+                }}
+              >
+                {getSelectionBoxText(matchAndTeam)}
+              </Dropdown.Item>
+            ))
+          ) : (
+            <Dropdown.ItemText>
+              There are no completed matches.
+            </Dropdown.ItemText>
+          )}
         </Dropdown.Menu>
       </Dropdown>
     );

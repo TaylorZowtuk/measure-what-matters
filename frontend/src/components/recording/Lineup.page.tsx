@@ -5,7 +5,9 @@ import { StaticContext } from "react-router";
 import {
   Button,
   Checkbox,
+  Container,
   Paper,
+  Snackbar,
   Table,
   TableBody,
   TableCell,
@@ -13,23 +15,16 @@ import {
   TableHead,
   TableRow,
 } from "@material-ui/core";
+import MuiAlert, { AlertProps } from "@material-ui/lab/Alert";
 import CSS from "csstype";
-import { RouteComponentProps } from "react-router-dom";
+import { Link, RouteComponentProps } from "react-router-dom";
 import Player from "../interfaces/player";
 import RecordingProps from "../interfaces/props/recording-props";
 import LineupProps from "../interfaces/props/lineup-props";
 import { CreateLineupDTO } from "../interfaces/createLineup";
 
-const styling: CSS.Properties = {
-  height: "100%",
-  width: "100%",
-  margin: "auto",
-};
-
 const tableStyling: CSS.Properties = {
   height: "70vh",
-  width: "60vw",
-  margin: "auto",
 };
 
 const textHeaderStyling: CSS.Properties = {
@@ -41,6 +36,10 @@ const buttonStyling: CSS.Properties = {
   margin: "2vh",
 };
 
+function Alert(props: AlertProps) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
+
 interface StartingLineup {
   playerId: number;
   matchId: number;
@@ -50,6 +49,7 @@ interface StartingLineup {
 interface State {
   players: Player[];
   lineup: Player[];
+  numPlayerSnackbarOpen: boolean;
 }
 
 class LineupComponent extends React.Component<
@@ -61,6 +61,7 @@ class LineupComponent extends React.Component<
     this.state = {
       players: [],
       lineup: [],
+      numPlayerSnackbarOpen: false,
     };
   }
 
@@ -70,7 +71,7 @@ class LineupComponent extends React.Component<
 
   async getPlayers() {
     axios
-      .get(`/players/teamId?teamId=${this.props.location.state.teamId}`, {
+      .get(`/api/players/teamId?teamId=${this.props.location.state.teamId}`, {
         headers: authHeader(),
       })
       .then((res) => {
@@ -100,6 +101,14 @@ class LineupComponent extends React.Component<
     }
   }
 
+  openNumPlayersSnackbar = () => {
+    this.setState({ numPlayerSnackbarOpen: true });
+  };
+
+  closeNumPlayersSnackbar = () => {
+    this.setState({ numPlayerSnackbarOpen: false });
+  };
+
   async handleNextClicked() {
     if (this.state.lineup.length >= 7) {
       const startingLineup: StartingLineup[] = [];
@@ -126,7 +135,7 @@ class LineupComponent extends React.Component<
         matchId: Number(this.props.location.state.matchId),
       };
       axios
-        .post("/lineups", matchLineup, {
+        .post("/api/lineups", matchLineup, {
           headers: authHeader(),
         })
         .then((res) => {
@@ -135,22 +144,22 @@ class LineupComponent extends React.Component<
 
       this.props.history.push("/match/recording", recordingState);
     } else {
-      alert("Must select at least 7 players."); // 6 on field plus one on the bench
+      this.openNumPlayersSnackbar();
     }
   }
 
   render() {
     return (
-      <div className="Lineup" style={styling}>
+      <Container>
         <h1 style={textHeaderStyling}>Choose Your Match Lineup</h1>
         <TableContainer component={Paper} style={tableStyling}>
-          <Table stickyHeader>
+          <Table>
             <TableHead>
               <TableRow>
                 <TableCell></TableCell>
                 <TableCell>First Name</TableCell>
                 <TableCell>Last Name</TableCell>
-                <TableCell>Jersey Number</TableCell>
+                <TableCell align="center">Jersey Number</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -165,12 +174,17 @@ class LineupComponent extends React.Component<
                   </TableCell>
                   <TableCell>{player.firstName}</TableCell>
                   <TableCell>{player.lastName}</TableCell>
-                  <TableCell>{player.jerseyNum}</TableCell>
+                  <TableCell align="center">{player.jerseyNum}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
         </TableContainer>
+        <Link to="/matches/upcoming">
+          <Button variant="contained" style={buttonStyling}>
+            Back
+          </Button>
+        </Link>
         <Button
           style={buttonStyling}
           onClick={() => {
@@ -180,7 +194,16 @@ class LineupComponent extends React.Component<
         >
           Next
         </Button>
-      </div>
+        <Snackbar
+          open={this.state.numPlayerSnackbarOpen}
+          autoHideDuration={6000}
+          onClose={this.closeNumPlayersSnackbar}
+        >
+          <Alert severity="error" onClose={this.closeNumPlayersSnackbar}>
+            Must select at least 7 players.
+          </Alert>
+        </Snackbar>
+      </Container>
     );
   }
 }

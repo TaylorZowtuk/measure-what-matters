@@ -1,4 +1,4 @@
-import { Button } from "@material-ui/core";
+import { Button, CircularProgress } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
@@ -44,7 +44,7 @@ async function fetchMatches(debug = false): Promise<MatchAndTeam[]> {
   } else {
     // Get all the users teams
     const teamsRes = await axios.get(
-      `/teams?userId=1`, // TODO: Remove hardcoded userId
+      `/api/teams?userId=1`, // TODO: Remove hardcoded userId
       { headers: authHeader() }
     ); // TODO: catch error and handle
     console.log("Get teams response:", teamsRes);
@@ -53,7 +53,7 @@ async function fetchMatches(debug = false): Promise<MatchAndTeam[]> {
     // For each team get all matches
     for (let i = 0; i < teamsData.length; i++) {
       const matchesRes = await axios.get(
-        `/match/teamId?teamId=${teamsData[i].teamId}`,
+        `/api/match/teamId?teamId=${teamsData[i].teamId}`,
         { headers: authHeader() }
       ); // TODO: catch error and handle
       console.log("Get matches response:", matchesRes);
@@ -161,66 +161,70 @@ export function AlignItemsList() {
 
   // If fetch request hasnt returned yet
   if (!matches) {
-    return <h1>Loading...</h1>;
+    return <CircularProgress data-testid="loading_indicator" />;
   } else {
-    return (
-      <List className={classes.root}>
-        {matches.map((matchAndTeam: MatchAndTeam, index: number) => {
-          const date = new Date(matchAndTeam.match.scheduledTime * 1000); // The epoch start time of this match
-          const weekday: string = date.toLocaleString("en-us", {
-            weekday: "long",
-          });
-          const calendarImgPath = getImagePath(weekday);
-          return (
-            <>
-              <ListItem
-                alignItems="flex-start"
-                onClick={(event) =>
-                  handleListItemClick(event, index, matchAndTeam)
-                }
-                key={`item-${matchAndTeam.match.teamId}-${matchAndTeam.match.matchId}`}
-              >
-                <ListItemAvatar>
-                  <Avatar
-                    variant="rounded"
-                    alt={weekday} // String of the day of week
-                    src={calendarImgPath}
-                    key={`item-${matchAndTeam.match.teamId}-${matchAndTeam.match.matchId}-avatar`}
-                  />
-                </ListItemAvatar>
-                <ListItemText
-                  primary={date.toLocaleString()} // Formatted date time in local timezone
-                  primaryTypographyProps={{ color: "textPrimary" }}
-                  secondary={
-                    <React.Fragment>
-                      <Typography
-                        component="span"
-                        variant="body2"
-                        className={classes.inline}
-                        color="textPrimary"
-                      >
-                        {matchAndTeam.teamName} vs.
-                        {" " + matchAndTeam.match.opponentTeamName}
-                        {/* TODO: add their team name */}
-                      </Typography>
-                      <br></br>
-                      {matchAndTeam.match.isHomeTeam ? "Home" : "Away"}{" "}
-                      {" Game"}
-                    </React.Fragment>
+    if (matches.length > 0) {
+      return (
+        <List className={classes.root}>
+          {matches.map((matchAndTeam: MatchAndTeam, index: number) => {
+            const date = new Date(matchAndTeam.match.scheduledTime * 1000); // The epoch start time of this match
+            const weekday: string = date.toLocaleString("en-us", {
+              weekday: "long",
+            });
+            const calendarImgPath = getImagePath(weekday);
+            return (
+              <>
+                <ListItem
+                  alignItems="flex-start"
+                  onClick={(event) =>
+                    handleListItemClick(event, index, matchAndTeam)
                   }
-                  key={`item-${matchAndTeam.match.teamId}-${matchAndTeam.match.matchId}-text`}
+                  key={`item-${matchAndTeam.match.teamId}-${matchAndTeam.match.matchId}`}
+                >
+                  <ListItemAvatar>
+                    <Avatar
+                      variant="rounded"
+                      alt={weekday} // String of the day of week
+                      src={calendarImgPath}
+                      key={`item-${matchAndTeam.match.teamId}-${matchAndTeam.match.matchId}-avatar`}
+                    />
+                  </ListItemAvatar>
+                  <ListItemText
+                    primary={date.toLocaleString()} // Formatted date time in local timezone
+                    primaryTypographyProps={{ color: "textPrimary" }}
+                    secondary={
+                      <React.Fragment>
+                        <Typography
+                          component="span"
+                          variant="body2"
+                          className={classes.inline}
+                          color="textPrimary"
+                        >
+                          {matchAndTeam.teamName} vs.
+                          {" " + matchAndTeam.match.opponentTeamName}
+                          {/* TODO: add their team name */}
+                        </Typography>
+                        <br></br>
+                        {matchAndTeam.match.isHomeTeam ? "Home" : "Away"}{" "}
+                        {" Game"}
+                      </React.Fragment>
+                    }
+                    key={`item-${matchAndTeam.match.teamId}-${matchAndTeam.match.matchId}-text`}
+                  />
+                </ListItem>
+                <Divider
+                  variant="inset"
+                  component="li"
+                  key={`item-${matchAndTeam.match.teamId}-${matchAndTeam.match.matchId}-divider`}
                 />
-              </ListItem>
-              <Divider
-                variant="inset"
-                component="li"
-                key={`item-${matchAndTeam.match.teamId}-${matchAndTeam.match.matchId}-divider`}
-              />
-            </>
-          );
-        })}
-      </List>
-    );
+              </>
+            );
+          })}
+        </List>
+      );
+    } else {
+      return <h6>No upcoming matches</h6>;
+    }
   }
 }
 

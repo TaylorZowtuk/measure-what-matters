@@ -24,17 +24,13 @@ interface Player {
   playerId: number;
 }
 
-const rosterProps: RosterProps = {
-  teamId: 1,
-};
-
 class Teams extends React.Component<{}, teamState> {
   constructor(props: {}) {
     super(props);
     this.state = {
       teamList: [],
     };
-    axios.get(`/teams`, { headers: authHeader() }).then(
+    axios.get(`/api/teams`, { headers: authHeader() }).then(
       (response) => {
         console.log("got teams");
         console.log(response.data);
@@ -43,7 +39,7 @@ class Teams extends React.Component<{}, teamState> {
 
         teams.forEach((element: any) => {
           axios
-            .get(`/players/teamId?teamId=${element.teamId}`, {
+            .get(`/api/players/teamId?teamId=${element.teamId}`, {
               headers: authHeader(),
             })
             .then(
@@ -85,6 +81,9 @@ class Teams extends React.Component<{}, teamState> {
       <Container>
         <h3>Your Teams</h3>
         {this.state.teamList.map((team) => {
+          const rosterProps: RosterProps = {
+            teamId: team.teamId,
+          };
           return (
             <Row key={team.teamId.toString()}>
               <Col>
