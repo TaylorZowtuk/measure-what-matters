@@ -302,14 +302,19 @@ class AddTeam extends React.Component<{}, createTeamState> {
         </table>
         <Button
           variant="contained"
-          style={{ marginBottom: 10 }}
+          style={{ marginBottom: 25 }}
           onClick={this.onAddTeam}
         >
           Add Team
         </Button>
         <br />
         <Link to="/teams">
-          <Button variant="contained">Back</Button>
+          <Button
+            variant="contained"
+            style={{ backgroundColor: "red", color: "white" }}
+          >
+            Back
+          </Button>
         </Link>
       </div>
     );
