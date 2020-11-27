@@ -50,7 +50,7 @@ class RestClient {
 
   post(path: string, data?: any, config?: AxiosRequestConfig) {
     if (path.includes("event")) {
-      this.client
+      return this.client
         .post(path, data, config)
         .then((response) => {
           return Promise.resolve(response);
