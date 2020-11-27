@@ -1,61 +1,74 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import Button from "@material-ui/core/Button";
-import TimeOnField from "./reports/TimeOnField";
+import TimeOnField, { fetchTimeOnFieldRows } from "./reports/TimeOnField";
 import LineupGoal from "./reports/LineupGoal";
 import { Col, Container, Row } from "react-bootstrap";
+import MatchDropdown from "./reports/MatchDropdown";
 import PossessionCircular, { fetchTimes } from "./reports/Possession";
-import TouchesBar, { fetchTouches } from "./reports/Touches";
+import TouchesTable, { fetchTouchesRows } from "./reports/Touches";
 import PlusMinusComponent from "./reports/PlusMinus";
 
-const Dashboard = () => (
-  <div className="dashboard">
-    <h1>Dashboard</h1>
-    <br></br>
+const Dashboard = () => {
+  const [matchId, setMatchId] = React.useState<number | undefined>(undefined);
+  const handleMatchIdChange = (matchId: number) => {
+    setMatchId(matchId);
+  };
+  if (matchId) {
+    return (
+      <Container style={{ backgroundColor: "#282c34" }}>
+        <div className="dashboard">
+          <h1>Dashboard</h1>
+          <br></br>
 
-    {/* Navigation */}
-    <Link to="/matches/upcoming">
-      <Button variant="contained">Recording</Button>
-    </Link>
-    <Link to="/teams">
-      <Button variant="contained">Teams</Button>
-    </Link>
-    <Link to="/create-match">
-      <Button variant="contained">Create Match</Button>
-    </Link>
-    <Link to="/view-account">
-      <Button variant="contained">Account</Button>
-    </Link>
+          <MatchDropdown
+            matchId={matchId}
+            handleMatchIdChange={handleMatchIdChange}
+          />
 
-    {/* Reports */}
-    <Container style={{ backgroundColor: "#282c34" }}>
-      <Row style={{ margin: "20px" }}>
-        <Col>
-          <PossessionCircular fetchTimes={fetchTimes} />
-        </Col>
-      </Row>
-      <Row style={{ margin: "20px" }}>
-        <Col>
-          <TouchesBar fetchTouches={fetchTouches} />
-        </Col>
-      </Row>
-      <Row style={{ margin: "20px" }}>
-        <Col>
-          <TimeOnField />
-        </Col>
-      </Row>
-      <Row style={{ margin: "20px" }}>
-        <Col>
-          <LineupGoal />
-        </Col>
-      </Row>
-      <Row style={{ margin: "20px" }}>
-        <Col>
-          <PlusMinusComponent />
-        </Col>
-      </Row>
-    </Container>
-  </div>
-);
-
+          {/* Reports */}
+          <Row style={{ margin: "20px" }}>
+            <Col>
+              <PossessionCircular fetchTimes={fetchTimes} matchId={matchId} />
+            </Col>
+          </Row>
+          <Row style={{ margin: "20px" }}>
+            <Col>
+              <TouchesTable fetchTouches={fetchTouchesRows} matchId={matchId} />
+            </Col>
+          </Row>
+          <Row style={{ margin: "20px" }}>
+            <Col>
+              <TimeOnField
+                fetchTimeOnField={fetchTimeOnFieldRows}
+                matchId={matchId}
+              />
+            </Col>
+          </Row>
+          <Row style={{ margin: "20px" }}>
+            <Col>
+              <LineupGoal matchId={matchId} />
+            </Col>
+          </Row>
+          <Row style={{ margin: "20px" }}>
+            <Col>
+              <PlusMinusComponent matchId={matchId} />
+            </Col>
+          </Row>
+        </div>
+      </Container>
+    );
+  } else {
+    return (
+      <div className="dashboard">
+        <h1>Dashboard</h1>
+        <br></br>
+        <MatchDropdown
+          matchId={matchId}
+          handleMatchIdChange={handleMatchIdChange}
+        />
+        <br></br>
+        <h2>Select a match to view stats.</h2>
+      </div>
+    );
+  }
+};
 export default Dashboard;

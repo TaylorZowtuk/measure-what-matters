@@ -1,8 +1,9 @@
 import React from "react";
 import axios from "axios";
 import authHeader from "../../services/auth.header";
-import { TextField } from "@material-ui/core";
+import { Button, TextField } from "@material-ui/core";
 import EditIcon from "@material-ui/icons/Edit";
+import { Link } from "react-router-dom";
 
 interface accountState {
   firstName: string;
@@ -30,18 +31,20 @@ class AccountView extends React.Component<{}, accountState> {
     };
 
     // get user profile
-    axios.get("/users/profile", { headers: authHeader() }).then((response) => {
-      if (response.data) {
-        let splitted = response.data.name.split(" ");
-        this.setState({
-          firstName: splitted[0],
-          lastName: splitted[1],
-          username: response.data.username,
-          firstEdit: splitted[0],
-          lastEdit: splitted[1],
-        });
-      }
-    });
+    axios
+      .get("/api/users/profile", { headers: authHeader() })
+      .then((response) => {
+        if (response.data) {
+          let splitted = response.data.name.split(" ");
+          this.setState({
+            firstName: splitted[0],
+            lastName: splitted[1],
+            username: response.data.username,
+            firstEdit: splitted[0],
+            lastEdit: splitted[1],
+          });
+        }
+      });
   }
 
   handleFirstEdit = (e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -76,7 +79,7 @@ class AccountView extends React.Component<{}, accountState> {
       });
       axios
         .post(
-          "/users/profile/edit",
+          "/api/users/profile/edit",
           { name: this.state.firstEdit + " " + this.state.lastName },
           { headers: authHeader() }
         )
@@ -110,7 +113,7 @@ class AccountView extends React.Component<{}, accountState> {
       });
       axios
         .post(
-          "/users/profile/edit",
+          "/api/users/profile/edit",
           { name: this.state.firstName + " " + this.state.lastEdit },
           { headers: authHeader() }
         )
@@ -221,7 +224,11 @@ class AccountView extends React.Component<{}, accountState> {
                 Save
               </p>
               <p
-                style={{ fontSize: "14px", margin: "0 10px", color: "crimson" }}
+                style={{
+                  fontSize: "14px",
+                  margin: "0 10px",
+                  color: "dodgerblue",
+                }}
                 onClick={this.handleFirstCancel}
               >
                 Cancel
@@ -276,7 +283,11 @@ class AccountView extends React.Component<{}, accountState> {
                 Save
               </p>
               <p
-                style={{ fontSize: "14px", margin: "0 10px", color: "crimson" }}
+                style={{
+                  fontSize: "14px",
+                  margin: "0 10px",
+                  color: "dodgerblue",
+                }}
                 onClick={this.handleLastCancel}
               >
                 Cancel
@@ -285,6 +296,11 @@ class AccountView extends React.Component<{}, accountState> {
           </div>
           <EditIcon onClick={this.handleLastDisable}></EditIcon>
         </div>
+        <Link to="/dashboard">
+          <Button variant="contained" style={{ margin: "10px" }}>
+            Back
+          </Button>
+        </Link>
       </div>
     );
   }

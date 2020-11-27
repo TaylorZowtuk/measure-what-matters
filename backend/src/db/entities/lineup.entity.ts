@@ -16,7 +16,7 @@ export class Lineup extends BaseEntity {
   lineupId: number;
 
   @ManyToOne(
-    type => Match,
+    () => Match,
     match => match.matchId,
     { eager: true },
   )

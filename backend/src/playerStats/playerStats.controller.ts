@@ -14,11 +14,10 @@ import { PlayerStatsService } from './playerStats.service';
 import { PlayerDTO } from '../dto/player/player.dto';
 import { QueryFailedError } from 'typeorm';
 import { PlusMinusDTO } from '../dto/stats/plusMinus.dto';
-import { PlayerTouchesDTO } from '../dto/stats/playerTouches.dto';
 import { ReturnTouchesDTO } from 'src/dto/stats/returnTouches.dto';
-import { PlayerPossessionStatDTO } from 'src/dto/stats/possession/playerPossessionStat.dto';
 import { PlayerPossessionsReturnDTO } from 'src/dto/stats/possession/playerPossessionReturn.dto';
 import { TeamPossessionSummaryDTO } from 'src/dto/stats/possession/teamPossessionSummary.dto';
+import { OnForGoalDTO } from 'src/dto/stats/onForGoal.dto';
 
 @ApiTags('Player Stats')
 @ApiBearerAuth()
@@ -37,7 +36,9 @@ export class PlayerStatsController {
   })
   @ApiResponse({ status: 400, description: 'MatchId not in database' })
   @ApiResponse({ status: 500, description: 'Unknown error occured' })
-  async getTimeOnField(@Query('matchId', ParseIntPipe) matchId: number) {
+  async getTimeOnField(
+    @Query('matchId', ParseIntPipe) matchId: number,
+  ): Promise<PlayerTimeDTO[]> {
     try {
       return await this.playerStatsService.getPlayersTimes(matchId);
     } catch (error) {
@@ -68,23 +69,18 @@ export class PlayerStatsController {
   })
   @ApiResponse({ status: 500, description: 'Unknown error occured' })
   @Get('/onForGoal')
-  async getPlayersOnForGoal(@Query('goalId', ParseIntPipe) goalId: number) {
+  async getPlayersOnForGoals(
+    @Query('matchId', ParseIntPipe) matchId: number,
+  ): Promise<OnForGoalDTO[]> {
     try {
-      return await this.playerStatsService.getPlayersOnForGoal(goalId);
+      return await this.playerStatsService.onForGoal(matchId);
     } catch (error) {
-      if (error instanceof QueryFailedError) {
-        if (error.message.includes('invalid input syntax for type integer')) {
-          throw new BadRequestException(
-            'Please enter a valid integer for goalId',
-          );
-        }
-      } else if (error instanceof TypeError) {
-        if (error.message.includes('Cannot read property')) {
-          throw new BadRequestException('matchId does not exist in database');
-        }
-      } else {
-        throw new InternalServerErrorException('Unknown error occured');
+      if (error.message.includes('Could not find any entity')) {
+        throw new BadRequestException('matchId does not exist in database');
+      } else if (error instanceof BadRequestException) {
+        throw error;
       }
+      throw new InternalServerErrorException('Unknown error occured');
     }
   }
   @ApiResponse({
@@ -107,7 +103,9 @@ export class PlayerStatsController {
     description: 'Unknown error occurred',
   })
   @Get('/plus-minus')
-  async getPlusMinusMatch(@Query('matchId', ParseIntPipe) matchId: number) {
+  async getPlusMinusMatch(
+    @Query('matchId', ParseIntPipe) matchId: number,
+  ): Promise<PlusMinusDTO[]> {
     try {
       return await this.playerStatsService.plusMinus(matchId);
     } catch (error) {
@@ -174,7 +172,7 @@ export class PlayerStatsController {
   @Get('/player-possession')
   async getPlayerPossessionsForMatch(
     @Query('matchId', ParseIntPipe) matchId: number,
-  ) {
+  ): Promise<PlayerPossessionsReturnDTO> {
     try {
       return await this.playerStatsService.playerPossessionsStat(matchId);
     } catch (error) {
@@ -210,7 +208,7 @@ export class PlayerStatsController {
   @Get('/team-possession')
   async getTeamPossessionSummary(
     @Query('matchId', ParseIntPipe) matchId: number,
-  ) {
+  ): Promise<TeamPossessionSummaryDTO> {
     try {
       return await this.playerStatsService.teamPossessionSummaryForMatch(
         matchId,

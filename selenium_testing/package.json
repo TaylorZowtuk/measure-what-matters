@@ -1,0 +1,26 @@
+{
+  "name": "selenium_testing",
+  "version": "1.0.0",
+  "description": "Selenium Testing for MWM",
+  "main": "selenium.ts",
+  "scripts": {
+    "test": "mocha -r ts-node/register  --timeout 100000 --exit  -R mochawesome --reporter-options reportDir=ReportDirectory 'src/test/*.ts'"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@nestjs/common": "^7.5.5",
+    "@types/mocha": "^8.0.4",
+    "@types/node": "^14.14.9",
+    "@types/selenium-webdriver": "^4.0.10",
+    "assert": "^2.0.0",
+    "chromedriver": "^87.0.0",
+    "mocha": "^8.2.1",
+    "mochawesome": "^6.2.1",
+    "selenium-webdriver": "^4.0.0-alpha.7",
+    "ts-mocha": "^8.0.0",
+    "ts-node": "^9.0.0",
+    "tslint": "^6.1.3",
+    "typescript": "^4.1.2"
+  }
+}

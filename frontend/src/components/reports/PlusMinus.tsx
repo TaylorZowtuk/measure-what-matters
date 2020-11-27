@@ -16,9 +16,13 @@ import {
   lighten,
   makeStyles,
   Theme,
+  CircularProgress,
+  Container,
 } from "@material-ui/core";
-
-const matchId: number = 1;
+import ReportProps from "../interfaces/props/report-props";
+import CSS from "csstype";
+import RefreshIcon from "@material-ui/icons/Refresh";
+import { Button } from "react-bootstrap";
 
 const useToolbarStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -52,15 +56,19 @@ const EnhancedTableToolbar = () => {
         id="tableTitle"
         component="div"
       >
-        Plus Minus for Match {matchId}
+        Plus Minus
       </Typography>
     </Toolbar>
   );
 };
 
-async function fetchPlusMinus(matchId: number = 1): Promise<PlusMinus[]> {
+const tableStyling: CSS.Properties = {
+  height: "50vh",
+};
+
+async function fetchPlusMinus(matchId: number): Promise<PlusMinus[]> {
   const response = await axios.get(
-    `/player-stats/plus-minus?matchId=${matchId}`,
+    `/api/player-stats/plus-minus?matchId=${matchId}`,
     {
       headers: authHeader(),
     }
@@ -68,24 +76,40 @@ async function fetchPlusMinus(matchId: number = 1): Promise<PlusMinus[]> {
   return response.data;
 }
 
-export default function PlusMinusComponent() {
+export default function PlusMinusComponent(props: ReportProps) {
   const [plusMinus, setPlusMinus] = React.useState<PlusMinus[] | null>(null);
-
+  const [reload, setReload] = React.useState(0);
   useEffect(() => {
     async function getPlusMinus() {
-      setPlusMinus(await fetchPlusMinus());
+      if (props.matchId) {
+        setPlusMinus(await fetchPlusMinus(props.matchId));
+      }
     }
     getPlusMinus();
-  }, []);
+  }, [props, reload]);
 
-  if (!plusMinus) {
-    return <h1 style={{ color: "white" }}>Loading...</h1>;
+  const reloadOnClick = () => {
+    setReload(reload + 1);
+  };
+
+  if (!props.matchId) {
+    return null; // If no match is selected then we don't display anything
+  } else if (plusMinus === null) {
+    return <CircularProgress />;
+  } else if (plusMinus.length === 0) {
+    return (
+      <div>
+        <Button variant="danger" onClick={reloadOnClick}>
+          Couldn't Load Report <RefreshIcon />
+        </Button>
+      </div>
+    );
   } else {
     return (
-      <div className="PlusMinus">
-        <TableContainer component={Paper}>
+      <Container>
+        <TableContainer component={Paper} style={tableStyling}>
           <EnhancedTableToolbar />
-          <Table stickyHeader>
+          <Table>
             <TableHead>
               <TableRow>
                 <TableCell>First Name</TableCell>
@@ -119,9 +143,10 @@ export default function PlusMinusComponent() {
                 </TableRow>
               ))}
             </TableBody>
+            {/* Adds the table body to a table frame just to avoid repeating */}
           </Table>
         </TableContainer>
-      </div>
+      </Container>
     );
   }
 }

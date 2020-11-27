@@ -19,6 +19,8 @@ import { ReturnTouchesDTO } from 'src/dto/stats/returnTouches.dto';
 import { PlayerPossessionStatDTO } from 'src/dto/stats/possession/playerPossessionStat.dto';
 import { PlayerPossessionsReturnDTO } from 'src/dto/stats/possession/playerPossessionReturn.dto';
 import { TeamPossessionSummaryDTO } from 'src/dto/stats/possession/teamPossessionSummary.dto';
+import { GoalDTO } from 'src/dto/events/goal.dto';
+import { OnForGoalDTO } from 'src/dto/stats/onForGoal.dto';
 @Injectable()
 export class PlayerStatsService {
   subRepo: Repository<any>;
@@ -154,14 +156,8 @@ export class PlayerStatsService {
    * @returns the DTO array of players on the field during the time of the goal
    */
 
-  async getPlayersOnForGoal(goalId: number) {
+  async getPlayersOnForGoal(goal: GoalDTO): Promise<PlayerDTO[]> {
     const players: Player[] = [];
-
-    const query1 = this.goalRepo.createQueryBuilder('goal');
-
-    query1.andWhere('goal.id = :id1', { id1: goalId });
-
-    const goal = await query1.getOne();
 
     for (let i = 0; i < goal.lineup.length; i++) {
       const player: Player = await this.playerRepo.findOne({
@@ -171,6 +167,38 @@ export class PlayerStatsService {
     }
 
     return this.convertToPlayersDtos(players);
+  }
+
+  /**
+   * Retrieves an array of players on the field at the time of a goal.
+   *
+   * @param goalId - The id for the goal scored
+   *
+   * @returns the DTO array of players on the field during the time of the goal
+   */
+
+  async onForGoal(matchId: number): Promise<OnForGoalDTO[]> {
+    const onForGoalsMatch: OnForGoalDTO[] = [];
+
+    if (matchId === null) {
+      throw new BadRequestException('matchId cannot be null');
+    }
+    // checking to see if match exists, OrFail will throw error if match does not exist
+    // cant just check if goals are null as 0:0 matches possible
+    await this.matchRepo.findOneOrFail({ where: { matchId } });
+    const goals: Goal[] = await this.goalRepo.find({ where: { matchId } });
+    const goalDtos: GoalDTO[] = this.convertToDto(goals);
+
+    for (let i = 0; i < goalDtos.length; i++) {
+      const players: PlayerDTO[] = await this.getPlayersOnForGoal(goalDtos[i]);
+      const onForGoal: OnForGoalDTO = {
+        players,
+        goal: goalDtos[i],
+      };
+      onForGoalsMatch.push(onForGoal);
+    }
+
+    return onForGoalsMatch;
   }
 
   /**
@@ -226,7 +254,7 @@ export class PlayerStatsService {
    *
    * @returns the DTO array of players and their touches for a given match
    */
-  async touchesPlayersForMatch(matchId: number) {
+  async touchesPlayersForMatch(matchId: number): Promise<ReturnTouchesDTO> {
     const lineup: Lineup = await this.lineupRepo.findOneOrFail({
       where: { matchId },
     });
@@ -350,7 +378,9 @@ export class PlayerStatsService {
    *
    * @returns 3 parameters, one carrying possessions for first half, one for second and one for whole game
    */
-  async playerPossessionsStat(matchId: number) {
+  async playerPossessionsStat(
+    matchId: number,
+  ): Promise<PlayerPossessionsReturnDTO> {
     const lineup: Lineup = await this.lineupRepo.findOneOrFail({
       where: { matchId },
     });
@@ -559,5 +589,30 @@ export class PlayerStatsService {
       playerDtos.push(playerDto);
     });
     return playerDtos;
+  }
+
+  /**
+   * Converts a list of goal entities to a list of goal dtos
+   *
+   * @param goals - The list of goal entities we want to convert to a list of goal DTOs
+   *
+   * @returns A list of goal dtos converted from an entity
+   */
+  private convertToDto(goals: Goal[]) {
+    const goalDtos: GoalDTO[] = [];
+    goals.forEach(goal => {
+      const lineup: number[] = [];
+      goal.lineup.forEach(playerId => {
+        lineup.push(playerId);
+      });
+      const goalDto: GoalDTO = {
+        matchId: goal.matchId,
+        playerId: goal.playerId,
+        time: goal.time,
+        lineup: lineup,
+      };
+      goalDtos.push(goalDto);
+    });
+    return goalDtos;
   }
 }

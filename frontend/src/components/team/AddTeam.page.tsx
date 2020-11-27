@@ -70,6 +70,29 @@ class AddTeam extends React.Component<{}, createTeamState> {
   // add player to the team list
   onAddPlayer = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>): void => {
     e.preventDefault();
+    this.setState({ errorMessage: "" });
+    // check if both first name and last name are entered
+    if (
+      this.state.newPlayerFirstName?.trim() === "" ||
+      this.state.newPlayerLastName?.trim() === ""
+    ) {
+      this.setState({ errorMessage: "Please enter both first and last name" });
+      return;
+    }
+    // check if player number is valid
+    if (
+      this.state.newPlayerNumber.includes(".") ||
+      isNaN(Number(this.state.newPlayerNumber)) ||
+      this.state.newPlayerNumber === "" ||
+      !Number.isInteger(Number(this.state.newPlayerNumber)) ||
+      Number(this.state.newPlayerNumber) < 0 ||
+      Number(this.state.newPlayerNumber) >= 100
+    ) {
+      this.setState({
+        errorMessage: "Please enter a valid player number (between 0 - 100)",
+      });
+      return;
+    }
     if (
       this.state.newPlayerFirstName?.trim() !== "" &&
       this.state.newPlayerLastName?.trim() !== "" &&
@@ -121,7 +144,7 @@ class AddTeam extends React.Component<{}, createTeamState> {
     if (this.state.teamName.trim() !== "") {
       axios
         .post(
-          "/teams",
+          "/api/teams",
           { name: this.state.teamName },
           { headers: authHeader() }
         )
@@ -147,7 +170,7 @@ class AddTeam extends React.Component<{}, createTeamState> {
                 });
                 console.log(playerArray);
                 axios
-                  .post("/players", playerArray, { headers: authHeader() })
+                  .post("/api/players", playerArray, { headers: authHeader() })
                   .then(
                     (response) => {
                       console.log("team added successfully");
@@ -279,14 +302,19 @@ class AddTeam extends React.Component<{}, createTeamState> {
         </table>
         <Button
           variant="contained"
-          style={{ marginBottom: 10 }}
+          style={{ marginBottom: 25 }}
           onClick={this.onAddTeam}
         >
           Add Team
         </Button>
         <br />
         <Link to="/teams">
-          <Button variant="contained">Back</Button>
+          <Button
+            variant="contained"
+            style={{ backgroundColor: "red", color: "white" }}
+          >
+            Back
+          </Button>
         </Link>
       </div>
     );

@@ -1,138 +1,231 @@
 import React from "react";
 import axios from "axios";
 import authHeader from "../../services/auth.header";
-import { Collapse, List, ListItem, ListItemText } from "@material-ui/core";
-import { ExpandLess, ExpandMore } from "@material-ui/icons";
+import ReportProps from "../interfaces/props/report-props";
+import { CircularProgress } from "@material-ui/core";
+import { Button } from "react-bootstrap";
 
 interface LineupState {
-  lineupList: TeamLineup[];
+  lineupList: Lineups[] | null;
   finishLoading: boolean;
   open: boolean;
+  reload: number;
 }
 
-interface TeamLineup {
-  team: string;
-  teamId: number;
-  matchList: {
-    id: number;
-    goalList: {
-      lineup: number[];
-    }[];
-  }[];
+interface Lineups {
+  index: number;
+  lineup: string[];
+  ours: boolean;
+  time: number;
 }
 
-class LineupGoal extends React.Component<any, LineupState> {
-  constructor(props: any) {
+class LineupGoal extends React.Component<ReportProps, LineupState> {
+  constructor(props: ReportProps) {
     super(props);
-    this.state = { lineupList: [], finishLoading: false, open: false };
+    this.state = {
+      lineupList: null,
+      finishLoading: false,
+      open: false,
+      reload: 0,
+    };
   }
 
   handleClick = () => {
     this.setState({ open: !this.state.open });
   };
 
-  getLineup = async (): Promise<TeamLineup[]> => {
-    const res = await axios.get("/teams", { headers: authHeader() });
-    if (res.data) {
-      const tempTeamList: any = [];
-      for (let i = 0; i < res.data.length; i++) {
-        const matchRes = await axios.get(
-          `/match/teamId?teamId=${res.data[i].teamId}`,
+  getLineup = async (): Promise<Lineups[] | null> => {
+    if (this.props.matchId) {
+      // if match id is invalid
+      if (!Number.isInteger(this.props.matchId)) {
+        // this.setState({ finishLoading: true });
+        return null;
+      }
+      try {
+        const res = await axios.get(
+          `/api/player-stats/onForGoal?matchId=${this.props.matchId}`,
           { headers: authHeader() }
         );
-        if (matchRes.data) {
-          const tempMatchList: any = [];
-          for (let j = 0; j < matchRes.data.length; j++) {
-            const goalRes = await axios.get(
-              `/event/goals?matchId=${matchRes.data[j].matchId}`,
-              { headers: authHeader() }
-            );
-            if (goalRes.data) {
-              const tempGoalList: any = [];
-              for (let m = 0; m < goalRes.data.length; m++) {
-                tempGoalList.push({ lineup: goalRes.data[m].lineup });
-              }
-              tempMatchList.push({
-                id: matchRes.data[j].matchId,
-                goalList: tempGoalList,
+        if (res.data) {
+          const tempLineupList: any = [];
+          // sort by time
+          res.data.sort((a: any, b: any) => {
+            return a.goal.time > b.goal.time ? 1 : -1;
+          });
+          for (let i = 1; i < res.data.length + 1; i++) {
+            const players: any = [];
+            for (let j = 0; j < res.data[i - 1].players.length; j++) {
+              players.push(
+                res.data[i - 1].players[j].firstName +
+                  " " +
+                  res.data[i - 1].players[j].lastName
+              );
+            }
+            if (!res.data[i - 1].goal.playerId) {
+              // opponent scored
+              tempLineupList.push({
+                index: i,
+                lineup: players,
+                ours: false,
+                time: res.data[i - 1].goal.time,
+              });
+            } else {
+              tempLineupList.push({
+                index: i,
+                lineup: players,
+                ours: true,
+                time: res.data[i - 1].goal.time,
               });
             }
           }
-          tempTeamList.push({
-            team: res.data[i].name,
-            teamId: res.data[i].teamId,
-            matchList: tempMatchList,
-          });
+          return tempLineupList;
         }
+        return null;
+      } catch (error) {
+        return null;
       }
-      return tempTeamList;
     }
-    return [];
+    return null;
   };
+
+  validateLineup = () => {
+    // lineupList is null
+    if (!this.state.lineupList) return false;
+    for (let i = 0; i < this.state.lineupList.length; i++) {
+      // no lineup during goal
+      if (this.state.lineupList[i].lineup.length === 0) return false;
+    }
+    return true;
+  };
+
+  reloadOnClick = () => {
+    this.setState({ reload: this.state.reload + 1 });
+  };
+
+  updateAndNotify = () => {
+    this.getLineup().then((lineup: Lineups[] | null) => {
+      this.setState({ lineupList: lineup, finishLoading: true });
+    });
+  };
+
+  //update when match changed
+  componentDidUpdate(prevProps: ReportProps) {
+    if (prevProps.matchId !== this.props.matchId) {
+      this.updateAndNotify();
+    }
+  }
 
   componentDidMount() {
     if (!this.state.finishLoading) {
-      this.getLineup().then((lineup: TeamLineup[]) => {
-        this.setState({ lineupList: lineup, finishLoading: true });
-      });
+      this.updateAndNotify();
     }
   }
 
   render() {
-    if (!this.state.finishLoading) {
+    // If match id is null
+    if (!this.props.matchId) {
+      return null;
+    }
+    // If match id is invalid
+    if (!Number.isInteger(this.props.matchId)) {
       return (
-        <div
-          style={{
-            backgroundColor: "whitesmoke",
-            color: "black",
-            borderRadius: "5px",
-            marginBottom: "30px",
-            padding: "15px",
-          }}
-        >
-          <h2 style={{ padding: 0, margin: 0 }}>Lineup for Goals</h2>
-        </div>
+        <Button variant="warning" onClick={this.reloadOnClick}>
+          {" "}
+          Something Went Wrong... Click To Reload Report
+        </Button>
       );
-    } else {
+    }
+    // If we havent completed the asynchronous data fetch yet; return a loading indicator
+    if (!this.state.finishLoading) return <CircularProgress />;
+
+    if (!this.validateLineup())
       return (
-        <div
-          style={{
-            backgroundColor: "whitesmoke",
-            color: "black",
-            borderRadius: "5px",
-            marginBottom: "30px",
-            padding: "15px",
-          }}
-        >
-          <h2 style={{ padding: 0, margin: 0 }}>Lineup for Goals</h2>
-          {this.state.lineupList.map((team) => {
-            return (
-              <List component="nav">
-                <ListItem button onClick={this.handleClick} key={team.teamId}>
-                  <ListItemText primary={team.team} />
-                  {this.state.open ? <ExpandLess /> : <ExpandMore />}
-                </ListItem>
-                <Collapse in={this.state.open} timeout="auto" unmountOnExit>
-                  <List component="div" disablePadding>
-                    {team.matchList.map((match) => {
-                      return match.goalList.map((goal) => {
-                        const lineup = goal.lineup.join(" ");
-                        return (
-                          <ListItem button>
-                            <ListItemText
-                              primary={`match ${match.id}: ${lineup}`}
-                            />
-                          </ListItem>
-                        );
-                      });
-                    })}
-                  </List>
-                </Collapse>
-              </List>
-            );
-          })}
-        </div>
+        <Button variant="warning" onClick={this.reloadOnClick}>
+          {" "}
+          Something Went Wrong... Click To Reload Report
+        </Button>
       );
+    // If there is no goals for the match
+    if (this.state.lineupList) {
+      if (this.state.lineupList.length <= 0) {
+        return (
+          <div
+            style={{
+              backgroundColor: "whitesmoke",
+              color: "black",
+              borderRadius: "5px",
+              marginBottom: "30px",
+              padding: "15px",
+            }}
+          >
+            <h2 style={{ padding: 0, margin: 0 }}>Lineup for Goals</h2>
+            <p>No goals</p>
+          </div>
+        );
+      } else {
+        return (
+          <div
+            style={{
+              backgroundColor: "whitesmoke",
+              color: "black",
+              borderRadius: "5px",
+              marginBottom: "30px",
+              padding: "15px",
+            }}
+          >
+            <h2 style={{ padding: 0, margin: 0 }}>Lineup for Goals</h2>
+            <div style={{ display: "flex" }}>
+              <p
+                style={{
+                  backgroundColor: "#ffb3b3",
+                  width: "40px",
+                  height: "10px",
+                  margin: "auto 10px",
+                  opacity: 0.8,
+                }}
+              >
+                &nbsp;
+              </p>
+              <p style={{ fontSize: "16px", margin: "auto 10px" }}>
+                opponents goal
+              </p>
+            </div>
+            <table
+              style={{
+                margin: "10px auto",
+                color: "#282c34",
+                fontSize: "14pt",
+              }}
+            >
+              <thead>
+                <tr>
+                  <th style={{ padding: "10px" }}>Goal</th>
+                  <th style={{ padding: "10px" }}>Line During Goal</th>
+                </tr>
+              </thead>
+              <tbody>
+                {this.state.lineupList.map((lineup: Lineups) => {
+                  const lineupString = lineup.lineup.join(", ");
+                  return lineup.ours ? (
+                    <tr key={lineup.index}>
+                      <td>{lineup.index}</td>
+                      <td>{lineupString}</td>
+                    </tr>
+                  ) : (
+                    <tr
+                      key={lineup.index}
+                      style={{ backgroundColor: "#ffb3b3" }}
+                    >
+                      <td>{lineup.index}</td>
+                      <td>{lineupString}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        );
+      }
     }
   }
 }

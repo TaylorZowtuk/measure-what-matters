@@ -1,31 +1,44 @@
-import { BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
-import { Match } from "../match.entity";
-import { Player } from "../player.entity";
-import { IEvent } from "./IEvent.interface";
+import {
+  BaseEntity,
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
+import { Match } from '../match.entity';
+import { Player } from '../player.entity';
+import { IEvent } from './IEvent.interface';
 
 @Entity()
+export class Assist extends BaseEntity implements IEvent {
+  @PrimaryGeneratedColumn()
+  id: number;
 
-export class Assist extends BaseEntity implements IEvent{
+  @ManyToOne(
+    () => Match,
+    match => match.matchId,
+    { eager: true },
+  )
+  @JoinColumn()
+  matchId: number;
 
+  @Column()
+  time: number;
 
-    @PrimaryGeneratedColumn()
-    id : number;
+  @ManyToOne(
+    () => Player,
+    player => player.playerId,
+    { eager: true },
+  )
+  @JoinColumn()
+  playerId: number;
 
-    @ManyToOne(type => Match, match => match.matchId, {eager:true})
-    @JoinColumn()
-    matchId: number;
+  @CreateDateColumn()
+  createdDate: Date;
 
-    @Column()
-    time: number;
-
-    @ManyToOne(type => Player, player => player.playerId, {eager:true})
-    @JoinColumn()
-    playerId: number;
-
-    @CreateDateColumn()
-    createdDate: Date;
-  
-    @UpdateDateColumn()
-    updatedDate: Date;
-
+  @UpdateDateColumn()
+  updatedDate: Date;
 }
