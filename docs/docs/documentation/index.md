@@ -8,6 +8,14 @@
     </embed>
 </object>
 
+## Deployment Docs
+
+<object data="./DeploymentDocs.pdf" type="application/pdf" width="700px" height="700px">
+    <embed src="./DeploymentDocs.pdf">
+        <p>This browser does not support PDFs. Please download the PDF to view it: <a href="./DeploymentDocs.pdf">Download PDF</a>.</p>
+    </embed>
+</object>
+
 ## Api Docs
 
 In order to view the MWM Api documentation locally. Run
