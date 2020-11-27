@@ -70,6 +70,29 @@ class AddTeam extends React.Component<{}, createTeamState> {
   // add player to the team list
   onAddPlayer = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>): void => {
     e.preventDefault();
+    this.setState({ errorMessage: "" });
+    // check if both first name and last name are entered
+    if (
+      this.state.newPlayerFirstName?.trim() === "" ||
+      this.state.newPlayerLastName?.trim() === ""
+    ) {
+      this.setState({ errorMessage: "Please enter both first and last name" });
+      return;
+    }
+    // check if player number is valid
+    if (
+      this.state.newPlayerNumber.includes(".") ||
+      isNaN(Number(this.state.newPlayerNumber)) ||
+      this.state.newPlayerNumber === "" ||
+      !Number.isInteger(Number(this.state.newPlayerNumber)) ||
+      Number(this.state.newPlayerNumber) < 0 ||
+      Number(this.state.newPlayerNumber) >= 100
+    ) {
+      this.setState({
+        errorMessage: "Please enter a valid player number (between 0 - 100)",
+      });
+      return;
+    }
     if (
       this.state.newPlayerFirstName?.trim() !== "" &&
       this.state.newPlayerLastName?.trim() !== "" &&
