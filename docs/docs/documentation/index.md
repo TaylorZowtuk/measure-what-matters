@@ -1,4 +1,12 @@
-# Swagger Docs
+# MWM Documentation
+
+## Testing Docs 
+
+Click the ![following link](./MWM-testing-documentation.pdf) to see the Testing Documentation for MWM.
+
+Click the ![following link](./MWM-SeleniumTestingReport.pdf) to see the PDF version of the testing report output for Selenium. The html version can be found in the /selenium_testing/ReportDirectory/ from the root folder.
+
+## Api Docs
 
 In order to view the MWM Api documentation locally. Run
 
@@ -8,8 +16,6 @@ npm run start
 
 Then navigate to [http://localhost:3001/api](http://localhost:3001/api)
 **_Note:_** 3001 is the default port. Remember to use the port you have set in main.ts in the backend/src directory.
-
-## Api Docs
 
 The following demonstrates how db objects, api endpoints, and stats can be calculated/
 
