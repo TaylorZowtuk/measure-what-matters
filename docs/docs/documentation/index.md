@@ -1,6 +1,7 @@
 # MWM Documentation
 
 ## User Manual
+
 <object data="./MWM-UserManual.pdf" type="application/pdf" width="700px" height="700px">
     <embed src="./MWM-UserManual.pdf">
         <p>This browser does not support PDFs. Please download the PDF to view it: <a href="./MWM-UserManual.pdf">Download PDF</a>.</p>
@@ -20,7 +21,7 @@ Then navigate to [http://localhost:3001/api](http://localhost:3001/api)
 
 The following demonstrates how db objects, api endpoints, and stats can be calculated/
 
-<a href="./SwaggerUI.html" target="_blank">Docs</a>
+Docs can be found <a href="./SwaggerUI.html" target="_blank">here</a>
 
 ### Ball Possession
 
@@ -39,7 +40,9 @@ The timeline demonstrates how this would work.
 The DELETE API endpoint does not delete the entity from the DB but instead sets an "archived" flag to true. This will allow for easier modification later.
 
 ## Testing Docs
+
 ### Testing Documentation
+
 <object data="./MWM-testing-documentation.pdf" type="application/pdf" width="700px" height="700px">
     <embed src="./MWM-testing-documentation.pdf">
         <p>This browser does not support PDFs. Please download the PDF to view it: <a href="./MWM-testing-documentation.pdf">Download PDF</a>.</p>
@@ -47,6 +50,7 @@ The DELETE API endpoint does not delete the entity from the DB but instead sets 
 </object>
 
 ### Testing Report (Selenium)
+
 The html version can be found in the /selenium_testing/ReportDirectory/ from the root folder.
 
 <object data="./MWM-SeleniumTestingReport.pdf" type="application/pdf" width="700px" height="700px">
