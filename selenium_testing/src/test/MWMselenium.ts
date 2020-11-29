@@ -3,7 +3,6 @@ import { Builder, By, Key, ThenableWebDriver, until } from "selenium-webdriver"
 import * as assert from "assert"
 describe("MWM tests", () => {
 	let driver: ThenableWebDriver
-	// enter a new random username and password to run test
 	const username = 'selenium2';
 	const password = 'password1';
 	before("Before", async () => {

@@ -1,5 +1,8 @@
 # MWM Documentation
 
+## Video Demo
+[Measure What Matters Video Demonstration](https://youtu.be/Z0JGxdxM1kk?vq=hd1080)
+
 ## User Manual
 
 <object data="./MWM-UserManual.pdf" type="application/pdf" width="700px" height="700px">

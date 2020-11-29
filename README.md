@@ -16,3 +16,6 @@ If you want to take your game to the next level, you need data to inform decisio
 [https://ualberta-cmput401.github.io/teamsnap-game-observation/](https://ualberta-cmput401.github.io/teamsnap-game-observation/)
 
 [Client Meeting](https://drive.google.com/file/d/1P8xYt-WpolOJEQMAICsLXzDmdCSAM5bs/view?usp=sharing)
+
+## Video Demo
+[Measure What Matters Video Demonstration](https://youtu.be/Z0JGxdxM1kk?vq=hd1080)
