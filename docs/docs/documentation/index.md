@@ -1,5 +1,17 @@
 # MWM Documentation
 
+## Video Demo
+
+[Measure What Matters Video Demonstration](https://youtu.be/Z0JGxdxM1kk?vq=hd1080)
+
+## Presentation Slides
+
+<object data="./Presentation-Slides.pdf" type="application/pdf" width="700px" height="700px">
+    <embed src="./Presentation-Slides.pdf">
+        <p>This browser does not support PDFs. Please download the PDF to view it: <a href="./Presentation-Slides.pdf">Download PDF</a>.</p>
+    </embed>
+</object>
+
 ## User Manual
 
 <object data="./MWM-UserManual.pdf" type="application/pdf" width="700px" height="700px">
